@@ -1,5 +1,5 @@
 # ChartToolkit
-The ChartToolkit library is an open source project for Java 8 that serves as a small collection of basic utilities and custom classes for AWT and Swing basedc charting, covering some specific chart types that aren't often found in the better-known charting packages, or which simpler have an easier workflow an integration path when one doesn't need a mega-package to deal with one's charting needs.
+The ChartToolkit library is an open source project for Java 8 that serves as a small collection of basic utilities and custom classes for AWT and Swing based charting, covering some specific chart types that aren't often found in the better-known charting packages, or which simpler have an easier workflow an integration path when one doesn't need a mega-package to deal with one's charting needs.
 
 At the moment, this is a bare bones skeletal utility library with only one method that doesn't even require AWT or Swing, just to decouple this from unrelated Graphics and Gui functionality in my other toolkits, and to make this method immediately available to anyone who needs it (it is a data reduction algorithm).
 
