@@ -17,4 +17,4 @@ The one thing I wasn't certain about was whether to post Eclipse and NetBeans sp
 
 The Javadocs are 100% compliant and complete, but I am still learning how to publish those at the hosting site that I think is part of Maven Central, as it is a bad idea to bloat a GitHub project with such files and to complicate repository changes (just as with binary files and archices). Hopefully later tonight!
 
-As a confidence boost at both ends, ChartUtilities has a main() function that prints "Hello Maven" to the console (e.g. the one in Eclipse IDE). By running Maven's clean task, then the install task, you can quickly gain confidence that everything is integrated properly, by then running the main class and seeing the console.
+As a confidence boost at both ends, ChartUtilities has a main() function that prints "Hello Maven from ChartToolkit" to the console (e.g. the one in Eclipse IDE). By running Maven's clean task, then the install task, you can quickly gain confidence that everything is integrated properly, by then running the main class and seeing the console and confirming that this library was the source of the validation message.
