@@ -56,7 +56,7 @@ public final class ChartUtilities {
      * @since 1.0
      */
     public static void main( final String[] args ) {
-        System.out.println( "Hello Maven!" ); //$NON-NLS-1$
+        System.out.println( "Hello Maven from ChartToolkit!" ); //$NON-NLS-1$
     }
 
     /**
