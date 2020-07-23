@@ -7,7 +7,7 @@
   <packaging>jar</packaging>
   <name>ChartToolkit</name>
   <url>https://github.com/mhschmieder/charttoolkit</url>
-  <description>Utilities and custom classes for AWT and Swing based charting.</description>  
+  <description>Utilities and custom classes for Java AWT and Swing based charting.</description>  
   <licenses>
     <license>
       <name>MIT License</name>
