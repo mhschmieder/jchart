@@ -122,7 +122,7 @@ public class ChartLegend extends VectorizationXPanel {
      *
      * @since 1.0
      */
-    protected ChartLegend() {
+    public ChartLegend() {
         // Always call the superclass constructor first!
         super();
 
