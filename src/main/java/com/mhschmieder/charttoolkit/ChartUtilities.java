@@ -30,6 +30,11 @@
  */
 package com.mhschmieder.charttoolkit;
 
+import java.awt.Color;
+
+import com.mhschmieder.graphicstoolkit.color.ColorConstants;
+import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
+
 /**
  * {@code ChartUtilities} is a utility class for AWT based chart methods, usable
  * in either the AWT or Swing GUI toolkits.
@@ -233,6 +238,46 @@ public final class ChartUtilities {
         final int numberOfCoordinatesTransformed = transformedCoordinateIndex + 1;
 
         return numberOfCoordinatesTransformed;
+    }
+
+    /**
+     * Returns the default Grid Color, which is the next shade brighter (if the
+     * Background Color is dark) or the next shade darker (if the Background
+     * Color is light).
+     * <p>
+     * The algorithm needs to set to gray if black background, as the next shade
+     * brighter from black doesn't provide enough contrast. Similarly for white
+     * background, as the next shade darker isn't easy enough to distinguish.
+     * <p>
+     * This algorithm accounts for nonlinear human perception of hues; 25% and
+     * darker go much brighter (to 50% Gray), for superior visual contrast.
+     *
+     * @param backColor
+     *            The current graphics Background Color
+     * @return The new Grid Color that provides sufficient contrast with the
+     *         current graphics Background Color
+     *
+     * @since 1.0
+     */
+    public static Color getDefaultGridColor( final Color backColor ) {
+        // Guarantee that Absolute Black and Absolute White use Mid-Gray (50%).
+        if ( Color.BLACK.equals( backColor ) || Color.WHITE.equals( backColor ) ) {
+            return ColorConstants.GRAY50;
+        }
+
+        // Hues that are 25% or less in Brightness also need way more contrast
+        // to be easily distinguished as unique colors, so we use Mid-Gray (50%)
+        // for those as well rather than minor adjustments to Brightness.
+        if ( ColorUtilities.isColorDark( backColor, 0.26f ) ) {
+            return ColorConstants.GRAY50;
+        }
+
+        // All other hues simply go to the next brighter or next darker hue.
+        final Color gridColor = ColorUtilities.isColorDark( backColor )
+            ? backColor.brighter()
+            : backColor.darker();
+
+        return gridColor;
     }
 
 }
