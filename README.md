@@ -13,6 +13,8 @@ There will be a modularized version soon, that supports Java 14+. If I find a wa
 
 Eclipse and NetBeans related support files are included as they are generic and are agnostic to the OS or to the user's system details and file system structure, so it seems helpful to post them in order to accelerate the integration of this library into a user's normal IDE project workflow and build cycle.
 
+This projects depends on my GraphicsToolkit and my GuiToolkit libraries, as it builds upon them. Not everyone needs charting, and most already have a charting package that they prefer, so it was best to split this off from the GuiToolkit and to not include its basic support structures in the GraphicsToolkit.
+
 The Javadocs are 100% compliant and complete, but I am still learning how to publish those at the hosting site that I think is part of Maven Central, as it is a bad idea to bloat a GitHub project with such files and to complicate repository changes (just as with binary files and archices). Hopefully later tonight!
 
 As a confidence boost at both ends, ChartUtilities has a main() function that prints "Hello Maven from ChartToolkit" to the console (e.g. the one in Eclipse IDE). By running Maven's clean task, then the install task, you can quickly gain confidence that everything is integrated properly, by then running the main class and seeing the console and confirming that this library was the source of the validation message.
