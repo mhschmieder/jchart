@@ -548,9 +548,8 @@ public abstract class CartesianChart extends Chart {
             ySPos = lry + labelHeight + labelFontMetrics.getHeight();
         }
 
-        // NOTE: The scaling was moved here by MSLI so that it is based on the
-        // final aspect ratio adjusted width and height (it is not used
-        // beforehand).
+        // NOTE: The scaling was moved here so that it is based on the final
+        // aspect ratio adjusted width and height (it is not used beforehand).
         // NOTE: This appears to be unnecessary; this code could go anywhere as
         // it seems to have no dependencies on anything that comes before it
         // (and maybe after as well).
