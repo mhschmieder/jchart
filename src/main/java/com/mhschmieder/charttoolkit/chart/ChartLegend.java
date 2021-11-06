@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 Mark Schmieder
+ * Copyright (c) 2020, 2021 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit;
+package com.mhschmieder.charttoolkit.chart;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -60,7 +60,7 @@ import com.mhschmieder.guitoolkit.component.VectorizationXPanel;
  * supports a typical vertical layout that would be placed to the right of any
  * chart or group of stacked charts. It also supports export to Vector Graphics.
  *
- * @version 1.0
+ * @version 0.1
  *
  * @author Mark Schmieder
  */

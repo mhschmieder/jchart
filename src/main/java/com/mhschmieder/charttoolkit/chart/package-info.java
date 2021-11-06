@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 Mark Schmieder
+ * Copyright (c) 2020, 2021 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,42 +28,12 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit;
-
 /**
- * {@code ChartType} is an enumeration of basic Chart Types; primarily to
- * distinguish charts that connect data points via lines (i.e. Data Vectors) vs.
- * ones that compute a Center Band in both directions from the given data points
- * (as is frequently the case with certain types of Bar Charts and Line Charts).
+ * This package contains the ChartToolkit Library's chart utility classes that
+ * operate on the highest-level concepts in the AWT class hierarchy.
  *
  * @version 1.0
  *
  * @author Mark Schmieder
  */
-public enum ChartType {
-    /**
-     * Data Vector charts are the most common, and simply connect the data
-     * points with individual lines.
-     */
-    DATA_VECTOR,
-    /**
-     * Center Bands are common in Bar Charts and Line Charts, where the given
-     * data points often need to be drawn out in both directions until the
-     * mid-point between neighboring data points.
-     */
-    CENTER_BAND;
-
-    /**
-     * Returns the default Chart Type, for safe initialization and for clients
-     * that don't care or don't know what they want or need and thus probably
-     * will be doing standard Data Vector charts.
-     *
-     * @return The most common preferred Chart Type, which is Data Vector
-     *
-     * @since 1.0
-     */
-    public static ChartType defaultValue() {
-        return DATA_VECTOR;
-    }
-
-}
+package com.mhschmieder.charttoolkit.chart;
