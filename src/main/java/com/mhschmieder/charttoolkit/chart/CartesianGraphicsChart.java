@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020, 2021 Mark Schmieder
+ * Copyright (c) 2020, 2022 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,14 +56,14 @@ import java.text.NumberFormat;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import com.mhschmieder.commonstoolkit.math.Extents2D;
 import com.mhschmieder.commonstoolkit.math.GridResolution;
 import com.mhschmieder.commonstoolkit.physics.DistanceUnit;
 import com.mhschmieder.commonstoolkit.physics.UnitConversion;
+import com.mhschmieder.fxgraphicstoolkit.geometry.Extents2D;
+import com.mhschmieder.fxgraphicstoolkit.geometry.GeometryUtilities;
 import com.mhschmieder.graphicstoolkit.color.ColorConstants;
 import com.mhschmieder.graphicstoolkit.geometry.AttributedShape;
 import com.mhschmieder.graphicstoolkit.geometry.AttributedShapeContainer;
-import com.mhschmieder.graphicstoolkit.geometry.GeometryUtilities;
 
 /**
  * The CartesianGraphicsChart class is derived directly from the CartesianChart
