@@ -59,8 +59,6 @@ import javax.swing.ImageIcon;
 import com.mhschmieder.commonstoolkit.math.GridResolution;
 import com.mhschmieder.commonstoolkit.physics.DistanceUnit;
 import com.mhschmieder.commonstoolkit.physics.UnitConversion;
-import com.mhschmieder.fxgraphicstoolkit.geometry.Extents2D;
-import com.mhschmieder.fxgraphicstoolkit.geometry.GeometryUtilities;
 import com.mhschmieder.graphicstoolkit.color.ColorConstants;
 import com.mhschmieder.graphicstoolkit.geometry.AttributedShape;
 import com.mhschmieder.graphicstoolkit.geometry.AttributedShapeContainer;
@@ -81,13 +79,18 @@ public class CartesianGraphicsChart extends CartesianChart {
     /**
      *
      */
-    private static final long serialVersionUID   = 2635236776918249395L;
+    private static final long  serialVersionUID      = 2635236776918249395L;
+
+    public static final double X_METERS_DEFAULT      = 0d;
+    public static final double Y_METERS_DEFAULT      = 0d;
+    public static final double WIDTH_METERS_DEFAULT  = 40d;
+    public static final double HEIGHT_METERS_DEFAULT = 20d;
 
     // Regardless of whether an image is loaded, plots that can host background
     // images must take different tactics towards grid color than using the
     // background color.
     // NOTE: Original color was ( 217, 223, 214 ) -- maybe different order?
-    public static final Color GRID_COLOR_DEFAULT = ColorConstants.GRAY60;
+    public static final Color  GRID_COLOR_DEFAULT    = ColorConstants.GRAY60;
 
     // NOTE: This is a unitless method, but does assume the units are at
     // least consistent. Preferably everything is metric (meters).
@@ -114,14 +117,15 @@ public class CartesianGraphicsChart extends CartesianChart {
     public DistanceUnit              _distanceUnit;
 
     // Maintain a reference to the overall boundary of the plot, in Meters.
-    public Extents2D                 _plotBoundary;
+    public Rectangle2D               _plotBoundary;
 
-    // Declare a current zoom which corresponds to the current Sound Field size.
+    // Declare a current zoom which corresponds to a typical desktop window
+    // aspect ratio and initial chart size.
     public final Rectangle2D         _zoomCurrent            =
-                                                  new Rectangle2D.Double( Extents2D.X_METERS_DEFAULT,
-                                                                          Extents2D.Y_METERS_DEFAULT,
-                                                                          Extents2D.WIDTH_METERS_DEFAULT,
-                                                                          Extents2D.HEIGHT_METERS_DEFAULT );
+                                                  new Rectangle2D.Double( X_METERS_DEFAULT,
+                                                                          Y_METERS_DEFAULT,
+                                                                          WIDTH_METERS_DEFAULT,
+                                                                          HEIGHT_METERS_DEFAULT );
 
     // Declare an Image Plane (updated separately from other bounds, on image
     // load).
@@ -927,7 +931,7 @@ public class CartesianGraphicsChart extends CartesianChart {
     // external editing due to being a reference to a data-bound JavaFX object.
     // This means we should not apply Measurement Units directly to it; only to
     // derivations and propagations of its values. This should cover all cases.
-    public final void setPlotBoundary( final Extents2D plotBoundary ) {
+    public final void setPlotBoundary( final Rectangle2D plotBoundary ) {
         // Cache the new Plot Boundary.
         _plotBoundary = plotBoundary;
 
@@ -1057,11 +1061,10 @@ public class CartesianGraphicsChart extends CartesianChart {
     // Reset the Sound Field to a scaled subset, preserving aspect ratio, but
     // blocking zoom past the maximum Region or zoom extents.
     public final void zoom( final double zoomFactor, final boolean useMousePosition ) {
-        final Rectangle2D plotBoundary = GeometryUtilities.rectangleAwtFromExtents( _plotBoundary );
-        final double oldX = plotBoundary.getX();
-        final double oldY = plotBoundary.getY();
-        final double oldWidth = plotBoundary.getWidth();
-        final double oldHeight = plotBoundary.getHeight();
+        final double oldX = _plotBoundary.getX();
+        final double oldY = _plotBoundary.getY();
+        final double oldWidth = _plotBoundary.getWidth();
+        final double oldHeight = _plotBoundary.getHeight();
 
         // First, determine whether any further zooming is possible. If not,
         // then zoom to the current zoom extents (if at the far end of the
@@ -1126,8 +1129,7 @@ public class CartesianGraphicsChart extends CartesianChart {
 
     // Restore the full zoom extents.
     public final void zoomToExtents() {
-        final Rectangle2D plotBoundary = GeometryUtilities.rectangleAwtFromExtents( _plotBoundary );
-        setZoomCurrent( plotBoundary );
+        setZoomCurrent( _plotBoundary );
     }
 
 }

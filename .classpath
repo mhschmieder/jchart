@@ -25,6 +25,5 @@
 	</classpathentry>
 	<classpathentry kind="src" path="/guitoolkit"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/graphicstoolkit"/>
-	<classpathentry kind="src" path="/fxgraphicstoolkit"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
