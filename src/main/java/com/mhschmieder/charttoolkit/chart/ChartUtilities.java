@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020, 2021 Mark Schmieder
+ * Copyright (c) 2020, 2022 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -140,8 +140,8 @@ public final class ChartUtilities {
                                                               final double[] yCoordinatesTransformed ) {
         // Cache the first in-range data point, so we can do a move followed by
         // any number of contiguous line segments.
-        double prevX = 0d;
-        double prevY = 0d;
+        double prevX = 0.0d;
+        double prevY = 0.0d;
         int transformedCoordinateIndex = -1;
         int firstDataPointIndex = 0;
         final int finalCoordinateIndex = numberOfCoordinates - 1;

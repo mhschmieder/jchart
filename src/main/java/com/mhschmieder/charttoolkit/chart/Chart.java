@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020 Mark Schmieder
+ * Copyright (c) 2020, 2022 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -342,7 +342,7 @@ public abstract class Chart extends VectorizationXPanel {
         final int maxCharacterHeight = uly - 15;
 
         // Get the maximum string width for determining Font Metrics.
-        final int maxStringWidth = ( int ) Math.round( 0.25d * ( 3d * chartSize.width ) );
+        final int maxStringWidth = ( int ) Math.round( 0.25d * ( 3.0d * chartSize.width ) );
 
         // Use the standard foreground color with the Title Font.
         graphicsContext.setColor( getForeground() );

@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020, 2021 Mark Schmieder
+ * Copyright (c) 2020, 2022 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -205,7 +205,7 @@ public abstract class CartesianDataChart extends CartesianChart {
             final long xPos = ulx + Math.round( ( xCoordinates[ i ] - xMin ) * xScale );
             final long yPos = lry - Math.round( ( yCoordinates[ i ] - yMin ) * yScale );
 
-            // :NOTE: The first point can't draw to a previous point.
+            // NOTE: The first point can't draw to a previous point.
             if ( !firstPoint ) {
                 // Draw a bar line mid-way to the previous point.
                 deltaX = drawBarLine( g2, xPos, yPos, prevX, prevY, true );
@@ -221,7 +221,7 @@ public abstract class CartesianDataChart extends CartesianChart {
 
         // If we are doing a center band plot, deal with the first and last
         // points.
-        // :NOTE: Must account for empty data sets to avoid throwing exceptions.
+        // NOTE: Must account for empty data sets to avoid throwing exceptions.
         if ( numberOfCoordinates > 0 ) {
             // Get the first point in the data set.
             long xPos = ulx + ( long ) ( ( xCoordinates[ 0 ] - xMin ) * xScale );
@@ -612,7 +612,7 @@ public abstract class CartesianDataChart extends CartesianChart {
 
     @Override
     public void paintComponent( final Graphics g ) {
-        // :NOTE: We have to call the "super" class first, to make sure
+        // NOTE: We have to call the "super" class first, to make sure
         // we preserve the look-and-feel of the owner component.
         super.paintComponent( g );
 
@@ -620,7 +620,7 @@ public abstract class CartesianDataChart extends CartesianChart {
         final Graphics2D g2 = ( Graphics2D ) g;
 
         // If relevant, composite the watermark with the image.
-        // :NOTE: Commented out for now, until rewritten for performance.
+        // NOTE: Commented out for now, until rewritten for performance.
         // if ( useWatermark ) {
         final boolean watermarkInUse = false;
         if ( watermarkInUse ) {
@@ -634,13 +634,13 @@ public abstract class CartesianDataChart extends CartesianChart {
             final Image watermarkImage = watermarkIcon.getImage();
             final int watermarkWidth = watermarkImage.getWidth( null );
             final int watermarkHeight = watermarkImage.getHeight( null );
-            final int blankingWidth = ( int ) Math.round( ( 2d * watermarkWidth ) / 3d );
+            final int blankingWidth = ( int ) Math.round( ( 2.0d * watermarkWidth ) / 3.0d );
             final int blankingHeight = watermarkHeight;
 
-            // :NOTE: Virtual rows consist of a pair of left-justified and
+            // NOTE: Virtual rows consist of a pair of left-justified and
             // left-offset rows; each one followed by a blanking row.
             final int numRows = ( int ) Math.ceil( ( plotHeight + blankingHeight )
-                    / ( 2d * ( watermarkHeight + blankingHeight ) ) );
+                    / ( 2.0d * ( watermarkHeight + blankingHeight ) ) );
             final int numCols = ( int ) Math
                     .ceil( ( plotWidth + blankingWidth ) / ( watermarkWidth + blankingWidth ) );
 
@@ -650,22 +650,22 @@ public abstract class CartesianDataChart extends CartesianChart {
             // than simply painting the transparent watermark atop the
             // background image.
             //
-            // :NOTE: We use a copy of the graphics context, to minimize
+            // NOTE: We use a copy of the graphics context, to minimize
             // the chance of having a side effect on later use in the
             // repaint() methods due to setting the composite value.
-            // :TODO: Add bounds checking, or trim to the plot boundary,
+            // TODO: Add bounds checking, or trim to the plot boundary,
             // as the blanking width and height make it difficult to get
             // an exact count for the tiling otherwise, and it's important
             // not to leave blank space.
             //
-            // :TODO: Refine this logic. as we are not getting enough
+            // TODO: Refine this logic. as we are not getting enough
             // rows and sometimes not enough columns, since the blanking
             // width is different from the watermark width and throws off
             // the algorithm in terms of how many of each to paint.
             g2.setComposite( AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.5f ) );
 
-            // :TODO: Do bounds-checking on the edge of the plot.
-            // :TODO: Review proper direction of y-axis here and elsewhere,
+            // TODO: Do bounds-checking on the edge of the plot.
+            // TODO: Review proper direction of y-axis here and elsewhere,
             // considering that only the watermark inverts this order, and it
             // might have been incorrect as it never worked properly at the
             // Plot2D level anyway (just at the ImagePlot level).
@@ -691,7 +691,7 @@ public abstract class CartesianDataChart extends CartesianChart {
     /**
      * Set the colors for all relevant data set indices.
      * <p>
-     * :NOTE: This is an optional method that should be overridden as needed.
+     * NOTE: This is an optional method that should be overridden as needed.
      */
     public void setChartColors() {}
 

@@ -81,10 +81,10 @@ public class CartesianGraphicsChart extends CartesianChart {
      */
     private static final long  serialVersionUID      = 2635236776918249395L;
 
-    public static final double X_METERS_DEFAULT      = 0d;
-    public static final double Y_METERS_DEFAULT      = 0d;
+    public static final double X_METERS_DEFAULT      = 0.0d;
+    public static final double Y_METERS_DEFAULT      = 0.0d;
     public static final double WIDTH_METERS_DEFAULT  = 40d;
-    public static final double HEIGHT_METERS_DEFAULT = 20d;
+    public static final double HEIGHT_METERS_DEFAULT = 20.0d;
 
     // Regardless of whether an image is loaded, plots that can host background
     // images must take different tactics towards grid color than using the
@@ -235,7 +235,7 @@ public class CartesianGraphicsChart extends CartesianChart {
         if ( useMousePosition || isContextMenuActive() ) {
             defaultPosition =
                             getViewPointInModelCoordinates( _soundFieldMouseX, _soundFieldMouseY );
-            // :TODO: Review whether this is the exclusion criteria we wish to
+            // TODO: Review whether this is the exclusion criteria we wish to
             // use.
             if ( contains( _zoomCurrent, defaultPosition, true ) ) {
                 return defaultPosition;
@@ -413,10 +413,10 @@ public class CartesianGraphicsChart extends CartesianChart {
         final int rawImageHeightInBits = image.getHeight();
         final double xScale = ( _imagePlane.getWidth() != 0 )
             ? ( rawImageWidthInBits / _imagePlane.getWidth() )
-            : 1d;
+            : 1.0d;
         final double yScale = ( _imagePlane.getHeight() != 0 )
             ? ( rawImageHeightInBits / _imagePlane.getHeight() )
-            : 1d;
+            : 1.0d;
 
         // Get the sub-image corresponding to the current image bounds.
         // NOTE: Images are displayed from top to bottom, so we use the upper
@@ -851,17 +851,17 @@ public class CartesianGraphicsChart extends CartesianChart {
         switch ( _gridResolution ) {
         case OFF:
             // Default the grid and then disable it.
-            setGridScale( 1d );
+            setGridScale( 1.0d );
             setGrid( false );
             break;
         case COARSE:
             // Re-enable the grid, and let the plot compute the new tics.
-            setGridScale( 2d );
+            setGridScale( 2.0d );
             setGrid( true );
             break;
         case MEDIUM:
             // Re-enable the grid, and let the plot compute the new tics.
-            setGridScale( 1d );
+            setGridScale( 1.0d );
             setGrid( true );
             break;
         case FINE:
@@ -870,7 +870,7 @@ public class CartesianGraphicsChart extends CartesianChart {
             setGrid( true );
             break;
         default:
-            setGridScale( 1d );
+            setGridScale( 1.0d );
             setGrid( false );
             break;
         }
@@ -907,7 +907,7 @@ public class CartesianGraphicsChart extends CartesianChart {
         rescaleGrid();
     }
 
-    // :NOTE: This method is used when we don't need a stream because the
+    // NOTE: This method is used when we don't need a stream because the
     // image is a resource loaded from the host app's jar file.
     protected final void setImage( final BufferedImage bimage ) {
         // Add the image if there isn't one already loaded.
@@ -1077,7 +1077,7 @@ public class CartesianGraphicsChart extends CartesianChart {
             zoomToExtents();
             return;
         }
-        if ( ( zoomFactor < 1d ) && ( ( newWidth < 0.5d ) || ( newHeight < 0.5d ) ) ) {
+        if ( ( zoomFactor < 1.0d ) && ( ( newWidth < 0.5d ) || ( newHeight < 0.5d ) ) ) {
             return;
         }
 
@@ -1124,7 +1124,7 @@ public class CartesianGraphicsChart extends CartesianChart {
 
     // Zoom out by a factor of two.
     public final void zoomOut( final boolean useMousePosition ) {
-        zoom( 2d, useMousePosition || isContextMenuActive() );
+        zoom( 2.0d, useMousePosition || isContextMenuActive() );
     }
 
     // Restore the full zoom extents.

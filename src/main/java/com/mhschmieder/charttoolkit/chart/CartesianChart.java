@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020, 2021 Mark Schmieder
+ * Copyright (c) 2020, 2022 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -146,10 +146,10 @@ public abstract class CartesianChart extends Chart {
     }
 
     // The range of the data to be plotted.
-    protected double         xMin                      = 0d;
-    protected double         xMax                      = 0d;
-    protected double         yMin                      = 0d;
-    protected double         yMax                      = 0d;
+    protected double         xMin                      = 0.0d;
+    protected double         xMax                      = 0.0d;
+    protected double         yMin                      = 0.0d;
+    protected double         yMax                      = 0.0d;
 
     // The factor we pad by so that we don't plot points on the axes.
     private double           padding                   = 0.05d;
@@ -190,7 +190,7 @@ public abstract class CartesianChart extends Chart {
     private boolean          gridOn                    = true;
 
     /** @serial The scale applied to the auto-tic generated grid resolution. */
-    private double           gridScale                 = 1d;
+    private double           gridScale                 = 1.0d;
 
     /**
      * The starting positions of the x-axis and y-axis labels.
@@ -213,13 +213,13 @@ public abstract class CartesianChart extends Chart {
      * Scaling used for the vertical axis in plotting points. The units are
      * pixels/unit, where unit is the units of the Y axis.
      */
-    protected double         yScale                    = 1d;
+    protected double         yScale                    = 1.0d;
 
     /**
      * Scaling used for the horizontal axis in plotting points. The units are
      * pixels/unit, where unit is the units of the X axis.
      */
-    protected double         xScale                    = 1d;
+    protected double         xScale                    = 1.0d;
 
     /** @serial Metrics for titles and labels. */
     private int              labelHeight               = 2;
@@ -244,24 +244,24 @@ public abstract class CartesianChart extends Chart {
     private boolean          aspectRatioApplied        = false;
 
     /** @serial The user specified aspect ratio for the plot area. */
-    private double           aspectRatio               = 0d;
+    private double           aspectRatio               = 0.0d;
 
     /** @serial The x-axis and y-axis increments. */
-    private double           xStep                     = 1d;
-    private double           yStep                     = 1d;
+    private double           xStep                     = 1.0d;
+    private double           yStep                     = 1.0d;
 
     /** @serial The x-axis and y-axis starting points. */
-    private double           xStart                    = 1d;
-    private double           yStart                    = 1d;
+    private double           xStart                    = 1.0d;
+    private double           yStart                    = 1.0d;
 
     /**
      * @serial The range of the plot as labeled (multiply by 10^exp for actual
      *         range.
      */
-    private double           xTicMin                   = 0d;
-    private double           xTicMax                   = 0d;
-    private double           yTicMin                   = 0d;
-    private double           yTicMax                   = 0d;
+    private double           xTicMin                   = 0.0d;
+    private double           xTicMax                   = 0.0d;
+    private double           yTicMin                   = 0.0d;
+    private double           yTicMax                   = 0.0d;
 
     /**
      * @serial Indicator of whether the exponent is aligned with the tic labels.
@@ -270,8 +270,8 @@ public abstract class CartesianChart extends Chart {
     private boolean          yExpAligned               = false;
 
     /** @serial Scaling used in making tic marks. */
-    private double           yTicScale                 = 0d;
-    private double           xTicScale                 = 0d;
+    private double           yTicScale                 = 0.0d;
+    private double           xTicScale                 = 0.0d;
 
     /** @serial Font information. */
     private Font             labelFont;
@@ -292,7 +292,7 @@ public abstract class CartesianChart extends Chart {
     private int              gridCurJuke               = 0;
 
     // Used for log axes. Base of the grid.
-    private double           gridBase                  = 0d;
+    private double           gridBase                  = 0.0d;
 
     /** @serial The title and label strings. */
     private String           xLabel;
@@ -319,10 +319,10 @@ public abstract class CartesianChart extends Chart {
     private boolean          originalYRangeGiven       = false;
 
     // First values specified to setXRange() and setYRange().
-    private double           originalXLow              = 0d;
-    private double           originalXHigh             = 0d;
-    private double           originalYLow              = 0d;
-    private double           originalYHigh             = 0d;
+    private double           originalXLow              = 0.0d;
+    private double           originalXHigh             = 0.0d;
+    private double           originalYLow              = 0.0d;
+    private double           originalYHigh             = 0.0d;
 
     // Indicator of whether to override the computed maximum fraction digits.
     private boolean          maxFractionDigitsOverride = false;
@@ -425,11 +425,11 @@ public abstract class CartesianChart extends Chart {
 
         int bottomInset = chartInsets.bottom;
         if ( ( xExp != 0 ) && ( xTics == null ) ) {
-            // :NOTE: 5 pixel padding on the bottom
-            bottomInset = ( int ) Math.round( 0.5d * ( 3d * labelHeight ) ) + 5;
+            // NOTE: 5 pixel padding on the bottom
+            bottomInset = ( int ) Math.round( 0.5d * ( 3.0d * labelHeight ) ) + 5;
         }
 
-        // :NOTE: 5 pixel padding on the bottom.
+        // NOTE: 5 pixel padding on the bottom.
         if ( ( xLabel != null ) && ( bottomInset < ( labelHeight + 5 ) ) ) {
             bottomInset = labelHeight + 5;
         }
@@ -495,12 +495,12 @@ public abstract class CartesianChart extends Chart {
         // number of displayable Y-axis tics, but it is too difficult to find
         // a way to hold off since we need the tic width metrics here.
         if ( aspectRatioApplied ) {
-            if ( aspectRatio == 1d ) {
+            if ( aspectRatio == 1.0d ) {
                 final int dimension = Math.min( chartSize.width, chartSize.height );
                 chartSize.width = dimension;
                 chartSize.height = dimension;
             }
-            else if ( aspectRatio < 1d ) {
+            else if ( aspectRatio < 1.0d ) {
                 final double minWidth = Math.min( chartSize.height * aspectRatio, chartSize.width );
                 chartSize.width = ( int ) Math.round( minWidth );
                 chartSize.height = ( int ) Math.round( chartSize.width / aspectRatio );
@@ -644,7 +644,7 @@ public abstract class CartesianChart extends Chart {
         drawYAxisLabel( g2 );
     }
 
-    // :TODO: Re-factor these methods to break out the grid drawing.
+    // TODO: Re-factor these methods to break out the grid drawing.
     private final void drawAxesTics( final Graphics2D g2 ) {
         drawXAxisTics( g2 );
         drawYAxisTics( g2 );
@@ -824,7 +824,7 @@ public abstract class CartesianChart extends Chart {
 
                 // If the step is greater than 1, clamp it to 1 so that we draw
                 // the unlabeled grid lines for each integer interval.
-                final double tmpStep = ( xStep > 1d ) ? 1d : xStep;
+                final double tmpStep = ( xStep > 1.0d ) ? 1.0d : xStep;
 
                 // Recalculate the start using the new step.
                 xTmpStart = tmpStep * Math.ceil( xTicMin / tmpStep );
@@ -1038,7 +1038,7 @@ public abstract class CartesianChart extends Chart {
                 if ( unlabeledGrid.size() > 0 ) {
                     // If the step is greater than 1, clamp it to 1 so that we
                     // draw the unlabeled grid lines for each integer interval.
-                    final double tmpStep = ( yStep > 1d ) ? 1d : yStep;
+                    final double tmpStep = ( yStep > 1.0d ) ? 1.0d : yStep;
 
                     for ( double yPos =
                                       getNextGridStep( unlabeledGrid,
@@ -1128,7 +1128,7 @@ public abstract class CartesianChart extends Chart {
         // Number of x tic marks.
         // Need to start with a guess and converge on a solution here.
         numberOfXTics = 10;
-        xStep = 0d;
+        xStep = 0.0d;
         int numberOfFractionalDigits = 0;
         final int charWidth = ticFontMetrics.stringWidth( "8" );
         if ( xLog ) {
@@ -1262,12 +1262,12 @@ public abstract class CartesianChart extends Chart {
 
         // Handle the mantissa.
         final double fractionalPart = number % 1;
-        if ( number >= 0d ) {
+        if ( number >= 0.0d ) {
             if ( fractionalPart < 0.001 ) {
                 results = "1e" + results;
             }
             else {
-                results = getFormattedNumber( Math.pow( 10d, fractionalPart ),
+                results = getFormattedNumber( Math.pow( 10.0d, fractionalPart ),
                                               numberOfFractionalDigits );
             }
         }
@@ -1276,7 +1276,7 @@ public abstract class CartesianChart extends Chart {
                 results = "1e" + results;
             }
             else {
-                results = getFormattedNumber( Math.pow( 10d, ( fractionalPart * 10 ) ),
+                results = getFormattedNumber( Math.pow( 10.0d, ( fractionalPart * 10 ) ),
                                               numberOfFractionalDigits );
             }
         }
@@ -1553,12 +1553,12 @@ public abstract class CartesianChart extends Chart {
 
         final Vector< Double > grid = new Vector<>( 10 );
         // grid.addElement(Double.valueOf(0.0));
-        final double ratio = Math.pow( 10d, step );
+        final double ratio = Math.pow( 10.0d, step );
         int ngrid = 1;
         if ( labeled ) {
             // Set up the number of grid lines that will be labeled
             if ( ratio <= 3.5d ) {
-                if ( ratio > 2d ) {
+                if ( ratio > 2.0d ) {
                     ngrid = 2;
                 }
                 else if ( ratio > 1.26d ) {
@@ -1568,19 +1568,19 @@ public abstract class CartesianChart extends Chart {
                     ngrid = 10;
                 }
                 else {
-                    ngrid = ( int ) Math.rint( 1d / step );
+                    ngrid = ( int ) Math.rint( 1.0d / step );
                 }
             }
         }
         else {
             // Set up the number of grid lines that will not be labeled
-            if ( ratio > 10d ) {
+            if ( ratio > 10.0d ) {
                 ngrid = 1;
             }
-            else if ( ratio > 3d ) {
+            else if ( ratio > 3.0d ) {
                 ngrid = 2;
             }
-            else if ( ratio > 2d ) {
+            else if ( ratio > 2.0d ) {
                 ngrid = 5;
             }
             else if ( ratio > 1.125d ) {
@@ -1588,17 +1588,17 @@ public abstract class CartesianChart extends Chart {
             }
             else {
                 ngrid = 100;
-                // :NOTE: we should keep going here, but this increases the size
+                // NOTE: we should keep going here, but this increases the size
                 // of the grid array and slows everything down.
             }
         }
 
         int oldgridi = 0;
         for ( int i = 0; i < ngrid; i++ ) {
-            final double gridval = ( i / ngrid ) * 10d;
+            final double gridval = ( i / ngrid ) * 10.0d;
             double logval = MathConstants.LN10_SCALE * Math.log( gridval );
             if ( logval == Double.NEGATIVE_INFINITY ) {
-                logval = 0d;
+                logval = 0.0d;
             }
 
             // If oldgrid is not null, then do not draw lines that were already
@@ -1634,7 +1634,7 @@ public abstract class CartesianChart extends Chart {
 
         // gridCurJuke and gridBase are used in _gridStep();
         gridCurJuke = 0;
-        final double lowAdjusted = ( low == -0d ) ? 0d : low;
+        final double lowAdjusted = ( low == -0d ) ? 0.0d : low;
         gridBase = Math.floor( lowAdjusted );
         final double x = lowAdjusted - gridBase;
 
@@ -1866,7 +1866,7 @@ public abstract class CartesianChart extends Chart {
      */
     public void drawElements( final Graphics2D graphicsContext ) {
         // Draw the Cartesian Plot elements atop the background image.
-        // :NOTE: This method is sub-classed in order to take advantage of
+        // NOTE: This method is sub-classed in order to take advantage of
         // off-screen buffering for the entire hierarchy.
         drawChart( graphicsContext );
 
@@ -2071,11 +2071,11 @@ public abstract class CartesianChart extends Chart {
         double maxAdjusted = max;
         if ( min > max ) {
             minAdjusted = -1d;
-            maxAdjusted = 1d;
+            maxAdjusted = 1.0d;
         }
         else if ( min == max ) {
-            minAdjusted -= 1d;
-            maxAdjusted += 1d;
+            minAdjusted -= 1.0d;
+            maxAdjusted += 1.0d;
         }
 
         if ( xRangeGiven ) {
@@ -2095,7 +2095,7 @@ public abstract class CartesianChart extends Chart {
 
         // Use the exponent only if it's larger than 3.
         if ( xExp > 3 ) {
-            final double xs = 1d / Math.pow( 10d, xExp );
+            final double xs = 1.0d / Math.pow( 10.0d, xExp );
             xTicMin = xMin * xs;
             xTicMax = xMax * xs;
         }
@@ -2206,11 +2206,11 @@ public abstract class CartesianChart extends Chart {
         double maxAdjusted = max;
         if ( min > max ) {
             minAdjusted = -1d;
-            maxAdjusted = 1d;
+            maxAdjusted = 1.0d;
         }
         else if ( min == max ) {
-            minAdjusted -= 1d;
-            maxAdjusted += 1d;
+            minAdjusted -= 1.0d;
+            maxAdjusted += 1.0d;
         }
 
         if ( yRangeGiven ) {
@@ -2230,7 +2230,7 @@ public abstract class CartesianChart extends Chart {
 
         // Use the exponent only if it's larger than 3.
         if ( yExp > 3 ) {
-            final double ys = 1d / Math.pow( 10d, yExp );
+            final double ys = 1.0d / Math.pow( 10.0d, yExp );
             yTicMin = yMin * ys;
             yTicMax = yMax * ys;
         }

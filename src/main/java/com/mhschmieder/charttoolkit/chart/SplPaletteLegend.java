@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020, 2021 Mark Schmieder
+ * Copyright (c) 2020, 2022 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,11 +42,11 @@ public final class SplPaletteLegend extends CartesianGraphicsChart {
     private static final long   serialVersionUID       = 1816761465708022035L;
 
     // Declare default constants.
-    private static final double DIV_DEFAULT            = 6d;
+    private static final double DIV_DEFAULT            = 6.0d;
     private static final int    NUMBER_OF_DIVS_DEFAULT = 7;
     private static final double DYNAMIC_RANGE_DEFAULT  = DIV_DEFAULT * NUMBER_OF_DIVS_DEFAULT;
 
-    private static final double MAG_MAX_DEFAULT        = 0d;
+    private static final double MAG_MAX_DEFAULT        = 0.0d;
     private static final double MAG_MIN_DEFAULT        = MAG_MAX_DEFAULT - DYNAMIC_RANGE_DEFAULT;
 
     // Declare dynamic range and div.
@@ -54,7 +54,7 @@ public final class SplPaletteLegend extends CartesianGraphicsChart {
     private int                 _numberOfDivs;
     private double              _dynamicRange;
 
-    // Declare minimum and maximum magnitudes (must be valid 6dB divs)
+    // Declare minimum and maximum magnitudes (must be valid 6.0dB divs)
     private double              _magMax;
     private double              _magMin;
 
@@ -114,13 +114,13 @@ public final class SplPaletteLegend extends CartesianGraphicsChart {
         setYLabel( "Amplitude" );
         setYUnits( "dB" );
         setGrid( false );
-        setPadding( 0d );
+        setPadding( 0.0d );
 
         // Set a default range, just so it has labels if displayed without a
         // prediction.
-        setXRange( 0d, 1d );
-        addXTic( "", 0d );
-        addXTic( "", 1d );
+        setXRange( 0.0d, 1.0d );
+        addXTic( "", 0.0d );
+        addXTic( "", 1.0d );
 
         // NOTE: We must guarantee that the palette has a roughly 1 to 10
         // aspect ratio, since it can't be auto-scaled properly (no X-axis).
@@ -140,7 +140,7 @@ public final class SplPaletteLegend extends CartesianGraphicsChart {
         _numberOfDivs = ( int ) Math.floor( _dynamicRange / _div );
 
         clearYTics();
-        setYRange( -_dynamicRange, 0d );
+        setYRange( -_dynamicRange, 0.0d );
 
         // Use an inclusive range to cover the entire image height (the
         // x-axis is unlabeled, so there's no danger of label collision).

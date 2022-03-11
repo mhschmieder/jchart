@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020, 2021 Mark Schmieder
+ * Copyright (c) 2020, 2022 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -171,13 +171,13 @@ public class SemiLogRPolarChart extends Chart {
      * and <tt>yMin</tt>, plus the scale factors <tt>xScale</tt> and
      * <tt>yScale</tt>.
      */
-    public double       xMin               = 0d;
+    public double       xMin               = 0.0d;
 
     /**
      * This variable contains the logarithm of the minimum user-defined x value
      * to map into pixels within the "plot" area.
      */
-    public double       xMinLog            = 0d;
+    public double       xMinLog            = 0.0d;
 
     /**
      * This variable contains the minimum user-defined y value to map into
@@ -186,13 +186,13 @@ public class SemiLogRPolarChart extends Chart {
      * and <tt>yMin</tt>, plus the scale factors <tt>xScale</tt> and
      * <tt>yScale</tt>.
      */
-    public double       yMin               = 0d;
+    public double       yMin               = 0.0d;
 
     /**
      * This variable contains the logarithm of the minimum user-defined y value
      * to map into pixels within the "plot" area.
      */
-    public double       yMinLog            = 0d;
+    public double       yMinLog            = 0.0d;
 
     /**
      * This variable contains the maximum user-defined x value to map into
@@ -201,13 +201,13 @@ public class SemiLogRPolarChart extends Chart {
      * and <tt>yMin</tt>, plus the scale factors <tt>xScale</tt> and
      * <tt>yScale</tt>.
      */
-    public double       xMax               = 0d;
+    public double       xMax               = 0.0d;
 
     /**
      * This variable contains the logarithm of the maximum user-defined x value
      * to map into pixels within the "plot" area.
      */
-    public double       xMaxLog            = 0d;
+    public double       xMaxLog            = 0.0d;
 
     /**
      * This variable contains the maximum user-defined y value to map into
@@ -216,13 +216,13 @@ public class SemiLogRPolarChart extends Chart {
      * and <tt>yMin</tt>, plus the scale factors <tt>xScale</tt> and
      * <tt>yScale</tt>.
      */
-    public double       yMax               = 0d;
+    public double       yMax               = 0.0d;
 
     /**
      * This variable contains the logarithm of the maximum user-defined y value
      * to map into pixels within the "plot" area.
      */
-    public double       yMaxLog            = 0d;
+    public double       yMaxLog            = 0.0d;
 
     /**
      * This variable contains the scale factor for mapping the user-defined
@@ -328,28 +328,28 @@ public class SemiLogRPolarChart extends Chart {
         int tics; // Number of tic marks
 
         // Compute fit based on desired tick increment passed in.
-        // :NOTE: In case of uniform data sets or other anomalies, we must
+        // NOTE: In case of uniform data sets or other anomalies, we must
         // ensure that the plot range goes to the first positive tick increment.
         // This, however, needs to be more modular so that it does not assume
         // logged data (once we merge the two calcPolarCircles methods again).
-        // :NOTE: If a non-zero dynamic range was passed it, we use it to adjust
+        // NOTE: If a non-zero dynamic range was passed it, we use it to adjust
         // the display range, as this makes the plots consistent regardless of
         // the actual dynamic range of the data, for quick comparisons (that is,
         // uniform scale!).
         low = ticinc * Math.floor( ymin / ticinc );
         high = ticinc * Math.ceil( ymax / ticinc );
-        while ( high <= 0d ) {
+        while ( high <= 0.0d ) {
             high += ticinc;
         }
-        if ( ticrange != 0d ) {
+        if ( ticrange != 0.0d ) {
             low = high - ticrange;
         }
         tics = ( int ) Math.round( ( high - low ) / ticinc ) + 1;
 
         // Adjust the data bounds such that the rounded lower bound is at zero,
         // since polar plotting assumes positive coordinates.
-        if ( low < 0d ) {
-            yMin = 0d;
+        if ( low < 0.0d ) {
+            yMin = 0.0d;
             yMax = high - low;
         }
         else {
@@ -404,13 +404,13 @@ public class SemiLogRPolarChart extends Chart {
         g2.setStroke( chartBoundaryStroke );
 
         // Add the bounding circle.
-        // :NOTE: We _changed to yMax and y-scaling on the x-values, to ensure
+        // NOTE: We _changed to yMax and y-scaling on the x-values, to ensure
         // circles vs. ellipses. This should be the right thing to do, because
         // only the y-values project into polar coordinates.
         final double x1 = yMax * yScale;
         final double y1 = yMax * yScale;
-        final double w1 = 2d * yMax * yScale;
-        final double h1 = 2d * yMax * yScale;
+        final double w1 = 2.0d * yMax * yScale;
+        final double h1 = 2.0d * yMax * yScale;
         final Ellipse2D ellipse = new Ellipse2D.Double( ( ulx
                 + Math.round( 0.5d * chartSize.width ) )
                 - x1, ( uly + Math.round( 0.5d * chartSize.height ) ) - y1, w1, h1 );
@@ -432,15 +432,15 @@ public class SemiLogRPolarChart extends Chart {
         g2.setStroke( gridStroke );
 
         // Draw the radial lines.
-        // :NOTE: We _changed to yMax and y-scaling on the x-values, to ensure
+        // NOTE: We _changed to yMax and y-scaling on the x-values, to ensure
         // circles vs. ellipses.
-        // :NOTE: This is a bit of a hack, to select 1/4 to 5/8 radial distance
+        // NOTE: This is a bit of a hack, to select 1/4 to 5/8 radial distance
         // for the switch-over from 5 to 10 degree increments, vs. 1/3 to 2/3
         // radial distance.
-        final double outerRatio = ( ( int ) Math.IEEEremainder( ( yTics.length - 1 ), 4d ) == 0 )
+        final double outerRatio = ( ( int ) Math.IEEEremainder( ( yTics.length - 1 ), 4.0d ) == 0 )
             ? MathConstants.FIVE_EIGHTHS
             : MathConstants.TWO_THIRDS;
-        final double innerRatio = ( ( int ) Math.IEEEremainder( ( yTics.length - 1 ), 4d ) == 0 )
+        final double innerRatio = ( ( int ) Math.IEEEremainder( ( yTics.length - 1 ), 4.0d ) == 0 )
             ? MathConstants.ONE_FOURTH
             : MathConstants.ONE_THIRD;
 
@@ -500,8 +500,8 @@ public class SemiLogRPolarChart extends Chart {
                                                                  ( uly + ( 0.5d
                                                                          * chartSize.height ) )
                                                                          - ( yTics[ i ] * yScale ),
-                                                                 2d * yTics[ i ] * yScale,
-                                                                 2d * yTics[ i ] * yScale );
+                                                                 2.0d * yTics[ i ] * yScale,
+                                                                 2.0d * yTics[ i ] * yScale );
             g2.draw( ellipse );
         }
 
@@ -706,7 +706,7 @@ public class SemiLogRPolarChart extends Chart {
             final int stringHeight = fontMetrics.getHeight();
             final int xPos = ulx + ( int ) Math.round( 0.5d * ( chartSize.width - stringWidth ) );
             final int yPos = uly + chartSize.height
-                    + ( int ) Math.round( 0.5d * ( 3d * stringHeight ) );
+                    + ( int ) Math.round( 0.5d * ( 3.0d * stringHeight ) );
             graphicsContext.drawString( xLabel, xPos, yPos );
 
             // Get x-axis units font info.
@@ -746,7 +746,7 @@ public class SemiLogRPolarChart extends Chart {
     }
 
     public final float getGridRange() {
-        // :NOTE: Grid Range x and y are currently linked.
+        // NOTE: Grid Range x and y are currently linked.
         return gridRangeX;
     }
 
@@ -1040,7 +1040,7 @@ public class SemiLogRPolarChart extends Chart {
         // TODO: Determine if we also need to clip beyond +6dB.
         // NOTE: We copy to a local array, so that repeated calls to this
         // method by repaint() / etc. do not cause cumulative error.
-        if ( xMin <= 0d ) {
+        if ( xMin <= 0.0d ) {
             xValuesNormalized = new double[ xValues.length ];
             for ( int j = 0; j < xValues.length; j++ ) {
                 final double curval = xValues[ j ];

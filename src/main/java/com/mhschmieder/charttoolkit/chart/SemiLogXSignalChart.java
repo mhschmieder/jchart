@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020, 2021 Mark Schmieder
+ * Copyright (c) 2020, 2022 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -123,7 +123,7 @@ public class SemiLogXSignalChart extends CartesianDataChart {
                             final int lastIndex ) {
         final double xLog[] = new double[ x.length ];
         for ( int i = 0; i < x.length; i++ ) {
-            xLog[ i ] = ( x[ i ] > 0d ) ? Math.log10( x[ i ] ) : Double.NEGATIVE_INFINITY;
+            xLog[ i ] = ( x[ i ] > 0.0d ) ? Math.log10( x[ i ] ) : Double.NEGATIVE_INFINITY;
         }
 
         super.setDataSet( dataSetIndex, xLog, y, firstIndex, lastIndex );
