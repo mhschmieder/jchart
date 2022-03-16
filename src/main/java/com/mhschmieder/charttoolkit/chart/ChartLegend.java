@@ -49,9 +49,9 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
-import com.mhschmieder.guitoolkit.SpringLayoutUtilities;
 import com.mhschmieder.guitoolkit.border.BorderUtilities;
 import com.mhschmieder.guitoolkit.component.VectorizationXPanel;
+import com.mhschmieder.guitoolkit.layout.SpringLayoutUtilities;
 
 /**
  * {@code ChartLegend} is a simple legend for chart colors, for using with chart

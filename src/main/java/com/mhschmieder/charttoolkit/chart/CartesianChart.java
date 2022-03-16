@@ -48,7 +48,7 @@ import javax.swing.ImageIcon;
 
 import com.mhschmieder.commonstoolkit.math.MathConstants;
 import com.mhschmieder.commonstoolkit.math.MathExt;
-import com.mhschmieder.graphicstoolkit.graphics.HighlightStroke;
+import com.mhschmieder.graphicstoolkit.render.HighlightStroke;
 
 /**
  * A labeled box for signal plots and other plots.
