@@ -67,14 +67,17 @@ import com.mhschmieder.physicstoolkit.UnitConversion;
  * The CartesianGraphicsChart class is derived directly from the CartesianChart
  * container class, since it doesn't plot data points but rather maps raster
  * images and vector graphics to spatial coordinates.
+ * 
+ * TODO: Make another layer to the class hierarchy to simplify what is needed
+ * for stuff like SPL Palette.
+ * 
+ * NOTE: All coordinate based variables are cached in meters; only the plot
+ * grid overlay and tic marks are converted to display units.
+ * 
+ * NOTE: There is now an exception as the Plot Boundary is stored in display
+ * units due to data binding between the cached model and the GUI in the new
+ * JavaFX Drawing Limits and Region properties windows.
  */
-// TODO: Make another layer to the class hierarchy to simplify what is needed
-// for stuff like SPL Palette.
-// NOTE: All coordinate based variables are cached in meters; only the plot
-// grid overlay and tic marks are converted to display units.
-// NOTE: There is now an exception as the Plot Boundary is stored in display
-// units due to data binding between the cached model and the GUI in the new
-// JavaFX Drawing Limits and Region properties windows.
 public class CartesianGraphicsChart extends CartesianChart {
     /**
      *
