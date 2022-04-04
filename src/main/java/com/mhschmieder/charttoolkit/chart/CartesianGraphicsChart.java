@@ -57,11 +57,11 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import com.mhschmieder.commonstoolkit.math.GridResolution;
-import com.mhschmieder.commonstoolkit.physics.DistanceUnit;
-import com.mhschmieder.commonstoolkit.physics.UnitConversion;
 import com.mhschmieder.graphicstoolkit.color.ColorConstants;
 import com.mhschmieder.graphicstoolkit.geometry.AttributedShape;
 import com.mhschmieder.graphicstoolkit.geometry.AttributedShapeContainer;
+import com.mhschmieder.physicstoolkit.DistanceUnit;
+import com.mhschmieder.physicstoolkit.UnitConversion;
 
 /**
  * The CartesianGraphicsChart class is derived directly from the CartesianChart
