@@ -40,8 +40,8 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mhschmieder.commonstoolkit.math.MathExt;
 import com.mhschmieder.graphicstoolkit.geometry.GeometryUtilities;
+import com.mhschmieder.mathtoolkit.MathExt;
 
 // The CartesianDataChart class primarily adds methods and data associated with
 // plots that are a function of a variable along the x-axis producing a value

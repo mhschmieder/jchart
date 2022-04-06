@@ -61,7 +61,7 @@ public class SemiLogXSignalChart extends CartesianDataChart {
     protected final void addXTicInUserUnits( final String label,
                                              final double positionInUserUnits ) {
         // Since the X Axis is logged, the position must also be logged.
-        final double positionInLogUserUnits = Math.log10( positionInUserUnits );
+        final double positionInLogUserUnits = StrictMath.log10( positionInUserUnits );
         addXTic( label, positionInLogUserUnits );
     }
 
@@ -123,7 +123,7 @@ public class SemiLogXSignalChart extends CartesianDataChart {
                             final int lastIndex ) {
         final double xLog[] = new double[ x.length ];
         for ( int i = 0; i < x.length; i++ ) {
-            xLog[ i ] = ( x[ i ] > 0.0d ) ? Math.log10( x[ i ] ) : Double.NEGATIVE_INFINITY;
+            xLog[ i ] = ( x[ i ] > 0.0d ) ? StrictMath.log10( x[ i ] ) : Double.NEGATIVE_INFINITY;
         }
 
         super.setDataSet( dataSetIndex, xLog, y, firstIndex, lastIndex );
@@ -131,8 +131,8 @@ public class SemiLogXSignalChart extends CartesianDataChart {
 
     protected final void setXRangeInUserUnits( final double xMin, final double xMax ) {
         // Since the X Axis is logged, the values must also be logged.
-        final double xMinInLogUserUnits = Math.log10( xMin );
-        final double xMaxInLogUserUnits = Math.log10( xMax );
+        final double xMinInLogUserUnits = StrictMath.log10( xMin );
+        final double xMaxInLogUserUnits = StrictMath.log10( xMax );
 
         setXRange( xMinInLogUserUnits, xMaxInLogUserUnits );
     }
@@ -147,8 +147,8 @@ public class SemiLogXSignalChart extends CartesianDataChart {
                                        final double xMax,
                                        final double yMax ) {
         // Since the X Axis is logged the values must also be logged.
-        final double xMinInLogUserUnits = Math.log10( xMin );
-        final double xMaxInLogUserUnits = Math.log10( xMax );
+        final double xMinInLogUserUnits = StrictMath.log10( xMin );
+        final double xMaxInLogUserUnits = StrictMath.log10( xMax );
 
         zoom( xMinInLogUserUnits, ymin, xMaxInLogUserUnits, yMax );
     }

@@ -45,9 +45,9 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
 
-import com.mhschmieder.commonstoolkit.math.MathConstants;
 import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
 import com.mhschmieder.graphicstoolkit.font.FontUtilities;
+import com.mhschmieder.mathtoolkit.MathConstants;
 
 /**
  * Class <code>SemiLogRPolarChart</code> contains methods to plot <i>(x,y)</i>

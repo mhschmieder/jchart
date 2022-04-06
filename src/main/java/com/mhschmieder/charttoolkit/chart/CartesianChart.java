@@ -46,9 +46,9 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
-import com.mhschmieder.commonstoolkit.math.MathConstants;
-import com.mhschmieder.commonstoolkit.math.MathExt;
 import com.mhschmieder.graphicstoolkit.render.HighlightStroke;
+import com.mhschmieder.mathtoolkit.MathConstants;
+import com.mhschmieder.mathtoolkit.MathExt;
 
 /**
  * A labeled box for signal plots and other plots.
@@ -415,7 +415,7 @@ public abstract class CartesianChart extends Chart {
         // Number of vertical tic marks depends on the height of the font for
         // labeling tics and the height of the window.
         labelHeight = ticFontMetrics.getHeight();
-        halfLabelHeight = ( int ) Math.round( 0.5d * labelHeight );
+        halfLabelHeight = ( int ) StrictMath.round( 0.5d * labelHeight );
 
         // Determine scaling annotation for x axis.
         if ( xLog ) {
@@ -426,7 +426,7 @@ public abstract class CartesianChart extends Chart {
         int bottomInset = chartInsets.bottom;
         if ( ( xExp != 0 ) && ( xTics == null ) ) {
             // NOTE: 5 pixel padding on the bottom
-            bottomInset = ( int ) Math.round( 0.5d * ( 3.0d * labelHeight ) ) + 5;
+            bottomInset = ( int ) StrictMath.round( 0.5d * ( 3.0d * labelHeight ) ) + 5;
         }
 
         // NOTE: 5 pixel padding on the bottom.
@@ -445,7 +445,7 @@ public abstract class CartesianChart extends Chart {
         final boolean chartTitleValid = ( chartTitle != null ) && !chartTitle.trim().isEmpty();
         final int stringHeight = titleFontMetrics.getHeight();
         uly = ( chartTitleValid && ( yExp == 0 ) )
-            ? ( int ) Math.round( 0.5 * stringHeight ) + 2 + chartInsets.top
+            ? ( int ) StrictMath.round( 0.5 * stringHeight ) + 2 + chartInsets.top
             : chartInsets.top;
 
         // Compute the space needed around the chart, starting with vertical.
@@ -466,7 +466,7 @@ public abstract class CartesianChart extends Chart {
             while ( labels.hasMoreElements() ) {
                 final String label = labels.nextElement();
                 final int labelWidth = ticFontMetrics.stringWidth( label );
-                widestTicLabel = Math.max( widestTicLabel, labelWidth );
+                widestTicLabel = StrictMath.max( widestTicLabel, labelWidth );
             }
         }
 
@@ -496,20 +496,21 @@ public abstract class CartesianChart extends Chart {
         // a way to hold off since we need the tic width metrics here.
         if ( aspectRatioApplied ) {
             if ( aspectRatio == 1.0d ) {
-                final int dimension = Math.min( chartSize.width, chartSize.height );
+                final int dimension = StrictMath.min( chartSize.width, chartSize.height );
                 chartSize.width = dimension;
                 chartSize.height = dimension;
             }
             else if ( aspectRatio < 1.0d ) {
-                final double minWidth = Math.min( chartSize.height * aspectRatio, chartSize.width );
-                chartSize.width = ( int ) Math.round( minWidth );
-                chartSize.height = ( int ) Math.round( chartSize.width / aspectRatio );
+                final double minWidth = StrictMath.min( chartSize.height * aspectRatio,
+                                                        chartSize.width );
+                chartSize.width = ( int ) StrictMath.round( minWidth );
+                chartSize.height = ( int ) StrictMath.round( chartSize.width / aspectRatio );
             }
             else {
-                final double minHeight =
-                                       Math.min( chartSize.width / aspectRatio, chartSize.height );
-                chartSize.height = ( int ) Math.round( minHeight );
-                chartSize.width = ( int ) Math.round( chartSize.height * aspectRatio );
+                final double minHeight = StrictMath.min( chartSize.width / aspectRatio,
+                                                         chartSize.height );
+                chartSize.height = ( int ) StrictMath.round( minHeight );
+                chartSize.width = ( int ) StrictMath.round( chartSize.height * aspectRatio );
             }
 
             // Readjust the lower right corner.
@@ -2091,11 +2092,11 @@ public abstract class CartesianChart extends Chart {
 
         // Find the exponent for the largest magnitude x value.
         final double largest = Math.max( Math.abs( xMin ), Math.abs( xMax ) );
-        xExp = ( int ) Math.floor( Math.log10( largest ) );
+        xExp = ( int ) Math.floor( StrictMath.log10( largest ) );
 
         // Use the exponent only if it's larger than 3.
         if ( xExp > 3 ) {
-            final double xs = 1.0d / Math.pow( 10.0d, xExp );
+            final double xs = 1.0d / StrictMath.pow( 10.0d, xExp );
             xTicMin = xMin * xs;
             xTicMax = xMax * xs;
         }
@@ -2225,12 +2226,12 @@ public abstract class CartesianChart extends Chart {
         }
 
         // Find the exponent for the largest magnitude y value.
-        final double largest = Math.max( Math.abs( yMin ), Math.abs( yMax ) );
-        yExp = ( int ) Math.floor( Math.log( largest ) * MathConstants.LN10_SCALE );
+        final double largest = StrictMath.max( Math.abs( yMin ), StrictMath.abs( yMax ) );
+        yExp = ( int ) StrictMath.floor( StrictMath.log10( largest ) );
 
         // Use the exponent only if it's larger than 3.
         if ( yExp > 3 ) {
-            final double ys = 1.0d / Math.pow( 10.0d, yExp );
+            final double ys = 1.0d / StrictMath.pow( 10.0d, yExp );
             yTicMin = yMin * ys;
             yTicMax = yMax * ys;
         }
