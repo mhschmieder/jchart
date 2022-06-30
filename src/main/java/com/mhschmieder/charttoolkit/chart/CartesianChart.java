@@ -1268,7 +1268,7 @@ public abstract class CartesianChart extends Chart {
                 results = "1e" + results;
             }
             else {
-                results = getFormattedNumber( Math.pow( 10.0d, fractionalPart ),
+                results = getFormattedNumber( StrictMath.pow( 10.0d, fractionalPart ),
                                               numberOfFractionalDigits );
             }
         }
@@ -1277,7 +1277,7 @@ public abstract class CartesianChart extends Chart {
                 results = "1e" + results;
             }
             else {
-                results = getFormattedNumber( Math.pow( 10.0d, ( fractionalPart * 10 ) ),
+                results = getFormattedNumber( StrictMath.pow( 10.0d, ( fractionalPart * 10 ) ),
                                               numberOfFractionalDigits );
             }
         }
@@ -1554,7 +1554,7 @@ public abstract class CartesianChart extends Chart {
 
         final Vector< Double > grid = new Vector<>( 10 );
         // grid.addElement(Double.valueOf(0.0));
-        final double ratio = Math.pow( 10.0d, step );
+        final double ratio = StrictMath.pow( 10.0d, step );
         int ngrid = 1;
         if ( labeled ) {
             // Set up the number of grid lines that will be labeled
@@ -1597,7 +1597,7 @@ public abstract class CartesianChart extends Chart {
         int oldgridi = 0;
         for ( int i = 0; i < ngrid; i++ ) {
             final double gridval = ( i / ngrid ) * 10.0d;
-            double logval = MathConstants.LN10_SCALE * Math.log( gridval );
+            double logval = StrictMath.log10( gridval );
             if ( logval == Double.NEGATIVE_INFINITY ) {
                 logval = 0.0d;
             }
@@ -2107,7 +2107,7 @@ public abstract class CartesianChart extends Chart {
             // NOTE: Even this can result in large tic labels, so we are
             // disabling negative exponents for now.
             // double xdiff = Math.abs(xMax - xMin);
-            // xExp = (int) Math.floor(Math.log(xdiff)*_LOG10SCALE);
+            // xExp = (int) Math.floor(StrictMath.log10(xdiff));
 
             // Use the exponent only if it's smaller than -1. This doesn't cover
             // the worst case scenario of a single tic separating two values
@@ -2115,7 +2115,7 @@ public abstract class CartesianChart extends Chart {
             // confusing as it results in large magnitude tic labels. This seems
             // a good compromise solution.
             // if (xExp < -1) {
-            // double xs = 1.0/Math.pow(10.0, (double)xExp);
+            // double xs = 1.0/StrictMath.pow(10.0, (double)xExp);
             // xTicMin = xMin*xs;
             // xTicMax = xMax*xs;
             // } else {
@@ -2242,7 +2242,7 @@ public abstract class CartesianChart extends Chart {
             // NOTE: Even this can result in large tic labels, so we
             // are disabling negative exponents for now.
             // double yDiff = Math.abs(yMax - yMin);
-            // yExp = (int) Math.floor(Math.log(yDiff)*_LOG10SCALE);
+            // yExp = (int) Math.floor(StrictMath.log10(yDiff));
 
             // Use the exponent only if it's smaller than -1. This doesn't cover
             // the worst case scenario of a single tic separating two values
@@ -2250,7 +2250,7 @@ public abstract class CartesianChart extends Chart {
             // confusing as it results in large magnitude tic labels. This seems
             // a good compromise solution.
             // if (yExp < -1) {
-            // double ys = 1.0/Math.pow(10.0, (double)yExp);
+            // double ys = 1.0/StrictMath.pow(10.0, (double)yExp);
             // yTicMin = yMin*ys;
             // yTicMax = yMax*ys;
             // } else {
