@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mhschmieder.graphicstoolkit.geometry.GeometryUtilities;
-import com.mhschmieder.mathtoolkit.MathExt;
 
 // The CartesianDataChart class primarily adds methods and data associated with
 // plots that are a function of a variable along the x-axis producing a value
@@ -672,7 +671,7 @@ public abstract class CartesianDataChart extends CartesianChart {
             int x = getUlx();
             int y = getUly();
             for ( int i = 0; i < numRows; i++ ) {
-                x = ( MathExt.mod( i, 2 ) == 0 ) ? getUlx() : getUlx() + blankingWidth;
+                x = ( ( i % 2 ) == 0 ) ? getUlx() : getUlx() + blankingWidth;
                 for ( int j = 0; j < numCols; j++ ) {
                     g2.drawImage( watermarkImage, x, y, null );
                     x += watermarkWidth + blankingWidth;
