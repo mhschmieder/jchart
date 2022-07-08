@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.chart;
+package com.mhschmieder.charttoolkit.layout;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -40,7 +40,9 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mhschmieder.graphicstoolkit.geometry.GeometryUtilities;
+import com.mhschmieder.charttoolkit.chart.ChartType;
+import com.mhschmieder.charttoolkit.chart.ChartUtilities;
+import com.mhschmieder.graphicstoolkit.shape.ShapeUtilities;
 
 // The CartesianDataChart class primarily adds methods and data associated with
 // plots that are a function of a variable along the x-axis producing a value
@@ -299,7 +301,7 @@ public abstract class CartesianDataChart extends CartesianChart {
             // their equivalents) in the format-specific overrides of the draw()
             // method from each format's specialized version of Graphics2D.
             final GeneralPath path =
-                                   GeometryUtilities.makePolyline( xCoordinatesTransformed,
+                                   ShapeUtilities.makePolyline( xCoordinatesTransformed,
                                                                    yCoordinatesTransformed,
                                                                    numberOfCoordinatesTransformed );
             graphicsContext.draw( path );
@@ -313,7 +315,7 @@ public abstract class CartesianDataChart extends CartesianChart {
                 yCoordinatesRounded[ i ] = ( int ) Math.round( yCoordinatesTransformed[ i ] );
             }
             final GeneralPath path =
-                                   GeometryUtilities.makePolyline( xCoordinatesRounded,
+                                   ShapeUtilities.makePolyline( xCoordinatesRounded,
                                                                    yCoordinatesRounded,
                                                                    numberOfCoordinatesTransformed );
             graphicsContext.draw( path );

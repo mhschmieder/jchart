@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.chart;
+package com.mhschmieder.charttoolkit.layout;
 
 import java.awt.Color;
 import java.awt.Graphics;

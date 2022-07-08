@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.chart;
+package com.mhschmieder.charttoolkit.layout;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -37,6 +37,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 
+import com.mhschmieder.charttoolkit.chart.ChartUtilities;
 import com.mhschmieder.graphicstoolkit.font.FontUtilities;
 import com.mhschmieder.guitoolkit.component.VectorizationXPanel;
 

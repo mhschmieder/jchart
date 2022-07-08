@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.chart;
+package com.mhschmieder.charttoolkit.layout;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -56,10 +56,10 @@ import java.text.NumberFormat;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+import com.mhschmieder.charttoolkit.chart.GridResolution;
 import com.mhschmieder.graphicstoolkit.color.ColorConstants;
-import com.mhschmieder.graphicstoolkit.geometry.AttributedShape;
-import com.mhschmieder.graphicstoolkit.geometry.AttributedShapeContainer;
-import com.mhschmieder.mathtoolkit.geometry.GridResolution;
+import com.mhschmieder.graphicstoolkit.shape.AttributedShape;
+import com.mhschmieder.graphicstoolkit.shape.AttributedShapeContainer;
 import com.mhschmieder.physicstoolkit.DistanceUnit;
 import com.mhschmieder.physicstoolkit.UnitConversion;
 
@@ -138,7 +138,7 @@ public class CartesianGraphicsChart extends CartesianChart {
     private Rectangle2D              _imageBounds;
 
     // Declare variable to keep track of the current grid resolution (default to
-    // grid ff).
+    // grid off).
     private GridResolution           _gridResolution         = GridResolution.OFF;
 
     // Declare conversion factors for display of (possibly zoomed) image.

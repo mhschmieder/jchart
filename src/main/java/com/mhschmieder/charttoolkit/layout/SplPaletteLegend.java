@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/fxguitoolkit
  */
-package com.mhschmieder.charttoolkit.chart;
+package com.mhschmieder.charttoolkit.layout;
 
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;

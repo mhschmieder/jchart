@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.chart;
+package com.mhschmieder.charttoolkit.layout;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -48,7 +48,7 @@ import javax.swing.ImageIcon;
 
 import com.mhschmieder.graphicstoolkit.render.HighlightStroke;
 import com.mhschmieder.mathtoolkit.MathConstants;
-import com.mhschmieder.mathtoolkit.MathExt;
+import com.mhschmieder.mathtoolkit.MathUtilities;
 
 /**
  * A labeled box for signal plots and other plots.
@@ -568,7 +568,7 @@ public abstract class CartesianChart extends Chart {
 
     private void autoXTics() {
         // Figure out how many digits after the decimal point will be used.
-        final int numberOfFractionalDigits = MathExt.getNumberOfFractionalDigits( xStep );
+        final int numberOfFractionalDigits = MathUtilities.getNumberOfFractionalDigits( xStep );
 
         // NOTE: The following disables first tic. Not a good idea?
         // if (xStart == xMin) { xStart += xStep };
@@ -594,7 +594,7 @@ public abstract class CartesianChart extends Chart {
 
     private void autoYTics() {
         // Figure out how many digits after the decimal point will be used.
-        final int numberOfFractionalDigits = MathExt.getNumberOfFractionalDigits( yStep );
+        final int numberOfFractionalDigits = MathUtilities.getNumberOfFractionalDigits( yStep );
 
         // NOTE: The following disables first tic. Not a good idea?
         // if (yStart == yMin) { yStart += yStep };
@@ -1140,14 +1140,14 @@ public abstract class CartesianChart extends Chart {
             // Limit to 10 iterations
             int count = 0;
             while ( count++ <= 10 ) {
-                xStep = MathExt.roundUp( ( xTicMax - xTicMin ) / numberOfXTics );
+                xStep = MathUtilities.roundUp( ( xTicMax - xTicMin ) / numberOfXTics );
 
                 // Compute the width of a label for this xStep
-                numberOfFractionalDigits = MathExt.getNumberOfFractionalDigits( xStep );
+                numberOfFractionalDigits = MathUtilities.getNumberOfFractionalDigits( xStep );
 
                 // Number of integer digits is the maximum of two end points
-                int intdigits = MathExt.getNumberOfIntegerDigits( xTicMax );
-                final int inttemp = MathExt.getNumberOfIntegerDigits( xTicMin );
+                int intdigits = MathUtilities.getNumberOfIntegerDigits( xTicMax );
+                final int inttemp = MathUtilities.getNumberOfIntegerDigits( xTicMin );
                 if ( intdigits < inttemp ) {
                     intdigits = inttemp;
                 }
@@ -1174,7 +1174,7 @@ public abstract class CartesianChart extends Chart {
         numberOfXTics = ( int ) Math.floor( numberOfXTics / gridScale );
 
         // Compute x increment.
-        xStep = MathExt.roundUp( ( xTicMax - xTicMin ) / numberOfXTics );
+        xStep = MathUtilities.roundUp( ( xTicMax - xTicMin ) / numberOfXTics );
 
         // Compute x starting point so it is a multiple of xStep.
         xStart = xStep * Math.ceil( xTicMin / xStep );
@@ -1206,7 +1206,7 @@ public abstract class CartesianChart extends Chart {
         numberOfYTics = ( int ) Math.floor( numberOfYTics / gridScale );
 
         // Compute y increment.
-        yStep = MathExt.roundUp( ( yTicMax - yTicMin ) / numberOfYTics );
+        yStep = MathUtilities.roundUp( ( yTicMax - yTicMin ) / numberOfYTics );
 
         // Compute y starting point so it is a multiple of yStep.
         yStart = yStep * Math.ceil( yTicMin / yStep );
