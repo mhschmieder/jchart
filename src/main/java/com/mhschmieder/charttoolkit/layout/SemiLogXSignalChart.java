@@ -32,6 +32,8 @@ package com.mhschmieder.charttoolkit.layout;
 
 import java.text.NumberFormat;
 
+import org.apache.commons.math3.util.FastMath;
+
 // TODO: remove the need for this semi-log-x subclass and find a way to better
 // flag that behavior higher up.
 public class SemiLogXSignalChart extends CartesianDataChart {
@@ -61,7 +63,7 @@ public class SemiLogXSignalChart extends CartesianDataChart {
     protected final void addXTicInUserUnits( final String label,
                                              final double positionInUserUnits ) {
         // Since the X Axis is logged, the position must also be logged.
-        final double positionInLogUserUnits = StrictMath.log10( positionInUserUnits );
+        final double positionInLogUserUnits = FastMath.log10( positionInUserUnits );
         addXTic( label, positionInLogUserUnits );
     }
 
@@ -123,7 +125,7 @@ public class SemiLogXSignalChart extends CartesianDataChart {
                             final int lastIndex ) {
         final double xLog[] = new double[ x.length ];
         for ( int i = 0; i < x.length; i++ ) {
-            xLog[ i ] = ( x[ i ] > 0.0d ) ? StrictMath.log10( x[ i ] ) : Double.NEGATIVE_INFINITY;
+            xLog[ i ] = ( x[ i ] > 0.0d ) ? FastMath.log10( x[ i ] ) : Double.NEGATIVE_INFINITY;
         }
 
         super.setDataSet( dataSetIndex, xLog, y, firstIndex, lastIndex );
@@ -131,8 +133,8 @@ public class SemiLogXSignalChart extends CartesianDataChart {
 
     protected final void setXRangeInUserUnits( final double xMin, final double xMax ) {
         // Since the X Axis is logged, the values must also be logged.
-        final double xMinInLogUserUnits = StrictMath.log10( xMin );
-        final double xMaxInLogUserUnits = StrictMath.log10( xMax );
+        final double xMinInLogUserUnits = FastMath.log10( xMin );
+        final double xMaxInLogUserUnits = FastMath.log10( xMax );
 
         setXRange( xMinInLogUserUnits, xMaxInLogUserUnits );
     }
@@ -147,8 +149,8 @@ public class SemiLogXSignalChart extends CartesianDataChart {
                                        final double xMax,
                                        final double yMax ) {
         // Since the X Axis is logged the values must also be logged.
-        final double xMinInLogUserUnits = StrictMath.log10( xMin );
-        final double xMaxInLogUserUnits = StrictMath.log10( xMax );
+        final double xMinInLogUserUnits = FastMath.log10( xMin );
+        final double xMaxInLogUserUnits = FastMath.log10( xMax );
 
         zoom( xMinInLogUserUnits, ymin, xMaxInLogUserUnits, yMax );
     }
