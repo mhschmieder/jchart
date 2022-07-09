@@ -68,7 +68,7 @@ public abstract class Chart extends VectorizationXPanel {
      * This is the default Font Size for Titles; smaller is OK as the window
      * shrinks, but if the window grows then the font gets no larger than this.
      */
-    public final static int   DEFAULT_TITLE_FONT_SIZE = 18;
+    public static final int   DEFAULT_TITLE_FONT_SIZE = 18;
 
     /**
      * Returns a font that is appropriate for chart titles; bold and large.
@@ -81,7 +81,7 @@ public abstract class Chart extends VectorizationXPanel {
      * @version 1.0
      */
     @SuppressWarnings("nls")
-    public final static Font makeTitleFontCandidate() {
+    public static final Font makeTitleFontCandidate() {
         final Font titleFontCandidate = new Font( "SansSerif", Font.BOLD, DEFAULT_TITLE_FONT_SIZE );
 
         return titleFontCandidate;
