@@ -84,7 +84,7 @@ import com.mhschmieder.mathtoolkit.MathConstants;
  */
 public class SemiLogRPolarChart extends Chart {
     /**
-     *
+     * Unique Serial Version ID for this class, to avoid class loader conflicts.
      */
     private static final long serialVersionUID      = 3817582450900853248L;
 
