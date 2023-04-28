@@ -40,9 +40,9 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.net.URL;
 import java.text.NumberFormat;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
@@ -138,13 +138,13 @@ public abstract class CartesianChart extends Chart {
     private static final float WATERMARK_OPACITY_DEFAULT = 0.15f;
 
     // Utility method to round position up to the nearest value in the grid.
-    public static double gridRoundUp( final Vector< Double > grid, final double position ) {
+    public static double gridRoundUp( final List< Double > grid, final double position ) {
         final double x = position - Math.floor( position );
         int i;
         final int numberOfGridSteps = grid.size();
-        for ( i = 0; ( i < numberOfGridSteps ) && ( x >= grid.elementAt( i ) ); i++ ) {}
+        for ( i = 0; ( i < numberOfGridSteps ) && ( x >= grid.get( i ) ); i++ ) {}
 
-        return ( i >= numberOfGridSteps ) ? position : Math.floor( position ) + grid.elementAt( i );
+        return ( i >= numberOfGridSteps ) ? position : Math.floor( position ) + grid.get( i );
     }
 
     // The range of the data to be plotted.
@@ -305,10 +305,10 @@ public abstract class CartesianChart extends Chart {
     private String           yUnitsSublabel;
 
     /** @serial If XTics or YTics are given/ */
-    private Vector< Double > xTics;
-    private Vector< String > xTicLabels;
-    private Vector< Double > yTics;
-    private Vector< String > yTicLabels;
+    private List< Double > xTics;
+    private List< String > xTicLabels;
+    private List< Double > yTics;
+    private List< String > yTicLabels;
 
     /** @serial The number of x-axis and y-axis tic marks. */
     private int              numberOfXTics             = 1;
@@ -386,11 +386,11 @@ public abstract class CartesianChart extends Chart {
      */
     protected void addXTic( final String label, final double position ) {
         if ( xTics == null ) {
-            xTics = new Vector<>();
-            xTicLabels = new Vector<>();
+            xTics = new ArrayList<>();
+            xTicLabels = new ArrayList<>();
         }
-        xTics.addElement( position );
-        xTicLabels.addElement( label );
+        xTics.add( position );
+        xTicLabels.add( label );
     }
 
     /**
@@ -406,11 +406,11 @@ public abstract class CartesianChart extends Chart {
      */
     protected void addYTic( final String label, final double position ) {
         if ( yTics == null ) {
-            yTics = new Vector<>();
-            yTicLabels = new Vector<>();
+            yTics = new ArrayList<>();
+            yTicLabels = new ArrayList<>();
         }
-        yTics.addElement( position );
-        yTicLabels.addElement( label );
+        yTics.add( position );
+        yTicLabels.add( label );
     }
 
     private final void adjustAxesAndLabelCoordinates( final Rectangle drawRect ) {
@@ -464,9 +464,7 @@ public abstract class CartesianChart extends Chart {
 
         // Find the widest label, if tics were explicitly specified.
         if ( yTics != null ) {
-            final Enumeration< String > labels = yTicLabels.elements();
-            while ( labels.hasMoreElements() ) {
-                final String label = labels.nextElement();
+            for ( final String label : yTicLabels ) {
                 final int labelWidth = ticFontMetrics.stringWidth( label );
                 widestTicLabel = FastMath.max( widestTicLabel, labelWidth );
             }
@@ -575,7 +573,7 @@ public abstract class CartesianChart extends Chart {
         // NOTE: The following disables first tic. Not a good idea?
         // if (xStart == xMin) { xStart += xStep };
 
-        final Vector< Double > xGrid = xLog ? gridInit( xStart, xStep, true, null ) : null;
+        final List< Double > xGrid = xLog ? gridInit( xStart, xStep, true, null ) : null;
         final double xTmpStart = xLog ? gridRoundUp( xGrid, xStart ) : xStart;
 
         for ( double xPos = xTmpStart; xPos <= xTicMax; xPos = getNextGridStep( xGrid,
@@ -601,7 +599,7 @@ public abstract class CartesianChart extends Chart {
         // NOTE: The following disables first tic. Not a good idea?
         // if (yStart == yMin) { yStart += yStep };
 
-        final Vector< Double > yGrid = yLog ? gridInit( yStart, yStep, true, null ) : null;
+        final List< Double > yGrid = yLog ? gridInit( yStart, yStep, true, null ) : null;
         final double yTmpStart = yLog ? getNextGridStep( yGrid, yStart, yStep, yLog ) : yStart;
 
         for ( double yPos = yTmpStart; yPos <= yTicMax; yPos = getNextGridStep( yGrid,
@@ -769,7 +767,7 @@ public abstract class CartesianChart extends Chart {
 
         if ( xTics == null ) {
             // auto-tics
-            Vector< Double > xGrid = null;
+            List< Double > xGrid = null;
             double xTmpStart = xStart;
             if ( xLog ) {
                 xGrid = gridInit( xStart, xStep, true, null );
@@ -832,7 +830,7 @@ public abstract class CartesianChart extends Chart {
                 // Recalculate the start using the new step.
                 xTmpStart = tmpStep * Math.ceil( xTicMin / tmpStep );
 
-                final Vector< Double > unlabeledGrid = gridInit( xTmpStart, tmpStep, false, xGrid );
+                final List< Double > unlabeledGrid = gridInit( xTmpStart, tmpStep, false, xGrid );
                 if ( unlabeledGrid.size() > 0 ) {
                     for ( double xPos =
                                       getNextGridStep( unlabeledGrid,
@@ -866,17 +864,13 @@ public abstract class CartesianChart extends Chart {
             }
         }
         else {
-            // tics have been explicitly specified
-            final Enumeration< Double > nt = xTics.elements();
-            final Enumeration< String > nl = xTicLabels.elements();
-
             int preLength = 0;
 
-            while ( nl.hasMoreElements() ) {
-                final String label = nl.nextElement();
-
+            // Tics have been explicitly specified
+            int ticIndex = 0;
+            for ( final String label : xTicLabels ) {
                 // If xPos is out of range, ignore.
-                final double xPos = nt.nextElement();
+                final double xPos = xTics.get( ticIndex++ );
                 if ( ( xPos > xMax ) || ( xPos < xMin ) ) {
                     continue;
                 }
@@ -983,7 +977,7 @@ public abstract class CartesianChart extends Chart {
 
         if ( yTics == null ) {
             // auto-tics
-            Vector< Double > yGrid = null;
+            List< Double > yGrid = null;
             double yTmpStart = yStart;
             if ( yLog ) {
                 yGrid = gridInit( yStart, yStep, true, null );
@@ -1037,7 +1031,7 @@ public abstract class CartesianChart extends Chart {
 
             if ( yLog ) {
                 // Draw in grid lines that don't have labels.
-                final Vector< Double > unlabeledGrid = gridInit( yStart, yStep, false, yGrid );
+                final List< Double > unlabeledGrid = gridInit( yStart, yStep, false, yGrid );
                 if ( unlabeledGrid.size() > 0 ) {
                     // If the step is greater than 1, clamp it to 1 so that we
                     // draw the unlabeled grid lines for each integer interval.
@@ -1078,15 +1072,11 @@ public abstract class CartesianChart extends Chart {
             }
         }
         else {
-            // Tics have been explicitly specified.
-            final Enumeration< Double > nt = yTics.elements();
-            final Enumeration< String > nl = yTicLabels.elements();
-
-            while ( nl.hasMoreElements() ) {
-                final String label = nl.nextElement();
-
+            // Tics have been explicitly specified
+            int ticIndex = 0;
+            for ( final String label : yTicLabels ) {
                 // If yPos is out of range, ignore.
-                final double yPos = nt.nextElement();
+                final double yPos = yTics.get( ticIndex++ );
                 if ( ( yPos > yMax ) || ( yPos < yMin ) ) {
                     continue;
                 }
@@ -1376,7 +1366,7 @@ public abstract class CartesianChart extends Chart {
      * reset gridCurJuke if necessary. Note that for log axes, gridInit() must
      * be called before calling getNextGridStep().
      */
-    private final double getNextGridStep( final Vector< Double > grid,
+    private final double getNextGridStep( final List< Double > grid,
                                           final double pos,
                                           final double step,
                                           final boolean logflag ) {
@@ -1389,7 +1379,7 @@ public abstract class CartesianChart extends Chart {
             if ( gridCurJuke >= numberOfGridSteps ) {
                 return pos + step;
             }
-            return gridBase + grid.elementAt( gridCurJuke );
+            return gridBase + grid.get( gridCurJuke );
         }
 
         return pos + step;
@@ -1452,11 +1442,11 @@ public abstract class CartesianChart extends Chart {
      *
      * @return The X tics.
      */
-    public final Vector< ? >[] getXTics() {
+    public final List< ? >[] getXTics() {
         if ( xTics == null ) {
             return null;
         }
-        final Vector< ? >[] result = new Vector[ 2 ];
+        final List< ? >[] result = new ArrayList[ 2 ];
         result[ 0 ] = xTics;
         result[ 1 ] = xTicLabels;
         return result;
@@ -1516,11 +1506,11 @@ public abstract class CartesianChart extends Chart {
      *
      * @return The Y tics.
      */
-    public final Vector< ? >[] getYTics() {
+    public final List< ? >[] getYTics() {
         if ( yTics == null ) {
             return null;
         }
-        final Vector< ? >[] result = new Vector[ 2 ];
+        final List< ? >[] result = new ArrayList[ 2 ];
         result[ 0 ] = yTics;
         result[ 1 ] = yTicLabels;
         return result;
@@ -1536,10 +1526,10 @@ public abstract class CartesianChart extends Chart {
     }
 
     // Determine what values to use for log axes.
-    private final Vector< Double > gridInit( final double low,
+    private final List< Double > gridInit( final double low,
                                              final double step,
                                              final boolean labeled,
-                                             final Vector< Double > oldgrid ) {
+                                             final List< Double > oldgrid ) {
         // How log axes work:
         // gridInit() creates a vector with the values to use for the log axes.
         // For example, the vector might contain {0.0 0.301 0.698}, which could
@@ -1554,7 +1544,7 @@ public abstract class CartesianChart extends Chart {
         // the basis of this code. The problem is that as ratio gets closer to
         // 1.0, we need to add more and more grid marks styles.
 
-        final Vector< Double > grid = new Vector<>( 10 );
+        final List< Double > grid = new ArrayList<>( 10 );
         // grid.addElement(Double.valueOf(0.0));
         final double ratio = FastMath.pow( 10.0d, step );
         int ngrid = 1;
@@ -1614,23 +1604,23 @@ public abstract class CartesianChart extends Chart {
                     // is equal to or greater than the element we are trying to
                     // add.
                     while ( ( oldgridi < numberOfOldGridSteps )
-                            && ( oldgrid.elementAt( oldgridi ) < logval ) ) {
+                            && ( oldgrid.get( oldgridi ) < logval ) ) {
                         oldgridi++;
                     }
 
                     if ( oldgridi < numberOfOldGridSteps ) {
                         // Using == on doubles is bad if the numbers are close,
                         // but not exactly equal.
-                        if ( Math.abs( oldgrid.elementAt( oldgridi ) - logval ) > 0.00001d ) {
-                            grid.addElement( logval );
+                        if ( Math.abs( oldgrid.get( oldgridi ) - logval ) > 0.00001d ) {
+                            grid.add( logval );
                         }
                     }
                     else {
-                        grid.addElement( logval );
+                        grid.add( logval );
                     }
                 }
                 else {
-                    grid.addElement( logval );
+                    grid.add( logval );
                 }
             }
         }
@@ -1645,7 +1635,7 @@ public abstract class CartesianChart extends Chart {
         // or equal to x. This sets us up to process the first point.
         final int numberOfGridSteps = grid.size();
         for ( gridCurJuke = -1; ( ( gridCurJuke + 1 ) < numberOfGridSteps )
-                && ( x >= grid.elementAt( gridCurJuke + 1 ) ); gridCurJuke++ ) {}
+                && ( x >= grid.get( gridCurJuke + 1 ) ); gridCurJuke++ ) {}
         return grid;
     }
 

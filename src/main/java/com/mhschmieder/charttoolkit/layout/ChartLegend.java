@@ -35,8 +35,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -93,27 +93,27 @@ public class ChartLegend extends VectorizationXPanel {
     /**
      * The indices to use to reference each of the data sets in use.
      */
-    private Vector< Integer >   legendDataSets;
+    private List< Integer >   legendDataSets;
 
     /**
      * The labels for each of the data sets in use.
      */
-    private Vector< JLabel >    legendLabels;
+    private List< JLabel >    legendLabels;
 
     /**
      * The currently active legend icons for the data sets in use.
      */
-    private Vector< ImageIcon > legendIcons;
+    private List< ImageIcon > legendIcons;
 
     /**
      * The icons to use when the legend is displayed against a dark background.
      */
-    private Vector< ImageIcon > iconsForDarkBackground;
+    private List< ImageIcon > iconsForDarkBackground;
 
     /**
      * The icons to use when the legend is displayed against a light background.
      */
-    private Vector< ImageIcon > iconsForLightBackground;
+    private List< ImageIcon > iconsForLightBackground;
 
     //////////////////////////// Constructors ////////////////////////////////
 
@@ -150,15 +150,15 @@ public class ChartLegend extends VectorizationXPanel {
      */
     private void initPanel() {
         // Chart legends must be explicitly added; there are no defaults.
-        legendDataSets = new Vector<>( DEFAULT_NUMBER_OF_DATASETS );
-        legendLabels = new Vector<>( DEFAULT_NUMBER_OF_DATASETS );
-        iconsForDarkBackground = new Vector<>( DEFAULT_NUMBER_OF_DATASETS );
-        iconsForLightBackground = new Vector<>( DEFAULT_NUMBER_OF_DATASETS );
+        legendDataSets = new ArrayList<>( DEFAULT_NUMBER_OF_DATASETS );
+        legendLabels = new ArrayList<>( DEFAULT_NUMBER_OF_DATASETS );
+        iconsForDarkBackground = new ArrayList<>( DEFAULT_NUMBER_OF_DATASETS );
+        iconsForLightBackground = new ArrayList<>( DEFAULT_NUMBER_OF_DATASETS );
         for ( int dataSetIndex = 0; dataSetIndex < DEFAULT_NUMBER_OF_DATASETS; dataSetIndex++ ) {
-            legendDataSets.addElement( Integer.valueOf( dataSetIndex ) );
-            legendLabels.addElement( new JLabel( "" ) ); //$NON-NLS-1$
-            iconsForDarkBackground.addElement( null );
-            iconsForLightBackground.addElement( null );
+            legendDataSets.add( Integer.valueOf( dataSetIndex ) );
+            legendLabels.add( new JLabel( "" ) ); //$NON-NLS-1$
+            iconsForDarkBackground.add( null );
+            iconsForLightBackground.add( null );
         }
         legendIcons = iconsForDarkBackground;
 
@@ -170,7 +170,7 @@ public class ChartLegend extends VectorizationXPanel {
         legendSubpanel.setBorder( titledBorder );
 
         for ( int dataSetIndex = 0; dataSetIndex < DEFAULT_NUMBER_OF_DATASETS; dataSetIndex++ ) {
-            legendSubpanel.add( legendLabels.elementAt( dataSetIndex ) );
+            legendSubpanel.add( legendLabels.get( dataSetIndex ) );
         }
 
         SpringLayoutUtilities.makeCompactGrid( legendSubpanel,
@@ -203,8 +203,8 @@ public class ChartLegend extends VectorizationXPanel {
      *
      * @since 1.0
      */
-    protected int getDatasetIndex( final int dataSetNumber ) {
-        final int dataSetIndex = legendDataSets.indexOf( Integer.valueOf( dataSetNumber ), 0 );
+    protected int getDatasetIndex( final Integer dataSetNumber ) {
+        final int dataSetIndex = legendDataSets.indexOf( dataSetNumber );
         if ( dataSetIndex == -1 ) {
             throw new IllegalArgumentException( "ChartLegend.getDatasetIndex: Cannot" //$NON-NLS-1$
                     + " give a negative number for the data set index." ); //$NON-NLS-1$
@@ -225,7 +225,7 @@ public class ChartLegend extends VectorizationXPanel {
      */
     @SuppressWarnings("nls")
     public String getLegend( final int dataSetIndex ) {
-        final JLabel legendLabel = legendLabels.elementAt( getDatasetIndex( dataSetIndex ) );
+        final JLabel legendLabel = legendLabels.get( getDatasetIndex( Integer.valueOf( dataSetIndex ) ) );
         return ( legendLabel != null ) ? legendLabel.getText() : "";
     }
 
@@ -259,10 +259,10 @@ public class ChartLegend extends VectorizationXPanel {
                     + " give a negative number for the data set index." ); //$NON-NLS-1$
         }
 
-        legendDataSets.setElementAt( Integer.valueOf( dataSetIndex ), dataSetIndex );
-        legendLabels.setElementAt( new JLabel( "" ), dataSetIndex ); //$NON-NLS-1$
-        iconsForDarkBackground.setElementAt( null, dataSetIndex );
-        iconsForLightBackground.setElementAt( null, dataSetIndex );
+        legendDataSets.set( dataSetIndex, Integer.valueOf( dataSetIndex ) );
+        legendLabels.set( dataSetIndex, new JLabel( "" ) ); //$NON-NLS-1$
+        iconsForDarkBackground.set( dataSetIndex, null );
+        iconsForLightBackground.set( dataSetIndex, null );
 
         // Adjust the counter for how many data sets are in use.
         --numberOfDataSetsInUse;
@@ -333,9 +333,9 @@ public class ChartLegend extends VectorizationXPanel {
                     + " give a negative number for the data set index." ); //$NON-NLS-1$
         }
 
-        legendDataSets.setElementAt( Integer.valueOf( dataSetIndex ), numberOfDataSetsInUse );
+        legendDataSets.set( numberOfDataSetsInUse, Integer.valueOf( dataSetIndex ) );
 
-        final JLabel legendLabel = legendLabels.elementAt( numberOfDataSetsInUse );
+        final JLabel legendLabel = legendLabels.get( numberOfDataSetsInUse );
         legendLabel.setText( legend );
 
         final int iconSize = ICON_SIZE;
@@ -354,10 +354,10 @@ public class ChartLegend extends VectorizationXPanel {
         final ImageIcon imageIconForDarkBackground = new ImageIcon( bimageForDarkBackground );
         final ImageIcon imageIconForLightBackground = new ImageIcon( bimageForLightBackground );
 
-        iconsForDarkBackground.setElementAt( imageIconForDarkBackground, numberOfDataSetsInUse );
-        iconsForLightBackground.setElementAt( imageIconForLightBackground, numberOfDataSetsInUse );
+        iconsForDarkBackground.set( numberOfDataSetsInUse, imageIconForDarkBackground );
+        iconsForLightBackground.set( numberOfDataSetsInUse, imageIconForLightBackground );
 
-        legendLabel.setIcon( legendIcons.elementAt( numberOfDataSetsInUse ) );
+        legendLabel.setIcon( legendIcons.get( numberOfDataSetsInUse ) );
 
         numberOfDataSetsInUse++;
     }
@@ -417,10 +417,10 @@ public class ChartLegend extends VectorizationXPanel {
 
         JLabel legendLabel;
         for ( int dataSetIndex = 0; dataSetIndex < DEFAULT_NUMBER_OF_DATASETS; dataSetIndex++ ) {
-            legendLabel = legendLabels.elementAt( dataSetIndex );
+            legendLabel = legendLabels.get( dataSetIndex );
             legendLabel.setBackground( backColor );
             legendLabel.setForeground( foreColor );
-            legendLabel.setIcon( legendIcons.elementAt( dataSetIndex ) );
+            legendLabel.setIcon( legendIcons.get( dataSetIndex ) );
         }
     }
 
@@ -465,11 +465,9 @@ public class ChartLegend extends VectorizationXPanel {
             }
 
             // Iterate over all of the data sets and paint their legends.
-            final Enumeration< Integer > dataSets = legendDataSets.elements();
-            while ( dataSets.hasMoreElements() ) {
-                final int dataSetNumber = dataSets.nextElement().intValue();
+            for ( final Integer dataSetNumber : legendDataSets ) {
                 final int dataSetIndex = getDatasetIndex( dataSetNumber );
-                final JLabel legendLabel = legendLabels.elementAt( dataSetIndex );
+                final JLabel legendLabel = legendLabels.get( dataSetIndex );
                 if ( legendLabel != null ) {
                     final String legend = legendLabel.getText();
                     if ( !legend.trim().isEmpty() && ( dataSetIndex < numberOfDataSetsInUse ) ) {
@@ -479,7 +477,7 @@ public class ChartLegend extends VectorizationXPanel {
                             legendLabel.repaint();
                         }
                         else {
-                            final ImageIcon legendIcon = legendIcons.elementAt( dataSetIndex );
+                            final ImageIcon legendIcon = legendIcons.get( dataSetIndex );
                             if ( legendIcon != null ) {
                                 // Paint the image icon for the legend key.
                                 final int iconOffsetHz = ( int ) Math.floor( 0.5d * ICON_SIZE );
