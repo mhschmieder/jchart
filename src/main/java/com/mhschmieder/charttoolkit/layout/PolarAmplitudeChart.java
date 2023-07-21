@@ -104,6 +104,10 @@ public final class PolarAmplitudeChart extends SemiLogRPolarChart {
         clearResponse();
     }
 
+    public int getNumberOfPolarDataPoints() {
+        return _numberOfPolarDataPoints;
+    }
+
     public double[] getPolarAmplitudeData() {
         return getDataX();
     }
