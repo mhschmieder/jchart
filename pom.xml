@@ -53,7 +53,19 @@
         </dependency>
         <dependency>
             <groupId>com.mhschmieder</groupId>
+            <artifactId>mathtoolkit</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mhschmieder</groupId>
             <artifactId>physicstoolkit</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mhschmieder</groupId>
+            <artifactId>acousticstoolkit</artifactId>
             <version>0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

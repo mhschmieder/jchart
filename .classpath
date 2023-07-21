@@ -27,5 +27,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/graphicstoolkit"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/physicstoolkit"/>
 	<classpathentry kind="src" path="/mathtoolkit"/>
+	<classpathentry kind="src" path="/acousticstoolkit"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
