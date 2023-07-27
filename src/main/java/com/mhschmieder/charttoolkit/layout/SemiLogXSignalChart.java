@@ -45,10 +45,10 @@ public class SemiLogXSignalChart extends CartesianDataChart {
     // This is the default constructor, which primarily just indicates the
     // x-axis is logged.
     protected SemiLogXSignalChart( final int numberOfDataSets,
-                                   final boolean useWatermark,
+                                   final boolean pUseWatermark,
                                    final String jarRelativeWatermarkIconFilename ) {
         // Always call the superclass constructor first!
-        super( numberOfDataSets, useWatermark, jarRelativeWatermarkIconFilename );
+        super( numberOfDataSets, pUseWatermark, jarRelativeWatermarkIconFilename );
 
         // Ensure that the axis labels never exceed one decimal place of
         // precision, and only use decimals when needed (not for integers).
