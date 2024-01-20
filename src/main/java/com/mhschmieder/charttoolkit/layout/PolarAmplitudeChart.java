@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2020, 2023 Mark Schmieder
+ * Copyright (c) 2020, 2024 Mark Schmieder
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -147,13 +147,13 @@ public final class PolarAmplitudeChart extends SemiLogRPolarChart {
     }
 
     public void updatePolarAmplitudeTrace( final double[] amplitude,
-                                           final String loudspeakerModel,
+                                           final String acousticSourceModel,
                                            RelativeBandwidth relativeBandwidth,
                                            final double centerFrequency ) {
         // Update the plot label and the data set.
         final String sCenterFrequency = FrequencySignalUtilities
                 .getFormattedFrequency( centerFrequency, numberFormat );
-        final String xLabel = loudspeakerModel + " " + relativeBandwidth.toPresentationString() //$NON-NLS-1$
+        final String xLabel = acousticSourceModel + " " + relativeBandwidth.toPresentationString() //$NON-NLS-1$
                 + " centered at " + sCenterFrequency; //$NON-NLS-1$
         setXLabel( xLabel );
         setData( amplitude, _theta );
