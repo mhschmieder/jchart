@@ -977,7 +977,7 @@ public class CartesianGraphicsChart extends CartesianChart {
         // Reset the Distance Unit labels directly, since these are left
         // unchanged by all the other plot update methods.
         // TODO: Use the angle units for displaying in mouse rotate mode?
-        final String distanceUnitName = distanceUnit.toCanonicalString();
+        final String distanceUnitName = distanceUnit.label();
         setXUnits( distanceUnitName );
         setYUnits( distanceUnitName );
 
