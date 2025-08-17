@@ -8,7 +8,7 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>ChartToolkit</name>
+    <name>charttoolkit</name>
     <url>https://github.com/mhschmieder/charttoolkit</url>
     <description>Utilities and custom classes for Java AWT and Swing based charting.</description>  
 
