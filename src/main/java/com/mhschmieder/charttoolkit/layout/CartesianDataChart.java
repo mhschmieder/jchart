@@ -30,6 +30,10 @@
  */
 package com.mhschmieder.charttoolkit.layout;
 
+import com.mhschmieder.charttoolkit.chart.ChartType;
+import com.mhschmieder.charttoolkit.chart.ChartUtilities;
+import com.mhschmieder.graphicstoolkit.shape.ShapeUtilities;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -39,10 +43,6 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mhschmieder.charttoolkit.chart.ChartType;
-import com.mhschmieder.charttoolkit.chart.ChartUtilities;
-import com.mhschmieder.graphicstoolkit.shape.ShapeUtilities;
 
 // The CartesianDataChart class primarily adds methods and data associated with
 // plots that are a function of a variable along the x-axis producing a value

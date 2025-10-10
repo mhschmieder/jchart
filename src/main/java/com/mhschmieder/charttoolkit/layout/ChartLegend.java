@@ -30,13 +30,10 @@
  */
 package com.mhschmieder.charttoolkit.layout;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Transparency;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
+import com.mhschmieder.guitoolkit.border.BorderUtilities;
+import com.mhschmieder.guitoolkit.component.VectorizationXPanel;
+import com.mhschmieder.guitoolkit.layout.SpringLayoutUtilities;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -47,11 +44,13 @@ import javax.swing.JRootPane;
 import javax.swing.SpringLayout;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-
-import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
-import com.mhschmieder.guitoolkit.border.BorderUtilities;
-import com.mhschmieder.guitoolkit.component.VectorizationXPanel;
-import com.mhschmieder.guitoolkit.layout.SpringLayoutUtilities;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Transparency;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@code ChartLegend} is a simple legend for chart colors, for using with chart

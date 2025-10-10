@@ -30,9 +30,9 @@
  */
 package com.mhschmieder.charttoolkit.layout;
 
-import java.text.NumberFormat;
-
 import org.apache.commons.math3.util.FastMath;
+
+import java.text.NumberFormat;
 
 // TODO: remove the need for this semi-log-x subclass and find a way to better
 // flag that behavior higher up.

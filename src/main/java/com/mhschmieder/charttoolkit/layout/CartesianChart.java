@@ -30,6 +30,12 @@
  */
 package com.mhschmieder.charttoolkit.layout;
 
+import com.mhschmieder.graphicstoolkit.render.HighlightStroke;
+import com.mhschmieder.mathtoolkit.MathConstants;
+import com.mhschmieder.mathtoolkit.MathUtilities;
+import org.apache.commons.math3.util.FastMath;
+
+import javax.swing.ImageIcon;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -43,14 +49,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import javax.swing.ImageIcon;
-
-import org.apache.commons.math3.util.FastMath;
-
-import com.mhschmieder.graphicstoolkit.render.HighlightStroke;
-import com.mhschmieder.mathtoolkit.MathConstants;
-import com.mhschmieder.mathtoolkit.MathUtilities;
 
 /**
  * A labeled box for signal plots and other plots.

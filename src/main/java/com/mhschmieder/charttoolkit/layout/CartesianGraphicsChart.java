@@ -30,6 +30,15 @@
  */
 package com.mhschmieder.charttoolkit.layout;
 
+import com.mhschmieder.charttoolkit.chart.GridResolution;
+import com.mhschmieder.graphicstoolkit.color.ColorConstants;
+import com.mhschmieder.graphicstoolkit.shape.AttributedShape;
+import com.mhschmieder.graphicstoolkit.shape.AttributedShapeContainer;
+import com.mhschmieder.physicstoolkit.DistanceUnit;
+import com.mhschmieder.physicstoolkit.UnitConversion;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -52,16 +61,6 @@ import java.awt.image.RasterFormatException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.NumberFormat;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-
-import com.mhschmieder.charttoolkit.chart.GridResolution;
-import com.mhschmieder.graphicstoolkit.color.ColorConstants;
-import com.mhschmieder.graphicstoolkit.shape.AttributedShape;
-import com.mhschmieder.graphicstoolkit.shape.AttributedShapeContainer;
-import com.mhschmieder.physicstoolkit.DistanceUnit;
-import com.mhschmieder.physicstoolkit.UnitConversion;
 
 /**
  * The CartesianGraphicsChart class is derived directly from the CartesianChart

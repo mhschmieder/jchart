@@ -30,10 +30,10 @@
  */
 package com.mhschmieder.charttoolkit.chart;
 
-import java.awt.Color;
-
 import com.mhschmieder.graphicstoolkit.color.ColorConstants;
 import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
+
+import java.awt.Color;
 
 /**
  * {@code ChartUtilities} is a utility class for AWT based chart methods, usable

@@ -30,16 +30,16 @@
  */
 package com.mhschmieder.charttoolkit.layout;
 
+import com.mhschmieder.charttoolkit.chart.ChartUtilities;
+import com.mhschmieder.graphicstoolkit.font.FontUtilities;
+import com.mhschmieder.guitoolkit.component.VectorizationXPanel;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
-
-import com.mhschmieder.charttoolkit.chart.ChartUtilities;
-import com.mhschmieder.graphicstoolkit.font.FontUtilities;
-import com.mhschmieder.guitoolkit.component.VectorizationXPanel;
 
 /**
  * {@code Chart} is an abstract base class for all chart types, implementing
