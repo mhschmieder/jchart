@@ -34,8 +34,8 @@ import com.mhschmieder.charttoolkit.chart.GridResolution;
 import com.mhschmieder.graphicstoolkit.color.ColorConstants;
 import com.mhschmieder.graphicstoolkit.shape.AttributedShape;
 import com.mhschmieder.graphicstoolkit.shape.AttributedShapeContainer;
-import com.mhschmieder.physicstoolkit.DistanceUnit;
-import com.mhschmieder.physicstoolkit.UnitConversion;
+import com.mhschmieder.jphysics.DistanceUnit;
+import com.mhschmieder.jphysics.UnitConversion;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;

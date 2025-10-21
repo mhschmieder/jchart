@@ -47,25 +47,25 @@
         </dependency>
         <dependency>
             <groupId>com.mhschmieder</groupId>
-            <artifactId>commonstoolkit</artifactId>
+            <artifactId>jcommons</artifactId>
             <version>0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.mhschmieder</groupId>
-            <artifactId>mathtoolkit</artifactId>
+            <artifactId>jmath</artifactId>
             <version>0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.mhschmieder</groupId>
-            <artifactId>physicstoolkit</artifactId>
+            <artifactId>jphysics</artifactId>
             <version>0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.mhschmieder</groupId>
-            <artifactId>acousticstoolkit</artifactId>
+            <artifactId>jacoustics</artifactId>
             <version>0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

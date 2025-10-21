@@ -31,8 +31,8 @@
 package com.mhschmieder.charttoolkit.layout;
 
 import com.mhschmieder.graphicstoolkit.render.HighlightStroke;
-import com.mhschmieder.mathtoolkit.MathConstants;
-import com.mhschmieder.mathtoolkit.MathUtilities;
+import com.mhschmieder.jmath.MathConstants;
+import com.mhschmieder.jmath.MathUtilities;
 import org.apache.commons.math3.util.FastMath;
 
 import javax.swing.ImageIcon;
