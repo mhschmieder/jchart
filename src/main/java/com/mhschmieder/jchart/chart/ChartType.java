@@ -28,33 +28,42 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.chart;
-
-import java.util.Locale;
+package com.mhschmieder.jchart.chart;
 
 /**
- * The <code>GridResolution</code> enum is an enumeration of supported chart
- * grid resolutions for grid lines (major ticks) and/or minor ticks.
+ * {@code ChartType} is an enumeration of basic Chart Types; primarily to
+ * distinguish charts that connect data points via lines (i.e. Data Vectors) vs.
+ * ones that compute a Center Band in both directions from the given data points
+ * (as is frequently the case with certain types of Bar Charts and Line Charts).
  *
  * @version 1.0
  *
  * @author Mark Schmieder
  */
-public enum GridResolution {
-    OFF, COARSE, MEDIUM, FINE;
+public enum ChartType {
+    /**
+     * Data Vector charts are the most common, and simply connect the data
+     * points with individual lines.
+     */
+    DATA_VECTOR,
+    /**
+     * Center Bands are common in Bar Charts and Line Charts, where the given
+     * data points often need to be drawn out in both directions until the
+     * mid-point between neighboring data points.
+     */
+    CENTER_BAND;
 
-    public static final GridResolution defaultValue() {
-        return MEDIUM;
-    }
-
-    public static final GridResolution fromCanonicalString( final String gridResolutionCanonicalString ) {
-        return ( gridResolutionCanonicalString != null )
-            ? valueOf( gridResolutionCanonicalString.toUpperCase( Locale.ENGLISH ) )
-            : defaultValue();
-    }
-
-    public final String toCanonicalString() {
-        return toString().toLowerCase( Locale.ENGLISH );
+    /**
+     * Returns the default Chart Type, for safe initialization and for clients
+     * that don't care or don't know what they want or need and thus probably
+     * will be doing standard Data Vector charts.
+     *
+     * @return The most common preferred Chart Type, which is Data Vector
+     *
+     * @since 1.0
+     */
+    public static ChartType defaultValue() {
+        return DATA_VECTOR;
     }
 
 }

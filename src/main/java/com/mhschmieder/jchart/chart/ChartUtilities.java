@@ -28,10 +28,10 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.chart;
+package com.mhschmieder.jchart.chart;
 
-import com.mhschmieder.graphicstoolkit.color.ColorConstants;
-import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
+import com.mhschmieder.jgraphics.color.ColorConstants;
+import com.mhschmieder.jgraphics.color.ColorUtilities;
 
 import java.awt.Color;
 

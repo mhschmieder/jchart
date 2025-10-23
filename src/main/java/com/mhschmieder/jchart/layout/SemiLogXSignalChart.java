@@ -28,7 +28,7 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.layout;
+package com.mhschmieder.jchart.layout;
 
 import org.apache.commons.math3.util.FastMath;
 

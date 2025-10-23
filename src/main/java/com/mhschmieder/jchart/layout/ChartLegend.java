@@ -28,12 +28,12 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.layout;
+package com.mhschmieder.jchart.layout;
 
-import com.mhschmieder.graphicstoolkit.color.ColorUtilities;
-import com.mhschmieder.guitoolkit.border.BorderUtilities;
-import com.mhschmieder.guitoolkit.component.VectorizationXPanel;
-import com.mhschmieder.guitoolkit.layout.SpringLayoutUtilities;
+import com.mhschmieder.jcontrols.border.BorderUtilities;
+import com.mhschmieder.jcontrols.component.VectorizationXPanel;
+import com.mhschmieder.jcontrols.layout.SpringLayoutUtilities;
+import com.mhschmieder.jgraphics.color.ColorUtilities;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;

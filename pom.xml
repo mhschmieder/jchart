@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mhschmieder</groupId>
-    <artifactId>charttoolkit</artifactId>
+    <artifactId>jchart</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>charttoolkit</name>
-    <url>https://github.com/mhschmieder/charttoolkit</url>
+    <name>jchart</name>
+    <url>https://github.com/mhschmieder/jchart</url>
     <description>Utilities and custom classes for Java AWT and Swing based charting.</description>  
 
     <licenses>
@@ -21,9 +21,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/mhschmieder/charttoolkit</url>
-        <connection>scm:git:git://github.com/mhschmieder/charttoolkit.git</connection>
-        <developerConnection>scm:git:git@github.com:mhschmieder/charttoolkit.git</developerConnection>
+        <url>https://github.com/mhschmieder/jchart</url>
+        <connection>scm:git:git://github.com/mhschmieder/jchart.git</connection>
+        <developerConnection>scm:git:git@github.com:mhschmieder/jchart.git</developerConnection>
     </scm>
 
     <developers>
@@ -71,13 +71,13 @@
         </dependency>
         <dependency>
             <groupId>com.mhschmieder</groupId>
-            <artifactId>graphicstoolkit</artifactId>
+            <artifactId>jgraphics</artifactId>
             <version>0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.mhschmieder</groupId>
-            <artifactId>guitoolkit</artifactId>
+            <artifactId>jcontrols</artifactId>
             <version>0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

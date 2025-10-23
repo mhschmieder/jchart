@@ -29,11 +29,10 @@
  * Project: https://github.com/mhschmieder/charttoolkit
  */
 /**
- * This package contains the ChartToolkit Library's chart utility classes that
- * operate on the highest-level concepts in the AWT class hierarchy.
+ * This package contains the ChartToolkit Library's core layout utilities.
  *
- * @version 1.0
+ * @version 0.1
  *
  * @author Mark Schmieder
  */
-package com.mhschmieder.charttoolkit.chart;
+package com.mhschmieder.jchart.layout;

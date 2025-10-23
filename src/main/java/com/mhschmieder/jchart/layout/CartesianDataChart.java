@@ -28,11 +28,11 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.layout;
+package com.mhschmieder.jchart.layout;
 
-import com.mhschmieder.charttoolkit.chart.ChartType;
-import com.mhschmieder.charttoolkit.chart.ChartUtilities;
-import com.mhschmieder.graphicstoolkit.shape.ShapeUtilities;
+import com.mhschmieder.jchart.chart.ChartType;
+import com.mhschmieder.jchart.chart.ChartUtilities;
+import com.mhschmieder.jgraphics.shape.ShapeUtilities;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;

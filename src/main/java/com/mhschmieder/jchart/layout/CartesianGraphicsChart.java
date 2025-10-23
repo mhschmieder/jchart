@@ -28,12 +28,12 @@
  *
  * Project: https://github.com/mhschmieder/charttoolkit
  */
-package com.mhschmieder.charttoolkit.layout;
+package com.mhschmieder.jchart.layout;
 
-import com.mhschmieder.charttoolkit.chart.GridResolution;
-import com.mhschmieder.graphicstoolkit.color.ColorConstants;
-import com.mhschmieder.graphicstoolkit.shape.AttributedShape;
-import com.mhschmieder.graphicstoolkit.shape.AttributedShapeContainer;
+import com.mhschmieder.jchart.chart.GridResolution;
+import com.mhschmieder.jgraphics.color.ColorConstants;
+import com.mhschmieder.jgraphics.shape.AttributedShape;
+import com.mhschmieder.jgraphics.shape.AttributedShapeContainer;
 import com.mhschmieder.jphysics.DistanceUnit;
 import com.mhschmieder.jphysics.UnitConversion;
 
