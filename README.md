@@ -1,5 +1,6 @@
-# ChartToolkit
-The ChartToolkit library is an open source project for Java 8 that serves as a small collection of basic utilities and custom classes for AWT and Swing based charting, covering some specific chart types that aren't often found in the better-known charting packages, or which simpler have an easier workflow an integration path when one doesn't need a mega-package to deal with one's charting needs.
+# JChart
+
+The JChart library is an open source project for Java 8 that serves as a small collection of basic utilities and custom classes for AWT and Swing based charting, covering some specific chart types that aren't often found in the better-known charting packages, or which simpler have an easier workflow an integration path when one doesn't need a mega-package to deal with one's charting needs.
 
 At the moment, this is a bare bones skeletal utility library with only one method that doesn't even require AWT or Swing, just to decouple this from unrelated Graphics and Gui functionality in my other toolkits, and to make this method immediately available to anyone who needs it (it is a data reduction algorithm).
 
@@ -17,4 +18,4 @@ This projects depends on my GraphicsToolkit and my GuiToolkit libraries, as it b
 
 The Javadocs are 100% compliant and complete, but I am still learning how to publish those at the hosting site that I think is part of Maven Central, as it is a bad idea to bloat a GitHub project with such files and to complicate repository changes (just as with binary files and archices). Hopefully later tonight!
 
-As a confidence boost at both ends, ChartUtilities has a main() function that prints "Hello Maven from ChartToolkit" to the console (e.g. the one in Eclipse IDE). By running Maven's clean task, then the install task, you can quickly gain confidence that everything is integrated properly, by then running the main class and seeing the console and confirming that this library was the source of the validation message.
+As a confidence boost at both ends, ChartUtilities has a main() function that prints "Hello Maven from JChart" to the console (e.g. the one in Eclipse IDE). By running Maven's clean task, then the install task, you can quickly gain confidence that everything is integrated properly, by then running the main class and seeing the console and confirming that this library was the source of the validation message.
