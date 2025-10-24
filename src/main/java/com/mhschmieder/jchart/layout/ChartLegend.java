@@ -30,9 +30,9 @@
  */
 package com.mhschmieder.jchart.layout;
 
-import com.mhschmieder.jcontrols.border.BorderUtilities;
-import com.mhschmieder.jcontrols.component.VectorizationXPanel;
-import com.mhschmieder.jcontrols.layout.SpringLayoutUtilities;
+import com.marineacoustics.jgui.border.BorderUtilities;
+import com.marineacoustics.jgui.component.VectorizationXPanel;
+import com.marineacoustics.jgui.layout.SpringLayoutUtilities;
 import com.mhschmieder.jgraphics.color.ColorUtilities;
 
 import javax.swing.Box;
@@ -165,7 +165,8 @@ public class ChartLegend extends VectorizationXPanel {
         // to their associated components.
         legendSubpanel = new JPanel();
         legendSubpanel.setLayout( new SpringLayout() );
-        final TitledBorder titledBorder = BorderUtilities.makeTitledBorder( "Chart Legend" ); //$NON-NLS-1$
+        final TitledBorder titledBorder = BorderUtilities.makeTitledBorder(
+                "Chart Legend" ); //$NON-NLS-1$
         legendSubpanel.setBorder( titledBorder );
 
         for ( int dataSetIndex = 0; dataSetIndex < DEFAULT_NUMBER_OF_DATASETS; dataSetIndex++ ) {
