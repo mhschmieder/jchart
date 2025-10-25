@@ -1,7 +1,7 @@
-/**
+/*
  * MIT License
  *
- * Copyright (c) 2020, 2022 Mark Schmieder
+ * Copyright (c) 2020, 2025, Mark Schmieder. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxGuiToolkit Library
+ * This file is part of the jchart Library.
  *
- * You should have received a copy of the MIT License along with the
- * GuiToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the jchart
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxguitoolkit
+ * Project: https://github.com/mhschmieder/jchart
  */
 package com.mhschmieder.jchart.layout;
 
@@ -135,7 +135,7 @@ public final class SplPaletteLegend extends CartesianGraphicsChart {
     // NOTE: We "zero-normalize" the returned SPL range.
     // TODO: Force the dynamic range itself to an increment of the chosen scale
     // factor?
-    protected void setYRangeByDivAndRange() {
+    private void setYRangeByDivAndRange() {
         _div = ( _dynamicRange <= 66d ) ? ( _dynamicRange <= 27d ) ? 3 : 6 : 12;
         _numberOfDivs = ( int ) Math.floor( _dynamicRange / _div );
 
@@ -149,7 +149,7 @@ public final class SplPaletteLegend extends CartesianGraphicsChart {
         }
     }
 
-    protected void updateAxes() {
+    private void updateAxes() {
         // Update the Y-axis tics and labels.
         setYRangeByDivAndRange();
 
@@ -165,23 +165,25 @@ public final class SplPaletteLegend extends CartesianGraphicsChart {
         updateAxes();
     }
 
-    /**
-     * Update the SPL Palette Image.
+    /*
+     * Updates the SPL Palette Image.
      */
-    public void updateSplPaletteImage( final BufferedImage splPaletteImageAwt ) {
+    public void updateSplPaletteImage(
+            final BufferedImage splPaletteImageAwt ) {
         // Delegate the image load to the underlying geometry plot.
         updateImage( splPaletteImageAwt );
     }
 
-    /**
-     * Update the SPL Palette Image.
+    /*
+     * Updates the SPL Palette Image.
      */
     public boolean updateSplPaletteImage( final InputStream inputStream ) {
         // Delegate the image load to the underlying geometry plot.
         return updateImage( inputStream );
     }
 
-    public void updateSplRange( final double splMinimum, final double splMaximum ) {
+    public void updateSplRange( final double splMinimum,
+                                final double splMaximum ) {
         // Store the new dynamic range, and use it to update the labels.
         _magMin = Math.abs( Math.max( splMinimum, splMaximum ) );
         _magMax = Math.abs( Math.min( splMinimum, splMaximum ) );
@@ -190,5 +192,4 @@ public final class SplPaletteLegend extends CartesianGraphicsChart {
         // Update the axes from the current Dynamic Range and Scale Factor.
         updateAxes();
     }
-
 }

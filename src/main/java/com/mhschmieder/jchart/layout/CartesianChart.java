@@ -354,7 +354,9 @@ public abstract class CartesianChart extends Chart {
     // Number format cache used for locale-specific number formatting.
     public NumberFormat      numberFormat;
 
-    /** Construct a Cartesian plot box with a default configuration. */
+    /*
+     * Constructs a Cartesian plot box with a default configuration.
+     */
     protected CartesianChart( final boolean watermarkInUse,
                               final String jarRelativeWatermarkIconFilename ) {
         // Always call the superclass constructor first!
@@ -1275,7 +1277,7 @@ public abstract class CartesianChart extends Chart {
         return results;
     }
 
-    /**
+    /*
      * Returns a string for displaying the specified number using the specified
      * number of digits after the decimal point.
      */
@@ -1413,7 +1415,7 @@ public abstract class CartesianChart extends Chart {
         return xLog;
     }
 
-    /**
+    /*
      * Get the X range. The returned value is an array where the first element
      * is the minimum and the second element is the maximum. Return The current
      * X range.
@@ -1477,8 +1479,8 @@ public abstract class CartesianChart extends Chart {
         return yLog;
     }
 
-    /**
-     * Get the Y range. The returned value is an array where the first element
+    /*
+     * Gets the Y range. The returned value is an array where the first element
      * is the minimum and the second element is the maximum. return The current
      * Y range.
      */

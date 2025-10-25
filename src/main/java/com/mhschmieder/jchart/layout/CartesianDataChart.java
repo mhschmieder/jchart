@@ -33,6 +33,7 @@ package com.mhschmieder.jchart.layout;
 import com.mhschmieder.jchart.chart.ChartType;
 import com.mhschmieder.jchart.chart.ChartUtilities;
 import com.mhschmieder.jgraphics.shape.ShapeUtilities;
+import org.apache.commons.math3.util.FastMath;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -147,10 +148,10 @@ public abstract class CartesianDataChart extends CartesianChart {
     }
 
     /**
-     * Draw bar lines from mid-way between the start and end points towards each
-     * point at its respective y position. The current color is used. If the
-     * <i>clip</i> argument is true, then draw only those portions of the bar
-     * lines that lie within the plotting rectangle.
+     * Draws bar lines from mid-way between the start and end points towards
+     * each point at its respective y position. The current color is used. If
+     * the <i>clip</i> argument is true, then draw only those portions of the
+     * bar lines that lie within the plotting rectangle.
      *
      * @param g2
      *            The graphics context.
@@ -164,6 +165,7 @@ public abstract class CartesianDataChart extends CartesianChart {
      *            The ending y position.
      * @param clip
      *            If true, then do not draw outside the range.
+     * @return the delta between the start and end positions, for the x-axis
      */
     protected final long drawBarLine( final Graphics2D g2,
                                       final long startX,
@@ -186,8 +188,7 @@ public abstract class CartesianDataChart extends CartesianChart {
         drawLine( g2, midX, startY, midX, endY, clip );
 
         // Return the delta, as this is used for first and last point.
-        final long deltaX = startX - endX;
-        return deltaX;
+        return startX - endX;
     }
 
     protected final void drawCenterBands( final Graphics2D g2,
@@ -482,13 +483,14 @@ public abstract class CartesianDataChart extends CartesianChart {
         graphicsContext.setClip( clip );
     }
 
-    /**
+    /*
      * Draws the specified data set and associated lines, if any. Note that
      * paintComponent() should be called before calling this method so that it
      * calls drawPlot(), which sets xScale and yScale. Note that this does
      * not check the data set index. It is up to the caller to do that.
      */
-    protected final void drawPlotPoints( final Graphics2D g2, final int dataSetIndex ) {
+    protected final void drawPlotPoints( final Graphics2D g2,
+                                         final int dataSetIndex ) {
         // Pre-load the data set-specific objects and data, and declare all
         // reused variables outside the tight loop, for efficiency.
         final double[] xCoordinates = getXCoordinates( dataSetIndex );
@@ -538,10 +540,11 @@ public abstract class CartesianDataChart extends CartesianChart {
     }
 
     /**
-     * Return the legend colors default.
+     * Returns the default legend colors list.
      *
      * @param backColor
      *            The graphics background color.
+     * @return the default legend colors list
      */
     protected final List< Color > getLegendColorsDefault( final Color backColor ) {
         // Set the legend colors to use based on dark vs. light background.
@@ -551,7 +554,7 @@ public abstract class CartesianDataChart extends CartesianChart {
     }
 
     /**
-     * Get the x coordinates for a data set (set by setDataset()).
+     * Returns the x coordinates for a data set (set by setDataset()).
      *
      * @param dataSetIndex
      *            The data set index.
@@ -566,7 +569,7 @@ public abstract class CartesianDataChart extends CartesianChart {
     }
 
     /**
-     * Get the y coordinates for a data set (set by setDataset()).
+     * Returns the y coordinates for a data set (set by setDataset()).
      *
      * @param dataSetIndex
      *            The data set index.
@@ -635,41 +638,44 @@ public abstract class CartesianDataChart extends CartesianChart {
             final Image watermarkImage = watermarkIcon.getImage();
             final int watermarkWidth = watermarkImage.getWidth( null );
             final int watermarkHeight = watermarkImage.getHeight( null );
-            final int blankingWidth = ( int ) Math.round( ( 2.0d * watermarkWidth ) / 3.0d );
+            final int blankingWidth = ( int ) FastMath.round(
+                    ( 2.0d * watermarkWidth ) / 3.0d );
             final int blankingHeight = watermarkHeight;
 
             // NOTE: Virtual rows consist of a pair of left-justified and
             // left-offset rows; each one followed by a blanking row.
-            final int numRows = ( int ) Math.ceil( ( plotHeight + blankingHeight )
+            final int numRows = ( int ) FastMath.ceil(
+                    ( plotHeight + blankingHeight )
                     / ( 2.0d * ( watermarkHeight + blankingHeight ) ) );
-            final int numCols = ( int ) Math
-                    .ceil( ( plotWidth + blankingWidth ) / ( watermarkWidth + blankingWidth ) );
+            final int numCols = ( int ) FastMath.ceil(
+                    ( double ) (plotWidth + blankingWidth)
+                            / ( watermarkWidth + blankingWidth ) );
 
-            // Composite the transparent watermark with the background
-            // image. This maintains the integrity of the background image
-            // while also being harder to reverse, at the client end,
-            // than simply painting the transparent watermark atop the
-            // background image.
+            // Composite the transparent watermark with the background image.
+            // This maintains the integrity of the background image while also
+            // being harder to reverse, at the client end, than simply painting
+            // the transparent watermark atop the background image.
             //
-            // NOTE: We use a copy of the graphics context, to minimize
-            // the chance of having a side effect on later use in the
-            // repaint() methods due to setting the composite value.
-            // TODO: Add bounds checking, or trim to the plot boundary,
-            // as the blanking width and height make it difficult to get
-            // an exact count for the tiling otherwise, and it's important
-            // not to leave blank space.
+            // NOTE: We use a copy of the graphics context, to minimize the
+            //  chance of having a side effect on later use in the repaint()
+            //  methods due to setting the composite value.
+            // TODO: Add bounds checking, or trim to the plot boundary, as the
+            //  blanking width and height make it difficult to get an exact
+            //  count for the tiling otherwise, and it's important not to leave
+            //  blank space.
             //
-            // TODO: Refine this logic. as we are not getting enough
-            // rows and sometimes not enough columns, since the blanking
-            // width is different from the watermark width and throws off
-            // the algorithm in terms of how many of each to paint.
-            g2.setComposite( AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 0.5f ) );
+            // TODO: Refine this logic. as we are not getting enough rows and
+            //  sometimes not enough columns, since the blanking width is
+            //  different from the watermark width and throws off the algorithm
+            //  in terms of how many of each to paint.
+            g2.setComposite( AlphaComposite.getInstance(
+                    AlphaComposite.SRC_OVER, 0.5f ) );
 
             // TODO: Do bounds-checking on the edge of the plot.
             // TODO: Review proper direction of y-axis here and elsewhere,
-            // considering that only the watermark inverts this order, and it
-            // might have been incorrect as it never worked properly at the
-            // Plot2D level anyway (just at the ImagePlot level).
+            //  considering that only the watermark inverts this order, and it
+            //  might have been incorrect as it never worked properly at the
+            //  Plot2D level anyway (just at the ImagePlot level).
             int x = getUlx();
             int y = getUly();
             for ( int i = 0; i < numRows; i++ ) {
@@ -690,7 +696,7 @@ public abstract class CartesianDataChart extends CartesianChart {
     }
 
     /**
-     * Set the colors for all relevant data set indices.
+     * Sets the colors for all relevant data set indices.
      * <p>
      * NOTE: This is an optional method that should be overridden as needed.
      */
@@ -700,8 +706,8 @@ public abstract class CartesianDataChart extends CartesianChart {
         _plotType = plotType;
     }
 
-    /**
-     * Set the color for the specified data set index.
+    /*
+     * Sets the color for the specified data set index.
      */
     public final void setColor( final Color colorForDarkBackground,
                                 final Color colorForLightBackground,
@@ -714,8 +720,8 @@ public abstract class CartesianDataChart extends CartesianChart {
         _legendColorsForLightBackground.set( dataSetIndex, colorForLightBackground );
     }
 
-    /**
-     * Set the color for the specified data set index.
+    /*
+     * Sets the color for the specified data set index.
      */
     public final void setColor( final int dataSetIndex,
                                 final Color[] colorsForDarkBackground,
@@ -730,7 +736,7 @@ public abstract class CartesianDataChart extends CartesianChart {
     }
 
     /**
-     * Replace the specified data set with the given points. This calls
+     * Replaces the specified data set with the given points. This calls
      * repaint() to request an update of the display.
      *
      * @param dataSetIndex
@@ -779,7 +785,7 @@ public abstract class CartesianDataChart extends CartesianChart {
     }
 
     /**
-     * Set the graphics background color, and from this contextually set the
+     * Sets the graphics background color, and from this contextually set the
      * foreground color.
      *
      * @param backColor
@@ -789,15 +795,15 @@ public abstract class CartesianDataChart extends CartesianChart {
     public void setForegroundFromBackground( final Color backColor ) {
         super.setForegroundFromBackground( backColor );
 
-        final List< Color > legendColorsDefault = getLegendColorsDefault( backColor );
+        final List< Color > legendColorsDefault = getLegendColorsDefault(
+                backColor );
         setLegendColors( legendColorsDefault );
     }
 
-    /**
-     * Set the legend colors.
+    /*
+     * Sets the legend colors.
      */
     protected final void setLegendColors( final List< Color > legendColors ) {
         _legendColors = legendColors;
     }
-
 }
