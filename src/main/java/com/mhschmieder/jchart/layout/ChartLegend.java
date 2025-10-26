@@ -30,10 +30,10 @@
  */
 package com.mhschmieder.jchart.layout;
 
-import com.marineacoustics.jgui.border.BorderUtilities;
-import com.marineacoustics.jgui.component.VectorizationXPanel;
-import com.marineacoustics.jgui.layout.SpringLayoutUtilities;
 import com.mhschmieder.jgraphics.color.ColorUtilities;
+import com.mhschmieder.jgui.border.BorderUtilities;
+import com.mhschmieder.jgui.component.VectorizationXPanel;
+import com.mhschmieder.jgui.layout.SpringLayoutUtilities;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;

@@ -30,9 +30,9 @@
  */
 package com.mhschmieder.jchart.layout;
 
-import com.marineacoustics.jgui.component.VectorizationXPanel;
 import com.mhschmieder.jchart.chart.ChartUtilities;
 import com.mhschmieder.jgraphics.font.FontUtilities;
+import com.mhschmieder.jgui.component.VectorizationXPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
