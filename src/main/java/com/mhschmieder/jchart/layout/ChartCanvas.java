@@ -42,12 +42,12 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 
 /**
- * {@code Chart} is an abstract base class for all chart types, implementing
- * just the core functionality that is shared even between polar and Cartesian
- * charts Due to how Swing works with the canvas, it has to be implemented as a
- * member of the {@code Panel} class hierarchy, and as our will need to be
- * capable of exporting to various vector graphics formats, we derived from our
- * custom {@link VectorizationXPanel} class.
+ * {@code ChartCanvas} is an abstract base class for all chart types,
+ * implementing just the core functionality that is shared between Polar and
+ * Cartesian coordinate systems. Due to how Swing works with the canvas, it must
+ * be implemented as a member of the {@code Panel} class hierarchy, and as our
+ * will need to be capable of exporting to various vector graphics formats, we
+ * derived from our custom {@link VectorizationXPanel} class.
  * <p>
  * We may consolidate title handling later on and use a higher-level class
  * derivation, but this first step is needed in order to evaluate the
@@ -58,21 +58,21 @@ import java.awt.Insets;
  *
  * @author Mark Schmieder
  */
-public abstract class Chart extends VectorizationXPanel {
+public abstract class ChartCanvas extends VectorizationXPanel {
     /**
      * Unique Serial Version ID for this class, to avoid class loader conflicts.
      */
-    private static final long serialVersionUID        = 4888983936757340982L;
+    private static final long serialVersionUID = 4888983936757340982L;
 
     /**
      * This is the default Font Size for Titles; smaller is OK as the window
      * shrinks, but if the window grows then the font gets no larger than this.
      */
-    public static final int   DEFAULT_TITLE_FONT_SIZE = 18;
+    public static final int DEFAULT_TITLE_FONT_SIZE = 18;
 
     /**
      * Returns a font that is appropriate for chart titles; bold and large.
-     *
+     * <p>
      * Use SansSerif font as the basis, for consistent look-and-feel across the
      * application (and platforms) and the sharpest text.
      *
@@ -80,11 +80,8 @@ public abstract class Chart extends VectorizationXPanel {
      *
      * @version 1.0
      */
-    @SuppressWarnings("nls")
-    public static final Font makeTitleFontCandidate() {
-        final Font titleFontCandidate = new Font( "SansSerif", Font.BOLD, DEFAULT_TITLE_FONT_SIZE );
-
-        return titleFontCandidate;
+    public static Font makeTitleFontCandidate() {
+        return new Font( "SansSerif", Font.BOLD, DEFAULT_TITLE_FONT_SIZE );
     }
 
     /**
@@ -92,12 +89,12 @@ public abstract class Chart extends VectorizationXPanel {
      * <p>
      * For stacked charts, it is often left blank for the lower charts.
      */
-    protected String      chartTitle;
+    protected String chartTitle;
 
     /**
      * The insets of the chart from the host panel on all four sides.
      */
-    protected Insets      chartInsets;
+    protected Insets chartInsets;
 
     /**
      * This variable contains the size of the chart area in <i>pixels</i>. The
@@ -105,17 +102,17 @@ public abstract class Chart extends VectorizationXPanel {
      * panel, and also accounts for the chart title (if present), so variables
      * {@code ulx} and {@code uly} specify the origin of the chart area.
      */
-    protected Dimension   chartSize;
+    protected Dimension chartSize;
 
     /**
      * The x value for the upper left corner of the chart area in pixels.
      */
-    protected int         ulx;
+    protected int ulx;
 
     /**
      * The y value for the upper left corner of the chart area in pixels.
      */
-    protected int         uly;
+    protected int uly;
 
     /**
      * The x value for the lower right corner of the chart area in pixels.
@@ -158,8 +155,7 @@ public abstract class Chart extends VectorizationXPanel {
      *
      * @version 1.0
      */
-    @SuppressWarnings("nls")
-    protected Chart() {
+    protected ChartCanvas() {
         // Always call the superclass constructor first!
         super();
 
@@ -189,7 +185,7 @@ public abstract class Chart extends VectorizationXPanel {
         gridColor = Color.LIGHT_GRAY;
 
         // Make sure the Title Font Metrics aren't null at startup time.
-        final Font titleFontCandidate = Chart.makeTitleFontCandidate();
+        final Font titleFontCandidate = ChartCanvas.makeTitleFontCandidate();
         titleFontMetrics = getFontMetrics( titleFontCandidate );
 
         // Start with the assumption that exponents are not needed for either
@@ -258,7 +254,6 @@ public abstract class Chart extends VectorizationXPanel {
      *
      * @version 1.0
      */
-    @SuppressWarnings("nls")
     public final String getChartTitle() {
         if ( chartTitle == null ) {
             return "";
@@ -347,10 +342,10 @@ public abstract class Chart extends VectorizationXPanel {
 
         // Use the standard foreground color with the Title Font.
         graphicsContext.setColor( getForeground() );
-        final Font titleFontCandidate = Chart.makeTitleFontCandidate();
+        final Font titleFontCandidate = ChartCanvas.makeTitleFontCandidate();
         titleFontMetrics = FontUtilities.pickFont( graphicsContext,
                                                    titleFontCandidate,
-                                                   Chart.DEFAULT_TITLE_FONT_SIZE,
+                                                   ChartCanvas.DEFAULT_TITLE_FONT_SIZE,
                                                    maxCharacterHeight,
                                                    maxStringWidth,
                                                    chartTitle );
@@ -402,5 +397,4 @@ public abstract class Chart extends VectorizationXPanel {
         final Color defaultGridColor = ChartUtilities.getDefaultGridColor( backColor );
         setGridColor( defaultGridColor );
     }
-
 }

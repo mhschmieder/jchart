@@ -45,7 +45,7 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 
-// The CartesianDataChart class primarily adds methods and data associated with
+// The CartesianDataPlot class primarily adds methods and data associated with
 // plots that are a function of a variable along the x-axis producing a value
 // along the y-axis, or simply points in 2D Cartesian Space without a function
 // context.
@@ -55,9 +55,9 @@ import java.util.List;
 // color (see the base class).
 //
 // NOTE: There are quite a few subjective spacing parameters, all given,
-// unfortunately, in pixels. This means that as resolutions get better, this
-// program may need to be adjusted.
-public abstract class CartesianDataChart extends CartesianChart {
+//  unfortunately, in pixels. This means that as resolutions get better, this
+//  program may need to be adjusted.
+public abstract class CartesianDataPlot extends CartesianChartCanvas {
     /**
      *
      */
@@ -88,9 +88,9 @@ public abstract class CartesianDataChart extends CartesianChart {
 
     // NOTE: The main point of this constructor is to ensure that the color
     // arrays are non-null.
-    protected CartesianDataChart( final int numberOfDataSets,
-                                  final boolean useWatermark,
-                                  final String jarRelativeWatermarkIconFilename ) {
+    protected CartesianDataPlot( final int numberOfDataSets,
+                                 final boolean useWatermark,
+                                 final String jarRelativeWatermarkIconFilename ) {
         // Always call the superclass constructor first!
         super( useWatermark, jarRelativeWatermarkIconFilename );
 

@@ -63,21 +63,21 @@ import java.io.InputStream;
 import java.text.NumberFormat;
 
 /**
- * The CartesianGraphicsChart class is derived directly from the CartesianChart
- * container class, since it doesn't plot data points but rather maps raster
+ * The CartesianGraphicsCanvas class is derived from the CartesianChartCanvas
+ * container class, as it doesn't plot data points but rather it maps raster
  * images and vector graphics to spatial coordinates.
- * 
+ * <p>
  * TODO: Make another layer to the class hierarchy to simplify what is needed
- * for stuff like SPL Palette.
- * 
+ *  for stuff like SPL Palette.
+ * <p>
  * NOTE: All coordinate based variables are cached in meters; only the plot
- * grid overlay and tic marks are converted to display units.
- * 
+ *  grid overlay and tic marks are converted to display units.
+ * <p>
  * NOTE: There is now an exception as the Plot Boundary is stored in display
- * units due to data binding between the cached model and the GUI in the new
- * JavaFX Drawing Limits and Region properties windows.
+ *  units due to data binding between the cached model and the GUI in the new
+ *  JavaFX Drawing Limits and Region properties windows.
  */
-public class CartesianGraphicsChart extends CartesianChart {
+public class CartesianGraphicsCanvas extends CartesianChartCanvas {
     /**
      *
      */
@@ -96,9 +96,9 @@ public class CartesianGraphicsChart extends CartesianChart {
 
     // NOTE: This is a unitless method, but does assume the units are at
     // least consistent. Preferably everything is metric (meters).
-    protected static final boolean contains( final Rectangle2D rect,
-                                             final Point2D point,
-                                             final boolean useFuzzyEq ) {
+    protected static boolean contains( final Rectangle2D rect,
+                                       final Point2D point,
+                                       final boolean useFuzzyEq) {
         if ( useFuzzyEq ) {
             // Add a fudge factor to account for floating point imprecision.
             final double fudgeFactor = 0.02 * Math.max( rect.getWidth(), rect.getHeight() );
@@ -162,9 +162,10 @@ public class CartesianGraphicsChart extends CartesianChart {
     private boolean                  _contextMenuActive      = false;
 
     // NOTE: There is nothing extra for the default constructor to do, as the
-    // image and associated stream cannot be set until the image is added.
-    public CartesianGraphicsChart( final boolean useWatermark,
-                                   final String jarRelativeWatermarkIconFilename ) {
+    //  image and associated stream cannot be set until the image is added.
+    public CartesianGraphicsCanvas(
+            final boolean useWatermark,
+            final String jarRelativeWatermarkIconFilename ) {
         // Always call the superclass constructor first!
         super( useWatermark, jarRelativeWatermarkIconFilename );
 

@@ -35,7 +35,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.Locale;
 
-public final class SplPaletteLegend extends CartesianGraphicsChart {
+public final class SplPaletteLegend extends CartesianGraphicsCanvas {
     /**
      *
      */

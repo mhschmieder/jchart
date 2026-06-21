@@ -35,18 +35,19 @@ import org.apache.commons.math3.util.FastMath;
 import java.text.NumberFormat;
 
 // TODO: remove the need for this semi-log-x subclass and find a way to better
-// flag that behavior higher up.
-public class SemiLogXSignalChart extends CartesianDataChart {
+//  flag that behavior higher up.
+public class SemiLogXSignalPlot extends CartesianDataPlot {
     /**
      *
      */
     private static final long serialVersionUID = 1202805649801181396L;
 
-    // This is the default constructor, which primarily just indicates the
+    // This is the default constructor, which primarily just indicates that the
     // x-axis is logged.
-    protected SemiLogXSignalChart( final int numberOfDataSets,
-                                   final boolean pUseWatermark,
-                                   final String jarRelativeWatermarkIconFilename ) {
+    protected SemiLogXSignalPlot(
+            final int numberOfDataSets,
+            final boolean pUseWatermark,
+            final String jarRelativeWatermarkIconFilename ) {
         // Always call the superclass constructor first!
         super( numberOfDataSets, pUseWatermark, jarRelativeWatermarkIconFilename );
 

@@ -51,12 +51,12 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * A labeled box for signal plots and other plots.
+ * A labeled chart canvas for signal plots and other plots.
  * <p>
- * This class provides a labeled box within which to place a data plot. A title,
- * X and Y axis labels, tic marks, and a legend are all supported. Zooming in
- * and out is supported. To zoom in, drag the mouse downwards to draw a box. To
- * zoom out, drag the mouse upward.
+ * This class provides a labeled box within which to place a data plot or other
+ * two-dimensional graphics content. A title, X and Y axis labels, tic marks,
+ * and a legend are all supported. Zooming in and out is supported. To zoom in,
+ * drag the mouse downwards to draw a box. To zoom out, drag the mouse upward.
  * <p>
  * The box can be configured either through a file with commands or through
  * direct invocation of the public methods of the class.
@@ -124,11 +124,11 @@ import java.util.Locale;
  *  Color: on
  * </pre>
  */
-public abstract class CartesianChart extends Chart {
+public abstract class CartesianChartCanvas extends ChartCanvas {
     /**
      *
      */
-    private static final long  serialVersionUID          = 7209329758139893721L;
+    private static final long serialVersionUID = 7209329758139893721L;
 
     // Define watermark opacity level as a constant, both in case we switch to a
     // computed ratio and in case we provide programmatic support for changing
@@ -357,8 +357,8 @@ public abstract class CartesianChart extends Chart {
     /*
      * Constructs a Cartesian plot box with a default configuration.
      */
-    protected CartesianChart( final boolean watermarkInUse,
-                              final String jarRelativeWatermarkIconFilename ) {
+    protected CartesianChartCanvas(final boolean watermarkInUse,
+                                   final String jarRelativeWatermarkIconFilename ) {
         // Always call the superclass constructor first!
         super();
 
@@ -1701,7 +1701,7 @@ public abstract class CartesianChart extends Chart {
             return;
         }
         final URL watermarkUrl =
-                               CartesianChart.class.getResource( jarRelativeWatermarkIconFilename );
+                               CartesianChartCanvas.class.getResource( jarRelativeWatermarkIconFilename );
         if ( watermarkUrl != null ) {
             watermarkIcon = new ImageIcon( watermarkUrl );
         }
