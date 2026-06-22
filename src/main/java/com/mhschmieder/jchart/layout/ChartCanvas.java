@@ -21,18 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the ChartToolkit Library
+ * This file is part of the jchart Library
  *
- * You should have received a copy of the MIT License along with the
- * ChartToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the jchart
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/charttoolkit
+ * Project: https://github.com/mhschmieder/jchart
  */
 package com.mhschmieder.jchart.layout;
 
 import com.mhschmieder.jchart.chart.ChartUtilities;
 import com.mhschmieder.jgraphics.font.FontUtilities;
-import com.mhschmieder.jgui.component.VectorizationXPanel;
+import com.mhschmieder.jgui.layout.JxVectorizationPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -47,7 +47,7 @@ import java.awt.Insets;
  * Cartesian coordinate systems. Due to how Swing works with the canvas, it must
  * be implemented as a member of the {@code Panel} class hierarchy, and as our
  * will need to be capable of exporting to various vector graphics formats, we
- * derived from our custom {@link VectorizationXPanel} class.
+ * derived from our custom {@link JxVectorizationPanel} class.
  * <p>
  * We may consolidate title handling later on and use a higher-level class
  * derivation, but this first step is needed in order to evaluate the
@@ -58,7 +58,7 @@ import java.awt.Insets;
  *
  * @author Mark Schmieder
  */
-public abstract class ChartCanvas extends VectorizationXPanel {
+public abstract class ChartCanvas extends JxVectorizationPanel {
     /**
      * Unique Serial Version ID for this class, to avoid class loader conflicts.
      */

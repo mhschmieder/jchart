@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the ChartToolkit Library
+ * This file is part of the jchart Library
  *
- * You should have received a copy of the MIT License along with the
- * ChartToolkit Library. If not, see <https://opensource.org/licenses/MIT>.
+ * You should have received a copy of the MIT License along with the jchart
+ * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/charttoolkit
+ * Project: https://github.com/mhschmieder/jchart
  */
 package com.mhschmieder.jchart.layout;
 

@@ -21,18 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * This file is part of the FxPolarChart Library
+ * This file is part of the jchart Library
  *
- * You should have received a copy of the MIT License along with the FxPolarChart
+ * You should have received a copy of the MIT License along with the jchart
  * Library. If not, see <https://opensource.org/licenses/MIT>.
  *
- * Project: https://github.com/mhschmieder/fxpolarchart
+ * Project: https://github.com/mhschmieder/jchart
  */
 package com.mhschmieder.jchart.layout;
 
-import com.mhschmieder.jacoustics.FrequencySignalUtilities;
-import com.mhschmieder.jacoustics.RelativeBandwidth;
 import com.mhschmieder.jmath.MathConstants;
+import com.mhschmieder.jphysics.acoustics.FrequencySignalUtilities;
+import com.mhschmieder.jphysics.acoustics.RelativeBandwidth;
 import org.apache.commons.math3.util.FastMath;
 
 import java.awt.Dimension;

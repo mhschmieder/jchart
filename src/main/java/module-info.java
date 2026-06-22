@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020, 2026 Mark Schmieder. All rights reserved.
+ * Copyright (c) 2024, 2026 Mark Schmieder. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,33 +28,13 @@
  *
  * Project: https://github.com/mhschmieder/jchart
  */
-package com.mhschmieder.jchart.chart;
-
-import java.util.Locale;
-
-/**
- * The <code>GridResolution</code> enum is an enumeration of supported chart
- * grid resolutions for grid lines (major ticks) and/or minor ticks.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
- */
-public enum GridResolution {
-    OFF, COARSE, MEDIUM, FINE;
-
-    public static final GridResolution defaultValue() {
-        return MEDIUM;
-    }
-
-    public static final GridResolution fromCanonicalString( final String gridResolutionCanonicalString ) {
-        return ( gridResolutionCanonicalString != null )
-            ? valueOf( gridResolutionCanonicalString.toUpperCase( Locale.ENGLISH ) )
-            : defaultValue();
-    }
-
-    public final String toCanonicalString() {
-        return toString().toLowerCase( Locale.ENGLISH );
-    }
-
+module jchart {
+    exports com.mhschmieder.jchart.chart;
+    exports com.mhschmieder.jchart.layout;
+    requires commons.math3;
+    requires java.desktop;
+    requires jgraphics;
+    requires jgui;
+    requires jmath;
+    requires jphysics;
 }
