@@ -33,6 +33,7 @@ package com.mhschmieder.jchart.layout;
 import com.mhschmieder.jgraphics.color.ColorUtilities;
 import com.mhschmieder.jgraphics.font.FontUtilities;
 import com.mhschmieder.jmath.MathConstants;
+import org.apache.commons.math3.util.FastMath;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -980,8 +981,8 @@ public class SemiLogRPolarPlot extends ChartCanvas {
             xMin = xValues[ 0 ];
             xMax = xValues[ 0 ];
             for ( int j = 1; j < xValues.length; j++ ) {
-                xMin = Math.min( xMin, xValues[ j ] );
-                xMax = Math.max( xMax, xValues[ j ] );
+                xMin = FastMath.min( xMin, xValues[ j ] );
+                xMax = FastMath.max( xMax, xValues[ j ] );
             }
 
             // Calculate limits for plot, and set values.
@@ -1020,10 +1021,10 @@ public class SemiLogRPolarPlot extends ChartCanvas {
         // TODO: Debug the case of asymmetric scaling giving an
         // elliptical vs. circular grid.
         xScale = ( Math.abs( xMax - xMin ) > 0 )
-            ? Math.min( chartSize.width, chartSize.height ) / ( xMax - xMin )
+            ? FastMath.min( chartSize.width, chartSize.height ) / ( xMax - xMin )
             : 1;
         yScale = ( Math.abs( yMax - yMin ) > 0 )
-            ? ( 0.5d * Math.min( chartSize.width, chartSize.height ) ) / ( yMax - yMin )
+            ? ( 0.5d * FastMath.min( chartSize.width, chartSize.height ) ) / ( yMax - yMin )
             : 1;
     }
 

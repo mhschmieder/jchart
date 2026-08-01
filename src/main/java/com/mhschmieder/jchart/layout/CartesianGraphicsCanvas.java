@@ -36,6 +36,7 @@ import com.mhschmieder.jgraphics.shape.AttributedShape;
 import com.mhschmieder.jgraphics.shape.AttributedShapeContainer;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
 import com.mhschmieder.jphysics.measure.UnitConversion;
+import org.apache.commons.math3.util.FastMath;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -101,7 +102,7 @@ public class CartesianGraphicsCanvas extends CartesianChartCanvas {
                                        final boolean useFuzzyEq) {
         if ( useFuzzyEq ) {
             // Add a fudge factor to account for floating point imprecision.
-            final double fudgeFactor = 0.02 * Math.max( rect.getWidth(), rect.getHeight() );
+            final double fudgeFactor = 0.02 * FastMath.max( rect.getWidth(), rect.getHeight() );
             final Rectangle2D rect2 = new Rectangle2D.Double( rect.getX() - fudgeFactor,
                                                               rect.getY() - fudgeFactor,
                                                               rect.getWidth() + fudgeFactor,
@@ -431,18 +432,16 @@ public class CartesianGraphicsCanvas extends CartesianChartCanvas {
         // dimensions, as otherwise we run the risk of being one bit outside the
         // original image boundary. This should not affect accuracy, however.
         final int imageX =
-                         ( int ) Math.ceil( ( _imageBounds.getX() - _imagePlane.getX() ) * xScale );
-        final int imageY = ( int ) Math.ceil( ( ( _imagePlane.getY() + _imagePlane.getHeight() )
+                         ( int ) FastMath.ceil( ( _imageBounds.getX() - _imagePlane.getX() ) * xScale );
+        final int imageY = ( int ) FastMath.ceil( ( ( _imagePlane.getY() + _imagePlane.getHeight() )
                 - ( _imageBounds.getY() + _imageBounds.getHeight() ) ) * yScale );
         final int imageWidth =
-                             ( int ) Math.max( 1, Math.floor( _imageBounds.getWidth() * xScale ) );
-        final int imageHeight = ( int ) Math.max( 1,
-                                                  Math.floor( _imageBounds.getHeight() * yScale ) );
+                             ( int ) FastMath.max( 1, FastMath.floor( _imageBounds.getWidth() * xScale ) );
+        final int imageHeight = ( int ) FastMath.max( 1,
+                FastMath.floor( _imageBounds.getHeight() * yScale ) );
 
         try {
-            final BufferedImage subimage = image
-                    .getSubimage( imageX, imageY, imageWidth, imageHeight );
-            return subimage;
+            return image.getSubimage( imageX, imageY, imageWidth, imageHeight );
         }
         catch ( final RasterFormatException rfe ) {
             rfe.printStackTrace();
@@ -752,13 +751,13 @@ public class CartesianGraphicsCanvas extends CartesianChartCanvas {
             // Verify that the watermark is not clipped vertically. If it is,
             // rescale to 75% of image height.
             if ( watermarkHeight >= ( 0.95f * imageHeight ) ) {
-                watermarkHeight = Math.round( 0.75f * imageHeight );
-                watermarkWidth = Math.round( watermarkHeight / aspectRatio );
+                watermarkHeight = FastMath.round( 0.75f * imageHeight );
+                watermarkWidth = FastMath.round( watermarkHeight / aspectRatio );
             }
 
             // Guarantee at least one pixel in each direction.
-            watermarkWidth = Math.max( 1, watermarkWidth );
-            watermarkHeight = Math.max( 1, watermarkHeight );
+            watermarkWidth = FastMath.max( 1, watermarkWidth );
+            watermarkHeight = FastMath.max( 1, watermarkHeight );
 
             final AreaAveragingScaleFilter scaleFilter =
                                                        new AreaAveragingScaleFilter( watermarkWidth,

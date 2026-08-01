@@ -1285,10 +1285,10 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                                                final int numberOfFractionalDigits ) {
         final int minFracDigits = ( !minFractionDigitsOverride )
             ? numberOfFractionalDigits
-            : Math.min( minFractionDigits, numberOfFractionalDigits );
+            : FastMath.min( minFractionDigits, numberOfFractionalDigits );
         final int maxFracDigits = ( !maxFractionDigitsOverride )
             ? numberOfFractionalDigits
-            : Math.min( maxFractionDigits, numberOfFractionalDigits );
+            : FastMath.min( maxFractionDigits, numberOfFractionalDigits );
         numberFormat.setMinimumFractionDigits( minFracDigits );
         numberFormat.setMaximumFractionDigits( maxFracDigits );
         return numberFormat.format( number );
@@ -2083,8 +2083,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         }
 
         // Find the exponent for the largest magnitude x value.
-        final double largest = Math.max( Math.abs( xMin ), Math.abs( xMax ) );
-        xExp = ( int ) Math.floor( FastMath.log10( largest ) );
+        final double largest = FastMath.max( FastMath.abs( xMin ), FastMath.abs( xMax ) );
+        xExp = ( int ) FastMath.floor( FastMath.log10( largest ) );
 
         // Use the exponent only if it's larger than 3.
         if ( xExp > 3 ) {

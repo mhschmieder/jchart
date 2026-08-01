@@ -30,6 +30,8 @@
  */
 package com.mhschmieder.jchart.layout;
 
+import org.apache.commons.math3.util.FastMath;
+
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -101,8 +103,8 @@ public final class SplPaletteLegend extends CartesianGraphicsCanvas {
     public Dimension getPreferredSize() {
         final Dimension size = super.getPreferredSize();
         final Dimension minimumSize = super.getMinimumSize();
-        final int newWidth = ( int ) Math
-                .round( Math.max( minimumSize.getWidth(), size.getWidth() * 0.25d ) );
+        final int newWidth = ( int ) Math.round( FastMath.max(
+                minimumSize.getWidth(), size.getWidth() * 0.25d ) );
         final Dimension newSize = new Dimension( newWidth, ( int ) size.getHeight() );
         return new Dimension( newSize );
     }
@@ -185,9 +187,9 @@ public final class SplPaletteLegend extends CartesianGraphicsCanvas {
     public void updateSplRange( final double splMinimum,
                                 final double splMaximum ) {
         // Store the new dynamic range, and use it to update the labels.
-        _magMin = Math.abs( Math.max( splMinimum, splMaximum ) );
-        _magMax = Math.abs( Math.min( splMinimum, splMaximum ) );
-        _dynamicRange = Math.abs( _magMax - _magMin );
+        _magMin = FastMath.abs( FastMath.max( splMinimum, splMaximum ) );
+        _magMax = FastMath.abs( FastMath.min( splMinimum, splMaximum ) );
+        _dynamicRange = FastMath.abs( _magMax - _magMin );
 
         // Update the axes from the current Dynamic Range and Scale Factor.
         updateAxes();
