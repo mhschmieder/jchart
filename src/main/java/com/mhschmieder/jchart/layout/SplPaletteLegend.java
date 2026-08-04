@@ -41,24 +41,24 @@ public final class SplPaletteLegend extends CartesianGraphicsCanvas {
     /**
      *
      */
-    private static final long   serialVersionUID       = 1816761465708022035L;
+    private static final long serialVersionUID = 1816761465708022035L;
 
     // Declare default constants.
-    private static final double DIV_DEFAULT            = 6.0d;
-    private static final int    NUMBER_OF_DIVS_DEFAULT = 7;
-    private static final double DYNAMIC_RANGE_DEFAULT  = DIV_DEFAULT * NUMBER_OF_DIVS_DEFAULT;
-
-    private static final double MAG_MAX_DEFAULT        = 0.0d;
-    private static final double MAG_MIN_DEFAULT        = MAG_MAX_DEFAULT - DYNAMIC_RANGE_DEFAULT;
-
+    private static final double DIV_DEFAULT = 6.0d;
+    private static final int NUMBER_OF_DIVS_DEFAULT = 7;
+    private static final double DYNAMIC_RANGE_DEFAULT = DIV_DEFAULT
+                                                        * NUMBER_OF_DIVS_DEFAULT;
+    private static final double MAG_MAX_DEFAULT = 0.0d;
+    private static final double MAG_MIN_DEFAULT = MAG_MAX_DEFAULT
+                                                  - DYNAMIC_RANGE_DEFAULT;
     // Declare dynamic range and div.
-    private double              _div;
-    private int                 _numberOfDivs;
-    private double              _dynamicRange;
+    private double _div;
+    private int _numberOfDivs;
+    private double _dynamicRange;
 
     // Declare minimum and maximum magnitudes (must be valid 6.0dB divs)
-    private double              _magMax;
-    private double              _magMin;
+    private double _magMax;
+    private double _magMin;
 
     public SplPaletteLegend( final Locale locale ) {
         // Always call the superclass constructor first!
@@ -78,38 +78,7 @@ public final class SplPaletteLegend extends CartesianGraphicsCanvas {
         }
     }
 
-    // Get the maximum size of this component as the largest aesthetically
-    // usable palette width (and height based on aspect ratio) -- generally
-    // about 110 pixels. In JDK 1.3, only BoxLayout pays any attention to this.
-    @Override
-    public Dimension getMaximumSize() {
-        return new Dimension( 110, ( int ) Math.round( 110d / getAspectRatio() ) );
-    }
-
-    // Get the minimum size of this component as the smallest aesthetically
-    // usable palette width (and height based on aspect ratio) -- generally
-    // about 60 pixels.
-    @Override
-    public Dimension getMinimumSize() {
-        return new Dimension( 60, ( int ) Math.round( 60d / getAspectRatio() ) );
-    }
-
-    // Get the preferred size of this component; attempting to make the width
-    // 1/8 of the available width, to achieve a 1-to-7 size ratio with sound
-    // field, when a box layout of two horizontal elements is used (this is
-    // based on the knowledge that the natural width is 1/2 the application
-    // width).
-    @Override
-    public Dimension getPreferredSize() {
-        final Dimension size = super.getPreferredSize();
-        final Dimension minimumSize = super.getMinimumSize();
-        final int newWidth = ( int ) Math.round( FastMath.max(
-                minimumSize.getWidth(), size.getWidth() * 0.25d ) );
-        final Dimension newSize = new Dimension( newWidth, ( int ) size.getHeight() );
-        return new Dimension( newSize );
-    }
-
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private void initLegend() {
         // Create a Cartesian y-only axis for the palette.
         setChartTitle( "SPL" );
@@ -133,12 +102,24 @@ public final class SplPaletteLegend extends CartesianGraphicsCanvas {
         updateAxes();
     }
 
+    private void updateAxes() {
+        // Update the Y-axis tics and labels.
+        setYRangeByDivAndRange();
+
+        // Force a repaint event, to display/update the new palette image.
+        repaint();
+    }
+
     // This method resets the plot from the current dynamic range and scale.
     // NOTE: We "zero-normalize" the returned SPL range.
     // TODO: Force the dynamic range itself to an increment of the chosen scale
     // factor?
     private void setYRangeByDivAndRange() {
-        _div = ( _dynamicRange <= 66d ) ? ( _dynamicRange <= 27d ) ? 3 : 6 : 12;
+        _div = ( _dynamicRange <= 66d )
+               ? ( _dynamicRange <= 27d )
+                 ? 3
+                 : 6
+               : 12;
         _numberOfDivs = ( int ) Math.floor( _dynamicRange / _div );
 
         clearYTics();
@@ -151,12 +132,39 @@ public final class SplPaletteLegend extends CartesianGraphicsCanvas {
         }
     }
 
-    private void updateAxes() {
-        // Update the Y-axis tics and labels.
-        setYRangeByDivAndRange();
+    // Get the preferred size of this component; attempting to make the width
+    // 1/8 of the available width, to achieve a 1-to-7 size ratio with sound
+    // field, when a box layout of two horizontal elements is used (this is
+    // based on the knowledge that the natural width is 1/2 the application
+    // width).
+    @Override
+    public Dimension getPreferredSize() {
+        final Dimension size = super.getPreferredSize();
+        final Dimension minimumSize = super.getMinimumSize();
+        final int newWidth
+                = ( int ) Math.round( FastMath.max( minimumSize.getWidth(),
+                                                    size.getWidth() * 0.25d ) );
+        final Dimension newSize = new Dimension( newWidth,
+                                                 ( int ) size.getHeight() );
+        return new Dimension( newSize );
+    }
 
-        // Force a repaint event, to display/update the new palette image.
-        repaint();
+    // Get the maximum size of this component as the largest aesthetically
+    // usable palette width (and height based on aspect ratio) -- generally
+    // about 110 pixels. In JDK 1.3, only BoxLayout pays any attention to this.
+    @Override
+    public Dimension getMaximumSize() {
+        return new Dimension( 110,
+                              ( int ) Math.round( 110d / getAspectRatio() ) );
+    }
+
+    // Get the minimum size of this component as the smallest aesthetically
+    // usable palette width (and height based on aspect ratio) -- generally
+    // about 60 pixels.
+    @Override
+    public Dimension getMinimumSize() {
+        return new Dimension( 60,
+                              ( int ) Math.round( 60d / getAspectRatio() ) );
     }
 
     public void updateScale( final float fScale ) {
@@ -170,8 +178,7 @@ public final class SplPaletteLegend extends CartesianGraphicsCanvas {
     /*
      * Updates the SPL Palette Image.
      */
-    public void updateSplPaletteImage(
-            final BufferedImage splPaletteImageAwt ) {
+    public void updateSplPaletteImage( final BufferedImage splPaletteImageAwt ) {
         // Delegate the image load to the underlying geometry plot.
         updateImage( splPaletteImageAwt );
     }

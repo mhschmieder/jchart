@@ -54,48 +54,30 @@ import java.awt.Insets;
  * differences between title handling in charts for on-screen rendering vs.
  * header titles that are specifically just for vector graphics output files.
  *
- * @version 1.0
- *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public abstract class ChartCanvas extends JxVectorizationPanel {
-    /**
-     * Unique Serial Version ID for this class, to avoid class loader conflicts.
-     */
-    private static final long serialVersionUID = 4888983936757340982L;
-
     /**
      * This is the default Font Size for Titles; smaller is OK as the window
      * shrinks, but if the window grows then the font gets no larger than this.
      */
     public static final int DEFAULT_TITLE_FONT_SIZE = 18;
-
     /**
-     * Returns a font that is appropriate for chart titles; bold and large.
-     * <p>
-     * Use SansSerif font as the basis, for consistent look-and-feel across the
-     * application (and platforms) and the sharpest text.
-     *
-     * @return A font that is appropriate for chart titles; bold and large
-     *
-     * @version 1.0
+     * Unique Serial Version ID for this class, to avoid class loader
+     * conflicts.
      */
-    public static Font makeTitleFontCandidate() {
-        return new Font( "SansSerif", Font.BOLD, DEFAULT_TITLE_FONT_SIZE );
-    }
-
+    private static final long serialVersionUID = 4888983936757340982L;
     /**
      * The title for this chart; usually placed above a chart or chart group.
      * <p>
      * For stacked charts, it is often left blank for the lower charts.
      */
     protected String chartTitle;
-
     /**
      * The insets of the chart from the host panel on all four sides.
      */
     protected Insets chartInsets;
-
     /**
      * This variable contains the size of the chart area in <i>pixels</i>. The
      * chart area is usually offset from upper left-hand corner of the host
@@ -103,48 +85,38 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
      * {@code ulx} and {@code uly} specify the origin of the chart area.
      */
     protected Dimension chartSize;
-
     /**
      * The x value for the upper left corner of the chart area in pixels.
      */
     protected int ulx;
-
     /**
      * The y value for the upper left corner of the chart area in pixels.
      */
     protected int uly;
-
     /**
      * The x value for the lower right corner of the chart area in pixels.
      */
-    protected int         lrx;
-
+    protected int lrx;
     /**
      * The y value for the lower right corner of the chart area in pixels.
      */
-    protected int         lry;
-
+    protected int lry;
     /**
      * The {@link Color} to use for the Grid Lines.
      */
-    protected Color       gridColor;
-
+    protected Color gridColor;
     /**
      * The {@link FontMetrics} for the currently active title {@link Font}.
      */
     protected FontMetrics titleFontMetrics;
-
     /**
      * The power of ten by which the x-axis tic labels should be multiplied.
      */
-    protected int         xExp;
-
+    protected int xExp;
     /**
      * The power of ten by which the x-axis tic labels should be multiplied.
      */
-    protected int         yExp;
-
-    //////////////////////////// Constructors ////////////////////////////////
+    protected int yExp;
 
     /**
      * Constructs a basic {@code Chart}.
@@ -152,8 +124,6 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
      * As this is an abstract base class, it will not be constructed directly in
      * client code; rather, it will get invoked as the super-constructor by
      * derived concrete chart classes.
-     *
-     * @version 1.0
      */
     protected ChartCanvas() {
         // Always call the superclass constructor first!
@@ -195,15 +165,28 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
         yExp = 0;
     }
 
+    //////////////////////////// Constructors ////////////////////////////////
+
+    /**
+     * Returns a font that is appropriate for chart titles; bold and large.
+     * <p>
+     * Use SansSerif font as the basis, for consistent look-and-feel across the
+     * application (and platforms) and the sharpest text.
+     *
+     * @return A font that is appropriate for chart titles; bold and large
+     */
+    public static Font makeTitleFontCandidate() {
+        return new Font( "SansSerif", Font.BOLD, DEFAULT_TITLE_FONT_SIZE );
+    }
+
     ////////////////// Accessor methods for private data /////////////////////
 
     /**
      * Returns the x value for the upper left corner of the chart area in
      * pixels.
      *
-     * @return The x value for the upper left corner of the chart area in pixels
-     *
-     * @version 1.0
+     * @return The x value for the upper left corner of the chart area in
+     *         pixels
      */
     public final int getUlx() {
         return ulx;
@@ -213,9 +196,8 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
      * Returns the y value for the upper left corner of the chart area in
      * pixels.
      *
-     * @return The y value for the upper left corner of the chart area in pixels
-     *
-     * @version 1.0
+     * @return The y value for the upper left corner of the chart area in
+     *         pixels
      */
     public final int getUly() {
         return uly;
@@ -227,8 +209,6 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
      *
      * @return The x value for the lower right corner of the chart area in
      *         pixels
-     *
-     * @version 1.0
      */
     protected final int getLrx() {
         return lrx;
@@ -240,8 +220,6 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
      *
      * @return The y value for the lower right corner of the chart area in
      *         pixels
-     *
-     * @version 1.0
      */
     protected final int getLry() {
         return lry;
@@ -251,8 +229,6 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
      * Returns the chart title, or an empty string if there is none.
      *
      * @return The chart title, or an empty string if there is none
-     *
-     * @version 1.0
      */
     public final String getChartTitle() {
         if ( chartTitle == null ) {
@@ -264,10 +240,8 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
     /**
      * Sets the new chart title, or an empty string if there is none.
      *
-     * @param newChartTitle
-     *            The new chart title, or an empty string if there is none
-     *
-     * @version 1.0
+     * @param newChartTitle The new chart title, or an empty string if there is
+     *                      none
      */
     public final void setChartTitle( final String newChartTitle ) {
         chartTitle = newChartTitle.trim();
@@ -280,8 +254,6 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
      * Returns the grid color.
      *
      * @return The grid color.
-     *
-     * @version 1.0
      */
     public final Color getGridColor() {
         return gridColor;
@@ -290,10 +262,7 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
     /**
      * Sets the grid color.
      *
-     * @param newGridColor
-     *            The new grid color.
-     *
-     * @version 1.0
+     * @param newGridColor The new grid color.
      */
     public final void setGridColor( final Color newGridColor ) {
         gridColor = newGridColor;
@@ -310,20 +279,15 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
      * This method is abstract as the base class has no data or chart components
      * and is just present for enforcing basic shared chart behavior.
      *
-     * @param graphicsContext
-     *            The graphics context.
-     *
-     * @version 1.0
+     * @param graphicsContext The graphics context.
      */
     public abstract void drawChart( final Graphics2D graphicsContext );
 
     /**
-     * Draws the chart title, generally above a single chart or group of charts.
+     * Draws the chart title, generally above a single chart or group of
+     * charts.
      *
-     * @param graphicsContext
-     *            The graphics context.
-     *
-     * @version 1.0
+     * @param graphicsContext The graphics context.
      */
     public final void drawChartTitle( final Graphics2D graphicsContext ) {
         // There is nothing to do if the chart title isn't present.
@@ -338,7 +302,8 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
         final int maxCharacterHeight = uly - 15;
 
         // Get the maximum string width for determining Font Metrics.
-        final int maxStringWidth = ( int ) Math.round( 0.25d * ( 3.0d * chartSize.width ) );
+        final int maxStringWidth = ( int ) Math.round(
+                0.25d * ( 3.0d * chartSize.width ) );
 
         // Use the standard foreground color with the Title Font.
         graphicsContext.setColor( getForeground() );
@@ -352,15 +317,17 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
 
         // Center the Title over the charting region, not over the window.
         final int stringWidth = titleFontMetrics.stringWidth( chartTitle );
-        final int titleX = ulx + ( int ) Math.round( 0.5d * ( chartSize.width - stringWidth ) );
+        final int titleX = ulx + ( int ) Math.round(
+                0.5d * ( chartSize.width - stringWidth ) );
 
         // Vertical space for title, including the top padding above the title.
         //
         // We assume a one-line title, and the title above the main chart.
         final int stringHeight = titleFontMetrics.getHeight();
         final int titleY = ( yExp == 0 )
-            ? ( int ) Math.round( 0.5d * stringHeight ) + 2 + chartInsets.top
-            : chartInsets.top;
+                           ? ( int ) Math.round( 0.5d * stringHeight ) + 2
+                             + chartInsets.top
+                           : chartInsets.top;
 
         graphicsContext.drawString( chartTitle, titleX, titleY );
 
@@ -383,9 +350,7 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
      * method override, before adding support for GUI elements unique to the
      * derived class hierarchy.
      *
-     * @param backColor
-     *            The current background color to apply to this panel
-     *
+     * @param backColor The current background color to apply to this panel
      * @since 1.0
      */
     @Override
@@ -394,7 +359,8 @@ public abstract class ChartCanvas extends JxVectorizationPanel {
         super.setForegroundFromBackground( backColor );
 
         // Determine the new Grid Color that provides the best contrast.
-        final Color defaultGridColor = ChartUtilities.getDefaultGridColor( backColor );
+        final Color defaultGridColor = ChartUtilities.getDefaultGridColor(
+                backColor );
         setGridColor( defaultGridColor );
     }
 }

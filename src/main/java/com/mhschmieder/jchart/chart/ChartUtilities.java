@@ -39,11 +39,17 @@ import java.awt.Color;
  * {@code ChartUtilities} is a utility class for AWT based chart methods, usable
  * in either the AWT or Swing GUI toolkits.
  *
- * @version 0.1
- *
  * @author Mark Schmieder
+ * @version 0.1
  */
 public final class ChartUtilities {
+
+    /**
+     * The default constructor is disabled, as this is a static utilities
+     * class.
+     */
+    private ChartUtilities() {
+    }
 
     /**
      * This method serves merely as a sanity check that the Maven integration
@@ -53,10 +59,8 @@ public final class ChartUtilities {
      * complex projects with dependencies (this project is quite simple and has
      * no dependencies at this time, until more functionality is added).
      *
-     * @param args
-     *            The command-line arguments for executing this class as the
-     *            main entry point for an application
-     *
+     * @param args The command-line arguments for executing this class as the
+     *             main entry point for an application
      * @since 1.0
      */
     public static void main( final String[] args ) {
@@ -64,64 +68,50 @@ public final class ChartUtilities {
     }
 
     /**
-     * The default constructor is disabled, as this is a static utilities class.
-     */
-    private ChartUtilities() {}
-
-    /**
      * Transforms a set of data points to screen coordinates for purposes of
      * rendering or export.
      * <p>
-     * The goal here is coding efficiencies that avoid auto-boxing and
-     * unboxing, class instancing, etc. Thus we bypass some nice programming
-     * paradigms, as the data vectors could have millions of points. This also
-     * means that the target arrays have to be pre-constructed by the invoker,
-     * and should match the original coordinate arrays in size. This is somewhat
-     * wasteful, but less so than other approaches (until a better way is
-     * found). The actual number of transformed data points is returned so that
-     * client code can then make more efficient storage structures downstream.
+     * The goal here is coding efficiencies that avoid auto-boxing and unboxing,
+     * class instancing, etc. Thus we bypass some nice programming paradigms, as
+     * the data vectors could have millions of points. This also means that the
+     * target arrays have to be pre-constructed by the invoker, and should match
+     * the original coordinate arrays in size. This is somewhat wasteful, but
+     * less so than other approaches (until a better way is found). The actual
+     * number of transformed data points is returned so that client code can
+     * then make more efficient storage structures downstream.
      *
-     * @param xCoordinates
-     *            The original x-coordinates in domain/model space
-     * @param yCoordinates
-     *            The original y-coordinates in domain/model space
-     * @param numberOfCoordinates
-     *            The number of original coordinates
-     * @param xMin
-     *            The minimum x-axis value for the data window
-     * @param yMin
-     *            The minimum y-axis value for data normalization
-     * @param xMax
-     *            The maximum x-axis value for the data window
-     * @param yMax
-     *            The maximum y-axis value for data normalization
-     * @param xScale
-     *            The x-axis scale factor to apply from domain/model space to
-     *            screen space
-     * @param yScale
-     *            The y-axis scale factor to apply from domain/model space to
-     *            screen space
-     * @param ulx
-     *            The x-coordinate of the upper-left corner of the chart, in
-     *            screen space
-     * @param lry
-     *            The y-coordinate of the lower-right corner of the chart, in
-     *            screen space
-     * @param applyDataReduction
-     *            Flag for whether to apply data reduction techniques
-     * @param dataVarianceFactor
-     *            The amount of variance between neighboring data values
-     *            (y-axis) to use for determining redundancy during data
-     *            reduction
-     * @param xCoordinatesTransformed
-     *            The (potentially data-reduced) transformed x-coordinates in
-     *            screen space
-     * @param yCoordinatesTransformed
-     *            The (potentially data-reduced) transformed y-coordinates in
-     *            screen space
+     * @param xCoordinates            The original x-coordinates in domain/model
+     *                                space
+     * @param yCoordinates            The original y-coordinates in domain/model
+     *                                space
+     * @param numberOfCoordinates     The number of original coordinates
+     * @param xMin                    The minimum x-axis value for the data
+     *                                window
+     * @param yMin                    The minimum y-axis value for data
+     *                                normalization
+     * @param xMax                    The maximum x-axis value for the data
+     *                                window
+     * @param yMax                    The maximum y-axis value for data
+     *                                normalization
+     * @param xScale                  The x-axis scale factor to apply from
+     *                                domain/model space to screen space
+     * @param yScale                  The y-axis scale factor to apply from
+     *                                domain/model space to screen space
+     * @param ulx                     The x-coordinate of the upper-left corner
+     *                                of the chart, in screen space
+     * @param lry                     The y-coordinate of the lower-right corner
+     *                                of the chart, in screen space
+     * @param applyDataReduction      Flag for whether to apply data reduction
+     *                                techniques
+     * @param dataVarianceFactor      The amount of variance between neighboring
+     *                                data values (y-axis) to use for
+     *                                determining redundancy during data
+     *                                reduction
+     * @param xCoordinatesTransformed The (potentially data-reduced) transformed
+     *                                x-coordinates in screen space
+     * @param yCoordinatesTransformed The (potentially data-reduced) transformed
+     *                                y-coordinates in screen space
      * @return The number of data points transformed to screen coordinates
-     *
-     * @version 1.0
      */
     public static int transformDataVectorToScreenCoordinates( final double[] xCoordinates,
                                                               final double[] yCoordinates,
@@ -163,19 +153,25 @@ public final class ChartUtilities {
 
         // Loop through all of the in-range points in the current data set.
         boolean dataValueInvariant = false;
-        for ( int i = firstDataPointIndex + 1; i <= finalCoordinateIndex; i++ ) {
+        for ( int i = firstDataPointIndex + 1;
+              i <= finalCoordinateIndex;
+              i++ ) {
             final double xValue = xCoordinates[ i ];
             if ( xValue > xMax ) {
                 // If we are past the valid data range, ensure that there are at
                 // least two retained data points so that we don't end up with a
                 // blank trace. In this case, it means grabbing the previous.
                 if ( transformedCoordinateIndex < 1 ) {
-                    final double xPosPrev = ulx + ( ( xCoordinates[ i - 1 ] - xMin ) * xScale );
-                    final double yPosPrev = lry - ( ( yCoordinates[ i - 1 ] - yMin ) * yScale );
+                    final double xPosPrev = ulx + (
+                            ( xCoordinates[ i - 1 ] - xMin ) * xScale );
+                    final double yPosPrev = lry - (
+                            ( yCoordinates[ i - 1 ] - yMin ) * yScale );
 
                     transformedCoordinateIndex++;
-                    xCoordinatesTransformed[ transformedCoordinateIndex ] = xPosPrev;
-                    yCoordinatesTransformed[ transformedCoordinateIndex ] = yPosPrev;
+                    xCoordinatesTransformed[ transformedCoordinateIndex ]
+                            = xPosPrev;
+                    yCoordinatesTransformed[ transformedCoordinateIndex ]
+                            = yPosPrev;
                 }
 
                 break;
@@ -202,8 +198,9 @@ public final class ChartUtilities {
             // noise in double precision floating-point math, so we apply a data
             // variance factor to the comparison as otherwise an all-zero data
             // vector (or flat data range subset) can have misleading variance.
-            if ( applyDataReduction && ( yPos >= ( prevY - dataVarianceFactor ) )
-                    && ( yPos <= ( prevY + dataVarianceFactor ) ) ) {
+            if ( applyDataReduction && ( yPos >= ( prevY
+                                                   - dataVarianceFactor ) ) && (
+                         yPos <= ( prevY + dataVarianceFactor ) ) ) {
                 dataValueInvariant = true;
                 continue;
             }
@@ -211,12 +208,16 @@ public final class ChartUtilities {
                 // Once we get to variant data, ensure that there is at least
                 // one flat line for the invariant data or else we slope towards
                 // the first changed data value.
-                final double xPosPrev = ulx + ( ( xCoordinates[ i - 1 ] - xMin ) * xScale );
-                final double yPosPrev = lry - ( ( yCoordinates[ i - 1 ] - yMin ) * yScale );
+                final double xPosPrev = ulx + ( ( xCoordinates[ i - 1 ] - xMin )
+                                                * xScale );
+                final double yPosPrev = lry - ( ( yCoordinates[ i - 1 ] - yMin )
+                                                * yScale );
 
                 transformedCoordinateIndex++;
-                xCoordinatesTransformed[ transformedCoordinateIndex ] = xPosPrev;
-                yCoordinatesTransformed[ transformedCoordinateIndex ] = yPosPrev;
+                xCoordinatesTransformed[ transformedCoordinateIndex ]
+                        = xPosPrev;
+                yCoordinatesTransformed[ transformedCoordinateIndex ]
+                        = yPosPrev;
 
                 dataValueInvariant = false;
             }
@@ -235,7 +236,8 @@ public final class ChartUtilities {
         // array size to determine the number of transformed coordinates in
         // screen space, and must instead convert the last array index to a
         // size/count/length.
-        final int numberOfCoordinatesTransformed = transformedCoordinateIndex + 1;
+        final int numberOfCoordinatesTransformed = transformedCoordinateIndex
+                                                   + 1;
 
         return numberOfCoordinatesTransformed;
     }
@@ -252,16 +254,15 @@ public final class ChartUtilities {
      * This algorithm accounts for nonlinear human perception of hues; 25% and
      * darker go much brighter (to 50% Gray), for superior visual contrast.
      *
-     * @param backColor
-     *            The current graphics Background Color
+     * @param backColor The current graphics Background Color
      * @return The new Grid Color that provides sufficient contrast with the
      *         current graphics Background Color
-     *
      * @since 1.0
      */
     public static Color getDefaultGridColor( final Color backColor ) {
         // Guarantee that Absolute Black and Absolute White use Mid-Gray (50%).
-        if ( Color.BLACK.equals( backColor ) || Color.WHITE.equals( backColor ) ) {
+        if ( Color.BLACK.equals( backColor )
+             || Color.WHITE.equals( backColor ) ) {
             return ColorConstants.GRAY50;
         }
 
@@ -274,10 +275,9 @@ public final class ChartUtilities {
 
         // All other hues simply go to the next brighter or next darker hue.
         final Color gridColor = ColorUtilities.isColorDark( backColor )
-            ? backColor.brighter()
-            : backColor.darker();
+                                ? backColor.brighter()
+                                : backColor.darker();
 
         return gridColor;
     }
-
 }

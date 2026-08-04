@@ -30,9 +30,5 @@
  */
 /**
  * This package contains the jchart Library's core layout utilities.
- *
- * @version 0.1
- *
- * @author Mark Schmieder
  */
 package com.mhschmieder.jchart.layout;

@@ -34,11 +34,11 @@ package com.mhschmieder.jchart.chart;
  * {@code ChartType} is an enumeration of basic Chart Types; primarily to
  * distinguish charts that connect data points via lines (i.e. Data Vectors) vs.
  * ones that compute a Center Band in both directions from the given data points
- * (as is frequently the case with certain types of Bar Charts and Line Charts).
- *
- * @version 1.0
+ * (as is frequently the case with certain types of Bar Charts and Line
+ * Charts).
  *
  * @author Mark Schmieder
+ * @version 1.0
  */
 public enum ChartType {
     /**
@@ -59,11 +59,9 @@ public enum ChartType {
      * will be doing standard Data Vector charts.
      *
      * @return The most common preferred Chart Type, which is Data Vector
-     *
      * @since 1.0
      */
     public static ChartType defaultValue() {
         return DATA_VECTOR;
     }
-
 }

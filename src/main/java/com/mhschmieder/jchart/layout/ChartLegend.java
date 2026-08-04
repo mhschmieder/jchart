@@ -35,6 +35,14 @@ import com.mhschmieder.jgui.border.BorderUtilities;
 import com.mhschmieder.jgui.layout.JxVectorizationPanel;
 import com.mhschmieder.jgui.layout.SpringLayoutUtilities;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Transparency;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -44,60 +52,55 @@ import javax.swing.JRootPane;
 import javax.swing.SpringLayout;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Transparency;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * {@code ChartLegend} is a simple legend for chart colors, for using with chart
  * toolkits that don't have their own, such as the rudimentary chart facilities
  * in this toolkit. It is deliberately simple and low maintenance, so it only
  * supports a typical vertical layout that would be placed to the right of any
- * chart or group of stacked charts. It also supports export to Vector Graphics.
- *
- * @version 0.1
+ * chart or group of stacked charts. It also supports export to Vector
+ * Graphics.
  *
  * @author Mark Schmieder
+ * @version 0.1
  */
 public class ChartLegend extends JxVectorizationPanel {
     /**
-     * Unique Serial Version ID for this class, to avoid class loader conflicts.
+     * Unique Serial Version ID for this class, to avoid class loader
+     * conflicts.
      */
-    private static final long   serialVersionUID           = -7951399468212008536L;
+    private static final long serialVersionUID = -7951399468212008536L;
 
     /**
      * The dimension (same for width as height) of each legend icon, in pixels.
      */
-    private static final int    ICON_SIZE                  = 12;
+    private static final int ICON_SIZE = 12;
 
     /**
      * The default number of data sets, for purposes of initial list sizing.
      */
-    private static final int    DEFAULT_NUMBER_OF_DATASETS = 16;
+    private static final int DEFAULT_NUMBER_OF_DATASETS = 16;
 
     /**
-     * The sub-panel that is used as a layout container for the legend elements.
+     * The sub-panel that is used as a layout container for the legend
+     * elements.
      */
-    private JPanel              legendSubpanel;
+    private JPanel legendSubpanel;
 
     /**
      * The number of data sets in use by the chart that owns this legend.
      */
-    private int                 numberOfDataSetsInUse;
+    private int numberOfDataSetsInUse;
 
     /**
      * The indices to use to reference each of the data sets in use.
      */
-    private List< Integer >   legendDataSets;
+    private List< Integer > legendDataSets;
 
     /**
      * The labels for each of the data sets in use.
      */
-    private List< JLabel >    legendLabels;
+    private List< JLabel > legendLabels;
 
     /**
      * The currently active legend icons for the data sets in use.
@@ -110,7 +113,8 @@ public class ChartLegend extends JxVectorizationPanel {
     private List< ImageIcon > iconsForDarkBackground;
 
     /**
-     * The icons to use when the legend is displayed against a light background.
+     * The icons to use when the legend is displayed against a light
+     * background.
      */
     private List< ImageIcon > iconsForLightBackground;
 
@@ -153,7 +157,9 @@ public class ChartLegend extends JxVectorizationPanel {
         legendLabels = new ArrayList<>( DEFAULT_NUMBER_OF_DATASETS );
         iconsForDarkBackground = new ArrayList<>( DEFAULT_NUMBER_OF_DATASETS );
         iconsForLightBackground = new ArrayList<>( DEFAULT_NUMBER_OF_DATASETS );
-        for ( int dataSetIndex = 0; dataSetIndex < DEFAULT_NUMBER_OF_DATASETS; dataSetIndex++ ) {
+        for ( int dataSetIndex = 0;
+              dataSetIndex < DEFAULT_NUMBER_OF_DATASETS;
+              dataSetIndex++ ) {
             legendDataSets.add( Integer.valueOf( dataSetIndex ) );
             legendLabels.add( new JLabel( "" ) ); //$NON-NLS-1$
             iconsForDarkBackground.add( null );
@@ -169,12 +175,15 @@ public class ChartLegend extends JxVectorizationPanel {
                 "Chart Legend" ); //$NON-NLS-1$
         legendSubpanel.setBorder( titledBorder );
 
-        for ( int dataSetIndex = 0; dataSetIndex < DEFAULT_NUMBER_OF_DATASETS; dataSetIndex++ ) {
+        for ( int dataSetIndex = 0;
+              dataSetIndex < DEFAULT_NUMBER_OF_DATASETS;
+              dataSetIndex++ ) {
             legendSubpanel.add( legendLabels.get( dataSetIndex ) );
         }
 
         SpringLayoutUtilities.makeCompactGrid( legendSubpanel,
-                                               DEFAULT_NUMBER_OF_DATASETS, // rows
+                                               DEFAULT_NUMBER_OF_DATASETS, //
+                // rows
                                                1, // columns
                                                6, // initX
                                                6, // initY
@@ -194,39 +203,41 @@ public class ChartLegend extends JxVectorizationPanel {
     ////////////////// Accessor methods for private data /////////////////////
 
     /**
+     * Returns the legend for a data set, or an empty string if there is none.
+     * The legend would have been set by addLegend().
+     *
+     * @param dataSetIndex The data set index
+     * @return The legend label, or an empty string if there is none
+     * @since 1.0
+     */
+    @SuppressWarnings( "nls" )
+    public String getLegend( final int dataSetIndex ) {
+        final JLabel legendLabel
+                = legendLabels.get( getDatasetIndex( Integer.valueOf(
+                dataSetIndex ) ) );
+        return ( legendLabel != null )
+               ? legendLabel.getText()
+               : "";
+    }
+
+    /**
      * Returns the index for a data set, or throw an exception if there is none.
      * The legend would have been set by addLegend().
      *
-     * @param dataSetNumber
-     *            The data set number
+     * @param dataSetNumber The data set number
      * @return The data set index, or throw an exception if there is none
-     *
      * @since 1.0
      */
     protected int getDatasetIndex( final Integer dataSetNumber ) {
         final int dataSetIndex = legendDataSets.indexOf( dataSetNumber );
         if ( dataSetIndex == -1 ) {
-            throw new IllegalArgumentException( "ChartLegend.getDatasetIndex: Cannot" //$NON-NLS-1$
-                    + " give a negative number for the data set index." ); //$NON-NLS-1$
+            throw new IllegalArgumentException(
+                    "ChartLegend.getDatasetIndex: Cannot" //$NON-NLS-1$
+                    + " give a negative number for the data set index." );
+            //$NON-NLS-1$
         }
 
         return dataSetIndex;
-    }
-
-    /**
-     * Returns the legend for a data set, or an empty string if there is none.
-     * The legend would have been set by addLegend().
-     *
-     * @param dataSetIndex
-     *            The data set index
-     * @return The legend label, or an empty string if there is none
-     *
-     * @since 1.0
-     */
-    @SuppressWarnings("nls")
-    public String getLegend( final int dataSetIndex ) {
-        final JLabel legendLabel = legendLabels.get( getDatasetIndex( Integer.valueOf( dataSetIndex ) ) );
-        return ( legendLabel != null ) ? legendLabel.getText() : "";
     }
 
     ////////////////////// Legend manipulation methods ///////////////////////
@@ -237,7 +248,9 @@ public class ChartLegend extends JxVectorizationPanel {
      * @since 1.0
      */
     public void clearLegends() {
-        for ( int dataSetIndex = 0; dataSetIndex < DEFAULT_NUMBER_OF_DATASETS; dataSetIndex++ ) {
+        for ( int dataSetIndex = 0;
+              dataSetIndex < DEFAULT_NUMBER_OF_DATASETS;
+              dataSetIndex++ ) {
             clearLegend( dataSetIndex );
         }
 
@@ -248,15 +261,15 @@ public class ChartLegend extends JxVectorizationPanel {
     /**
      * Clears the specified legend. This will show up on the next repaint.
      *
-     * @param dataSetIndex
-     *            The data set index
-     *
+     * @param dataSetIndex The data set index
      * @since 1.0
      */
     public void clearLegend( final int dataSetIndex ) {
         if ( dataSetIndex < 0 ) {
-            throw new IllegalArgumentException( "ChartLegend.clearLegend: Cannot" //$NON-NLS-1$
-                    + " give a negative number for the data set index." ); //$NON-NLS-1$
+            throw new IllegalArgumentException(
+                    "ChartLegend.clearLegend: Cannot" //$NON-NLS-1$
+                    + " give a negative number for the data set index." );
+            //$NON-NLS-1$
         }
 
         legendDataSets.set( dataSetIndex, Integer.valueOf( dataSetIndex ) );
@@ -277,15 +290,12 @@ public class ChartLegend extends JxVectorizationPanel {
      * Short strings generally fit better than long strings. If the string is
      * empty, or the argument is null, then no legend is added.
      *
-     * @param dataSetIndex
-     *            The data set index
-     * @param legends
-     *            The labels for the data sets
-     * @param colorsForDarkBackground
-     *            The colors for the data sets against a dark background
-     * @param colorsForLightBackground
-     *            The colors for the data sets against a light background
-     *
+     * @param dataSetIndex             The data set index
+     * @param legends                  The labels for the data sets
+     * @param colorsForDarkBackground  The colors for the data sets against a
+     *                                 dark background
+     * @param colorsForLightBackground The colors for the data sets against a
+     *                                 light background
      * @since 1.0
      */
     public void addLegend( final int dataSetIndex,
@@ -293,8 +303,10 @@ public class ChartLegend extends JxVectorizationPanel {
                            final Color[] colorsForDarkBackground,
                            final Color[] colorsForLightBackground ) {
         if ( dataSetIndex < 0 ) {
-            throw new IllegalArgumentException( "ChartLegend.addLegend: Cannot" //$NON-NLS-1$
-                    + " give a negative number for the data set index." ); //$NON-NLS-1$
+            throw new IllegalArgumentException(
+                    "ChartLegend.addLegend: Cannot" //$NON-NLS-1$
+                    + " give a negative number for the data set index." );
+            //$NON-NLS-1$
         }
 
         addLegend( dataSetIndex,
@@ -309,53 +321,63 @@ public class ChartLegend extends JxVectorizationPanel {
      * Short strings generally fit better than long strings. If the string is
      * empty, or the argument is null, then no legend is added.
      *
-     * @param dataSetIndex
-     *            The data set index
-     * @param legend
-     *            The label for the data set
-     * @param colorForDarkBackground
-     *            The color for the data set against a dark background
-     * @param colorForLightBackground
-     *            The color for the data set against a light background
-     *
+     * @param dataSetIndex            The data set index
+     * @param legend                  The label for the data set
+     * @param colorForDarkBackground  The color for the data set against a dark
+     *                                background
+     * @param colorForLightBackground The color for the data set against a light
+     *                                background
      * @since 1.0
      */
     public void addLegend( final int dataSetIndex,
                            final String legend,
                            final Color colorForDarkBackground,
                            final Color colorForLightBackground ) {
-        if ( legend.trim().isEmpty() || ( colorForDarkBackground == null )
-                || ( colorForLightBackground == null ) ) {
+        if ( legend.trim().isEmpty() || ( colorForDarkBackground == null ) || (
+                colorForLightBackground == null ) ) {
             return;
         }
         if ( dataSetIndex < 0 ) {
-            throw new IllegalArgumentException( "ChartLegend.addLegend: Cannot" //$NON-NLS-1$
-                    + " give a negative number for the data set index." ); //$NON-NLS-1$
+            throw new IllegalArgumentException(
+                    "ChartLegend.addLegend: Cannot" //$NON-NLS-1$
+                    + " give a negative number for the data set index." );
+            //$NON-NLS-1$
         }
 
-        legendDataSets.set( numberOfDataSetsInUse, Integer.valueOf( dataSetIndex ) );
+        legendDataSets.set( numberOfDataSetsInUse,
+                            Integer.valueOf( dataSetIndex ) );
 
         final JLabel legendLabel = legendLabels.get( numberOfDataSetsInUse );
         legendLabel.setText( legend );
 
         final int iconSize = ICON_SIZE;
-        final BufferedImage bimageForDarkBackground = new BufferedImage( iconSize,
-                                                                         iconSize,
-                                                                         Transparency.BITMASK );
-        final BufferedImage bimageForLightBackground = new BufferedImage( iconSize,
-                                                                          iconSize,
-                                                                          Transparency.BITMASK );
+        final BufferedImage bimageForDarkBackground = new BufferedImage(
+                iconSize,
+                iconSize,
+                Transparency.BITMASK );
+        final BufferedImage bimageForLightBackground = new BufferedImage(
+                iconSize,
+                iconSize,
+                Transparency.BITMASK );
         for ( int i = 0; i < iconSize; i++ ) {
             for ( int j = 0; j < iconSize; j++ ) {
-                bimageForDarkBackground.setRGB( i, j, colorForDarkBackground.getRGB() );
-                bimageForLightBackground.setRGB( i, j, colorForLightBackground.getRGB() );
+                bimageForDarkBackground.setRGB( i,
+                                                j,
+                                                colorForDarkBackground.getRGB() );
+                bimageForLightBackground.setRGB( i,
+                                                 j,
+                                                 colorForLightBackground.getRGB() );
             }
         }
-        final ImageIcon imageIconForDarkBackground = new ImageIcon( bimageForDarkBackground );
-        final ImageIcon imageIconForLightBackground = new ImageIcon( bimageForLightBackground );
+        final ImageIcon imageIconForDarkBackground = new ImageIcon(
+                bimageForDarkBackground );
+        final ImageIcon imageIconForLightBackground = new ImageIcon(
+                bimageForLightBackground );
 
-        iconsForDarkBackground.set( numberOfDataSetsInUse, imageIconForDarkBackground );
-        iconsForLightBackground.set( numberOfDataSetsInUse, imageIconForLightBackground );
+        iconsForDarkBackground.set( numberOfDataSetsInUse,
+                                    imageIconForDarkBackground );
+        iconsForLightBackground.set( numberOfDataSetsInUse,
+                                     imageIconForLightBackground );
 
         legendLabel.setIcon( legendIcons.get( numberOfDataSetsInUse ) );
 
@@ -376,9 +398,7 @@ public class ChartLegend extends JxVectorizationPanel {
      * method override, before adding support for GUI elements unique to the
      * derived class hierarchy.
      *
-     * @param backColor
-     *            The current background color to apply to this panel
-     *
+     * @param backColor The current background color to apply to this panel
      * @since 1.0
      */
     @Override
@@ -387,7 +407,8 @@ public class ChartLegend extends JxVectorizationPanel {
         super.setForegroundFromBackground( backColor );
 
         // Make sure the foreground color is never masked by the background.
-        final Color foreColor = ColorUtilities.getForegroundFromBackground( backColor );
+        final Color foreColor = ColorUtilities.getForegroundFromBackground(
+                backColor );
 
         // This takes care of the unused parts of the layout, to avoid gaps of
         // the wrong background color between layout regions for subcomponents.
@@ -412,11 +433,13 @@ public class ChartLegend extends JxVectorizationPanel {
 
         // Set which legend icons to use based on dark vs. light background.
         legendIcons = ColorUtilities.isColorDark( backColor )
-            ? iconsForDarkBackground
-            : iconsForLightBackground;
+                      ? iconsForDarkBackground
+                      : iconsForLightBackground;
 
         JLabel legendLabel;
-        for ( int dataSetIndex = 0; dataSetIndex < DEFAULT_NUMBER_OF_DATASETS; dataSetIndex++ ) {
+        for ( int dataSetIndex = 0;
+              dataSetIndex < DEFAULT_NUMBER_OF_DATASETS;
+              dataSetIndex++ ) {
             legendLabel = legendLabels.get( dataSetIndex );
             legendLabel.setBackground( backColor );
             legendLabel.setForeground( foreColor );
@@ -435,10 +458,8 @@ public class ChartLegend extends JxVectorizationPanel {
      * specifics of rendering order, exclusions, and additions, when our
      * Graphics Context is part of a Vector Graphics export action.
      *
-     * @param graphicsContext
-     *            The Graphics Context to use as the canvas for rendering this
-     *            panel
-     *
+     * @param graphicsContext The Graphics Context to use as the canvas for
+     *                        rendering this panel
      * @since 1.0
      */
     @Override
@@ -446,8 +467,8 @@ public class ChartLegend extends JxVectorizationPanel {
         // Create an off-screen graphics buffer, or use an existing Graphics
         // Context instance as the paint target (if vectorization is active).
         final Graphics2D graphics2D = isVectorizationActive()
-            ? ( Graphics2D ) graphicsContext
-            : createGraphics( graphicsContext );
+                                      ? ( Graphics2D ) graphicsContext
+                                      : createGraphics( graphicsContext );
         if ( graphics2D != null ) {
             // Redraw the background image before displaying it if anything has
             // changed; otherwise, just re-display it.
@@ -470,26 +491,34 @@ public class ChartLegend extends JxVectorizationPanel {
                 final JLabel legendLabel = legendLabels.get( dataSetIndex );
                 if ( legendLabel != null ) {
                     final String legend = legendLabel.getText();
-                    if ( !legend.trim().isEmpty() && ( dataSetIndex < numberOfDataSetsInUse ) ) {
+                    if ( !legend.trim().isEmpty() && ( dataSetIndex
+                                                       < numberOfDataSetsInUse ) ) {
                         if ( !isVectorizationActive() ) {
                             // Paint the legend label (icon plus title)
                             // directly, for this data set.
                             legendLabel.repaint();
                         }
                         else {
-                            final ImageIcon legendIcon = legendIcons.get( dataSetIndex );
+                            final ImageIcon legendIcon = legendIcons.get(
+                                    dataSetIndex );
                             if ( legendIcon != null ) {
                                 // Paint the image icon for the legend key.
-                                final int iconOffsetHz = ( int ) Math.floor( 0.5d * ICON_SIZE );
-                                final int iconOffsetVt = ( int ) Math.floor( 0.25 * ICON_SIZE );
+                                final int iconOffsetHz = ( int ) Math.floor(
+                                        0.5d * ICON_SIZE );
+                                final int iconOffsetVt = ( int ) Math.floor(
+                                        0.25 * ICON_SIZE );
                                 final int legendLabelX = legendLabel.getX();
                                 final int legendLabelY = legendLabel.getY();
-                                final int legendIconX = legendLabelX - legendIcon.getIconWidth()
-                                        - iconOffsetHz;
-                                final int legendIconY =
-                                                      ( legendLabelY - legendIcon.getIconHeight() )
-                                                              + iconOffsetVt;
-                                legendIcon.paintIcon( this, graphics2D, legendIconX, legendIconY );
+                                final int legendIconX = legendLabelX
+                                                        - legendIcon.getIconWidth()
+                                                        - iconOffsetHz;
+                                final int legendIconY = ( legendLabelY
+                                                          - legendIcon.getIconHeight() )
+                                                        + iconOffsetVt;
+                                legendIcon.paintIcon( this,
+                                                      graphics2D,
+                                                      legendIconX,
+                                                      legendIconY );
 
                                 // Cache the current color to restore later.
                                 final Color color = graphics2D.getColor();
@@ -500,7 +529,9 @@ public class ChartLegend extends JxVectorizationPanel {
                                 graphics2D.setColor( getForeground() );
 
                                 // Draw the label for the data set's legend key.
-                                graphics2D.drawString( legend, legendLabelX, legendLabelY );
+                                graphics2D.drawString( legend,
+                                                       legendLabelX,
+                                                       legendLabelY );
 
                                 // Restore the previous color.
                                 graphics2D.setColor( color );
@@ -524,5 +555,4 @@ public class ChartLegend extends JxVectorizationPanel {
             showBackgroundImage( graphicsContext );
         }
     }
-
 }

@@ -44,12 +44,13 @@ public class SemiLogVectorizationSignalPlot extends CartesianDataPlot {
 
     // This is the default constructor, which primarily just indicates that the
     // x-axis is logged.
-    protected SemiLogVectorizationSignalPlot(
-            final int numberOfDataSets,
-            final boolean pUseWatermark,
-            final String jarRelativeWatermarkIconFilename ) {
+    protected SemiLogVectorizationSignalPlot( final int numberOfDataSets,
+                                              final boolean pUseWatermark,
+                                              final String jarRelativeWatermarkIconFilename ) {
         // Always call the superclass constructor first!
-        super( numberOfDataSets, pUseWatermark, jarRelativeWatermarkIconFilename );
+        super( numberOfDataSets,
+               pUseWatermark,
+               jarRelativeWatermarkIconFilename );
 
         // Ensure that the axis labels never exceed one decimal place of
         // precision, and only use decimals when needed (not for integers).
@@ -61,25 +62,41 @@ public class SemiLogVectorizationSignalPlot extends CartesianDataPlot {
         setXLog( true );
     }
 
-    protected final void addXTicInUserUnits( final String label,
-                                             final double positionInUserUnits ) {
-        // Since the X Axis is logged, the position must also be logged.
-        final double positionInLogUserUnits = FastMath.log10( positionInUserUnits );
-        addXTic( label, positionInLogUserUnits );
-    }
-
     public final void addXTicInUserUnitsAutoLabel( final double positionInUserUnits,
                                                    final int minFractionalDigits,
                                                    final int maxFractionalDigits ) {
-        final NumberFormat ticNumberFormat = ( NumberFormat ) numberFormat.clone();
+        final NumberFormat ticNumberFormat
+                = ( NumberFormat ) numberFormat.clone();
         ticNumberFormat.setMinimumFractionDigits( minFractionalDigits );
         ticNumberFormat.setMaximumFractionDigits( maxFractionalDigits );
-        addXTicInUserUnits( ticNumberFormat.format( positionInUserUnits ), positionInUserUnits );
+        addXTicInUserUnits( ticNumberFormat.format( positionInUserUnits ),
+                            positionInUserUnits );
+    }
+
+    protected final void addXTicInUserUnits( final String label,
+                                             final double positionInUserUnits ) {
+        // Since the X Axis is logged, the position must also be logged.
+        final double positionInLogUserUnits = FastMath.log10(
+                positionInUserUnits );
+        addXTic( label, positionInLogUserUnits );
     }
 
     public final void addXTicInUserUnitsAutoLabel( final int positionInUserUnits ) {
-        final NumberFormat ticNumberFormat = ( NumberFormat ) numberFormat.clone();
-        addXTicInUserUnits( ticNumberFormat.format( positionInUserUnits ), positionInUserUnits );
+        final NumberFormat ticNumberFormat
+                = ( NumberFormat ) numberFormat.clone();
+        addXTicInUserUnits( ticNumberFormat.format( positionInUserUnits ),
+                            positionInUserUnits );
+    }
+
+    public final void addYTicInUserUnitsAutoLabel( final double positionInUserUnits,
+                                                   final int minFractionalDigits,
+                                                   final int maxFractionalDigits ) {
+        final NumberFormat ticNumberFormat
+                = ( NumberFormat ) numberFormat.clone();
+        ticNumberFormat.setMinimumFractionDigits( minFractionalDigits );
+        ticNumberFormat.setMaximumFractionDigits( maxFractionalDigits );
+        addYTicInUserUnits( ticNumberFormat.format( positionInUserUnits ),
+                            positionInUserUnits );
     }
 
     protected final void addYTicInUserUnits( final String label,
@@ -89,18 +106,11 @@ public class SemiLogVectorizationSignalPlot extends CartesianDataPlot {
         addYTic( label, positionInUserUnits );
     }
 
-    public final void addYTicInUserUnitsAutoLabel( final double positionInUserUnits,
-                                                   final int minFractionalDigits,
-                                                   final int maxFractionalDigits ) {
-        final NumberFormat ticNumberFormat = ( NumberFormat ) numberFormat.clone();
-        ticNumberFormat.setMinimumFractionDigits( minFractionalDigits );
-        ticNumberFormat.setMaximumFractionDigits( maxFractionalDigits );
-        addYTicInUserUnits( ticNumberFormat.format( positionInUserUnits ), positionInUserUnits );
-    }
-
     protected final void addYTicInUserUnitsAutoLabel( final int positionInUserUnits ) {
-        final NumberFormat ticNumberFormat = ( NumberFormat ) numberFormat.clone();
-        addYTicInUserUnits( ticNumberFormat.format( positionInUserUnits ), positionInUserUnits );
+        final NumberFormat ticNumberFormat
+                = ( NumberFormat ) numberFormat.clone();
+        addYTicInUserUnits( ticNumberFormat.format( positionInUserUnits ),
+                            positionInUserUnits );
     }
 
     @Override
@@ -126,13 +136,16 @@ public class SemiLogVectorizationSignalPlot extends CartesianDataPlot {
                             final int lastIndex ) {
         final double xLog[] = new double[ x.length ];
         for ( int i = 0; i < x.length; i++ ) {
-            xLog[ i ] = ( x[ i ] > 0.0d ) ? FastMath.log10( x[ i ] ) : Double.NEGATIVE_INFINITY;
+            xLog[ i ] = ( x[ i ] > 0.0d )
+                        ? FastMath.log10( x[ i ] )
+                        : Double.NEGATIVE_INFINITY;
         }
 
         super.setDataSet( dataSetIndex, xLog, y, firstIndex, lastIndex );
     }
 
-    protected final void setXRangeInUserUnits( final double xMin, final double xMax ) {
+    protected final void setXRangeInUserUnits( final double xMin,
+                                               final double xMax ) {
         // Since the X Axis is logged, the values must also be logged.
         final double xMinInLogUserUnits = FastMath.log10( xMin );
         final double xMaxInLogUserUnits = FastMath.log10( xMax );
@@ -140,7 +153,8 @@ public class SemiLogVectorizationSignalPlot extends CartesianDataPlot {
         setXRange( xMinInLogUserUnits, xMaxInLogUserUnits );
     }
 
-    protected final void setYRangeInUserUnits( final double yMin, final double yMax ) {
+    protected final void setYRangeInUserUnits( final double yMin,
+                                               final double yMax ) {
         // Since the Y Axis is NOT logged, the values must also NOT be logged.
         setYRange( yMin, yMax );
     }
@@ -155,5 +169,4 @@ public class SemiLogVectorizationSignalPlot extends CartesianDataPlot {
 
         zoom( xMinInLogUserUnits, ymin, xMaxInLogUserUnits, yMax );
     }
-
 }

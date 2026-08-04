@@ -38,45 +38,43 @@ import org.apache.commons.math3.util.FastMath;
 import java.awt.Dimension;
 
 public final class PolarAmplitudePlot extends SemiLogRPolarPlot {
-    /**
-     * Unique Serial Version ID for this class, to avoid class loader conflicts.
-     */
-    private static final long  serialVersionUID            = 6560987527681952635L;
-
     // Declare the default amplitude values.
     // NOTE: We set a range of -6.0dB (knowing we also gain +6dB headroom).
-    public static final double DEFAULT_AMPLITUDE           = -6d;
-
+    public static final double DEFAULT_AMPLITUDE = -6d;
+    /**
+     * Unique Serial Version ID for this class, to avoid class loader
+     * conflicts.
+     */
+    private static final long serialVersionUID = 6560987527681952635L;
     // Cache the host window's dimensions so we can avoid coupling projects.
-    protected final int        _polarResponseViewerWidth;
-    protected final int        _polarResponseViewerHeight;
-
+    protected final int _polarResponseViewerWidth;
+    protected final int _polarResponseViewerHeight;
+    // The number of polar data points must be calculated from the angle
+    // increment.
+    protected final int _numberOfPolarDataPoints;
+    // Declare the theta polar axis, which is invariant so could be static.
+    protected final double[] _theta;
     // Declare a string to note the orientation of the polar response data
     // (horizontal vs. vertical)
-    protected String           _polarOrientation;
-    
-    // The number of polar data points must be calculated from the angle increment.
-    protected final int        _numberOfPolarDataPoints;
+    protected String _polarOrientation;
 
-    // Declare the theta polar axis, which is invariant so could be static.
-    protected final double[]   _theta;
-
-    public PolarAmplitudePlot(final int polarResponseViewerWidth,
-                              final int polarResponseViewerHeight,
-                              final String polarOrientation,
-                              final double angleIncrementDegrees ) {
+    public PolarAmplitudePlot( final int polarResponseViewerWidth,
+                               final int polarResponseViewerHeight,
+                               final String polarOrientation,
+                               final double angleIncrementDegrees ) {
         // Always call the superclass constructor first!
         super();
 
         _polarResponseViewerWidth = polarResponseViewerWidth;
         _polarResponseViewerHeight = polarResponseViewerHeight;
         _polarOrientation = polarOrientation;
-        
+
         // The data points wrap back to 360 degrees for line drawing end point,
-        // but this isn't necessarily redundant with the first point at 0 degrees
+        // but this isn't necessarily redundant with the first point at 0
+        // degrees
         // if the requested angle increment is not an integral divisor of 360.
-        _numberOfPolarDataPoints = ( int ) FastMath.floor( 
-                360.0d / angleIncrementDegrees ) + 1;
+        _numberOfPolarDataPoints =
+                ( int ) FastMath.floor( 360.0d / angleIncrementDegrees ) + 1;
 
         // Initialize the invariant theta polar axis to a uniform default value.
         _theta = new double[ _numberOfPolarDataPoints ];
@@ -86,9 +84,10 @@ public final class PolarAmplitudePlot extends SemiLogRPolarPlot {
             _theta[ i ] = FastMath.toRadians( thetaDegrees );
             thetaDegrees += angleIncrementDegrees;
         }
-        
+
         // Set the final angle separately, so that it always corresponds to 360
-        // degrees, as otherwise we don't close the circle and get plotting errors.
+        // degrees, as otherwise we don't close the circle and get plotting
+        // errors.
         _theta[ lastValidIndex ] = MathConstants.TWO_PI;
 
         try {
@@ -97,6 +96,30 @@ public final class PolarAmplitudePlot extends SemiLogRPolarPlot {
         catch ( final Exception ex ) {
             ex.printStackTrace();
         }
+    }
+
+    private void initPanel() {
+        // Create a polar "xy-grid" overlay for polar responses.
+        final String title = _polarOrientation + " "
+                             + "Polar Response"; //$NON-NLS-1$ //$NON-NLS-2$
+        setChartTitle( title );
+        setGridSpacing( DEFAULT_GRID_SPACING );
+
+        // Initialize the variant amplitude axis to a uniform default value.
+        // NOTE: We set a range of -6.0dB (knowing we also gain +6dB headroom)
+        //  so that the initial empty plot is representative of a true data
+        //  plot.
+        final double amplitude[] = new double[ _numberOfPolarDataPoints ];
+        for ( int i = 0; i < _numberOfPolarDataPoints; i++ ) {
+            amplitude[ i ] = DEFAULT_AMPLITUDE;
+        }
+
+        // Set the magnitude units for polar plots.
+        setXUnits( "dBr" ); //$NON-NLS-1$
+
+        // Set the initial label and data set.
+        setXLabel( "No Data" ); //$NON-NLS-1$
+        setData( amplitude, _theta );
     }
 
     public void clearPlot() {
@@ -119,30 +142,9 @@ public final class PolarAmplitudePlot extends SemiLogRPolarPlot {
     //  set sizes of hosted components.
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension( ( int ) FastMath.round( ( 0.5d * _polarResponseViewerWidth ) - 60d ),
+        return new Dimension( ( int ) FastMath.round(
+                ( 0.5d * _polarResponseViewerWidth ) - 60d ),
                               _polarResponseViewerHeight - 100 );
-    }
-
-    private void initPanel() {
-        // Create a polar "xy-grid" overlay for polar responses.
-        final String title = _polarOrientation + " " + "Polar Response"; //$NON-NLS-1$ //$NON-NLS-2$
-        setChartTitle( title );
-        setGridSpacing( DEFAULT_GRID_SPACING );
-
-        // Initialize the variant amplitude axis to a uniform default value.
-        // NOTE: We set a range of -6.0dB (knowing we also gain +6dB headroom)
-        //  so that the initial empty plot is representative of a true data plot.
-        final double amplitude[] = new double[ _numberOfPolarDataPoints ];
-        for ( int i = 0; i < _numberOfPolarDataPoints; i++ ) {
-            amplitude[ i ] = DEFAULT_AMPLITUDE;
-        }
-
-        // Set the magnitude units for polar plots.
-        setXUnits( "dBr" ); //$NON-NLS-1$
-
-        // Set the initial label and data set.
-        setXLabel( "No Data" ); //$NON-NLS-1$
-        setData( amplitude, _theta );
     }
 
     public void updatePolarAmplitudeTrace( final double[] amplitude,
@@ -150,10 +152,13 @@ public final class PolarAmplitudePlot extends SemiLogRPolarPlot {
                                            RelativeBandwidth relativeBandwidth,
                                            final double centerFrequency ) {
         // Update the plot label and the data set.
-        final String sCenterFrequency = FrequencySignalUtilities
-                .getFormattedFrequency( centerFrequency, numberFormat );
-        final String xLabel = acousticSourceModel + " " + relativeBandwidth.label()
-                + " centered at " + sCenterFrequency;
+        final String sCenterFrequency
+                = FrequencySignalUtilities.getFormattedFrequency(
+                centerFrequency,
+                numberFormat );
+        final String xLabel = acousticSourceModel + " "
+                              + relativeBandwidth.label() + " centered at "
+                              + sCenterFrequency;
         setXLabel( xLabel );
         setData( amplitude, _theta );
 

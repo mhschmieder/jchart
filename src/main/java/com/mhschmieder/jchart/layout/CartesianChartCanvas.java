@@ -35,7 +35,6 @@ import com.mhschmieder.jmath.MathConstants;
 import com.mhschmieder.jmath.MathUtilities;
 import org.apache.commons.math3.util.FastMath;
 
-import javax.swing.ImageIcon;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -49,6 +48,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import javax.swing.ImageIcon;
 
 /**
  * A labeled chart canvas for signal plots and other plots.
@@ -75,7 +76,7 @@ import java.util.Locale;
  *  XTics: &lt;i&gt;label position, label position, ...&lt;/i&gt;
  *  YTics: &lt;i&gt;label position, label position, ...&lt;/i&gt;
  * </pre>
- *
+ * <p>
  * A <i>label</i> is a string that must be surrounded by quotation _marksStyle
  * if it contains any spaces. A <i>position</i> is a number giving the location
  * of the tic mark along the axis. For example, a horizontal axis for a
@@ -84,7 +85,7 @@ import java.util.Locale;
  * <pre>
  *  XTics: -PI -3.14159, -PI/2 -1.570795, 0 0, PI/2 1.570795, PI 3.14159
  * </pre>
- *
+ * <p>
  * Tic marks could also denote years, months, days of the week, etc.
  * <p>
  * The X and Y axes can use a logarithmic scale with the following commands:
@@ -93,7 +94,7 @@ import java.util.Locale;
  *  XLog: on
  *  YLog: on
  * </pre>
- *
+ * <p>
  * The grid labels represent powers of 10. Note that if a logarithmic scale is
  * used, then the values must be positive. Non-positive values will be silently
  * dropped.
@@ -104,20 +105,20 @@ import java.util.Locale;
  * <pre>
  *  Grid: off
  * </pre>
- *
+ * <p>
  * It can be turned back on with
  *
  * <pre>
  *  Grid: on
  * </pre>
- *
+ * <p>
  * Also, by default, the first ten data sets are shown each in a unique color.
  * The use of color can be turned off with the command:
  *
  * <pre>
  *  Color: off
  * </pre>
- *
+ * <p>
  * It can be turned back on with
  *
  * <pre>
@@ -134,231 +135,212 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     // computed ratio and in case we provide programmatic support for changing
     // its value (this then gives us our defined default value).
     private static final float WATERMARK_OPACITY_DEFAULT = 0.15f;
-
-    // Utility method to round position up to the nearest value in the grid.
-    public static double gridRoundUp( final List< Double > grid, final double position ) {
-        final double x = position - Math.floor( position );
-        int i;
-        final int numberOfGridSteps = grid.size();
-        for ( i = 0; ( i < numberOfGridSteps ) && ( x >= grid.get( i ) ); i++ ) {}
-
-        return ( i >= numberOfGridSteps ) ? position : Math.floor( position ) + grid.get( i );
-    }
-
-    // The range of the data to be plotted.
-    protected double         xMin                      = 0.0d;
-    protected double         xMax                      = 0.0d;
-    protected double         yMin                      = 0.0d;
-    protected double         yMax                      = 0.0d;
-
-    // The factor we pad by so that we don't plot points on the axes.
-    private double           padding                   = 0.05d;
-
-    // Cache whether the ranges have been given or not.
-    private boolean          xRangeGiven               = false;
-    private boolean          yRangeGiven               = false;
-
-    /**
-     * @serial The given X and Y ranges. If they have been given the top and
-     *         bottom of the x and y ranges. This is different from xMin and
-     *         xMax, which actually represent the range of data that is
-     *         plotted. This represents the range specified (which may be
-     *         different due to zooming).
-     */
-    private double           xLowGiven;
-    private double           xHighGiven;
-    private double           yLowGiven;
-    private double           yHighGiven;
-
-    /** @serial The minimum X value registered so far, for auto ranging. */
-    public double            xBottom                   = Double.MAX_VALUE;
-
-    /** @serial The maximum X value registered so far, for auto ranging. */
-    public double            xTop                      = -Double.MAX_VALUE;
-
-    /** @serial The minimum Y value registered so far, for auto ranging. */
-    public double            yBottom                   = Double.MAX_VALUE;
-
-    /** @serial The maximum Y value registered so far, for auto ranging. */
-    public double            yTop                      = -Double.MAX_VALUE;
-
-    /** @serial Whether to draw the axes using a logarithmic scale. */
-    protected boolean        xLog                      = false;
-    protected boolean        yLog                      = false;
-
-    /** @serial Whether to draw a background grid. */
-    private boolean          gridOn                    = true;
-
-    /** @serial The scale applied to the auto-tic generated grid resolution. */
-    private double           gridScale                 = 1.0d;
-
-    /**
-     * The starting positions of the x-axis and y-axis labels.
-     */
-    private int              ySPos                     = 0;
-    private int              xSPos                     = 0;
-
+    // Declare a variable to hold the watermark opacity value.
+    protected final float watermarkOpacity;
     // NOTE: subjective tic length.
-    private final int        ticLength                 = 5;
-
+    private final int ticLength = 5;
     /**
-     * The starting positions of the x-axis and y-axis tic marks.
+     *
      */
-    private int              ticTopX                   = 0;
-    private int              ticTopY                   = 1;
-    private int              ticBottomX                = 1;
-    private int              ticBottomY                = 0;
-
+    public double xBottom = Double.MAX_VALUE;
+    /**
+     *
+     */
+    public double xTop = -Double.MAX_VALUE;
+    /**
+     *
+     */
+    public double yBottom = Double.MAX_VALUE;
+    /**
+     *
+     */
+    public double yTop = -Double.MAX_VALUE;
+    // Number format cache used for locale-specific number formatting.
+    public NumberFormat numberFormat;
+    // The range of the data to be plotted.
+    protected double xMin = 0.0d;
+    protected double xMax = 0.0d;
+    protected double yMin = 0.0d;
+    protected double yMax = 0.0d;
+    /**
+     *
+     */
+    protected boolean xLog = false;
+    protected boolean yLog = false;
     /**
      * Scaling used for the vertical axis in plotting points. The units are
      * pixels/unit, where unit is the units of the Y axis.
      */
-    protected double         yScale                    = 1.0d;
-
+    protected double yScale = 1.0d;
     /**
      * Scaling used for the horizontal axis in plotting points. The units are
      * pixels/unit, where unit is the units of the X axis.
      */
-    protected double         xScale                    = 1.0d;
-
-    /** @serial Metrics for titles and labels. */
-    private int              labelHeight               = 2;
-    private int              halfLabelHeight           = 1;
-
-    /** @serial x-axis and y-axis labels and their widths. */
-    private String           xLabels[];
-    private String           yLabels[];
-    private int              yLabelWidths[];
-
-    /** @serial Superscript for exponential axes labels. */
-    private String           superscript               = "";               //$NON-NLS-1$
-
-    /** @serial Width and height of component in pixels. */
-    private int              preferredWidth            = 500;
-    private int              preferredHeight           = 300;
-
-    /** @serial Indicator that size has been set. */
-    private boolean          sizeHasBeenSet            = false;
-
-    /** @serial Indicator of whether user specified aspect ratio is applied. */
-    private boolean          aspectRatioApplied        = false;
-
-    /** @serial The user specified aspect ratio for the plot area. */
-    private double           aspectRatio               = 0.0d;
-
-    /** @serial The x-axis and y-axis increments. */
-    private double           xStep                     = 1.0d;
-    private double           yStep                     = 1.0d;
-
-    /** @serial The x-axis and y-axis starting points. */
-    private double           xStart                    = 1.0d;
-    private double           yStart                    = 1.0d;
-
+    protected double xScale = 1.0d;
+    protected String xUnits;
+    protected String yUnits;
+    // Stroke for non-highlighted objects.
+    protected BasicStroke defaultStroke;
+    // Stroke for drag boxes and highlighted objects.
+    protected BasicStroke dashStroke;
+    // Use an image icon to load the watermark.
+    protected ImageIcon watermarkIcon;
+    // Declare a flag for whether to use the watermark or not.
+    protected boolean useWatermark;
+    // The factor we pad by so that we don't plot points on the axes.
+    private double padding = 0.05d;
+    // Cache whether the ranges have been given or not.
+    private boolean xRangeGiven = false;
+    private boolean yRangeGiven = false;
     /**
-     * @serial The range of the plot as labeled (multiply by 10^exp for actual
-     *         range.
+     *
      */
-    private double           xTicMin                   = 0.0d;
-    private double           xTicMax                   = 0.0d;
-    private double           yTicMin                   = 0.0d;
-    private double           yTicMax                   = 0.0d;
-
+    private double xLowGiven;
+    private double xHighGiven;
+    private double yLowGiven;
+    private double yHighGiven;
     /**
-     * @serial Indicator of whether the exponent is aligned with the tic labels.
+     *
      */
-    private boolean          xExpAligned               = false;
-    private boolean          yExpAligned               = false;
-
-    /** @serial Scaling used in making tic marks. */
-    private double           yTicScale                 = 0.0d;
-    private double           xTicScale                 = 0.0d;
-
-    /** @serial Font information. */
-    private Font             labelFont;
-    private Font             superscriptFont;
-    private Font             ticFont;
-    private Font             unitsFont;
-
-    /** @serial FontMetric information. */
-    private FontMetrics      labelFontMetrics;
-    private FontMetrics      superscriptFontMetrics;
-    private FontMetrics      ticFontMetrics;
-    private FontMetrics      unitsFontMetrics;
-
+    private boolean gridOn = true;
+    /**
+     *
+     */
+    private double gridScale = 1.0d;
+    /**
+     * The starting positions of the x-axis and y-axis labels.
+     */
+    private int ySPos = 0;
+    private int xSPos = 0;
+    /**
+     * The starting positions of the x-axis and y-axis tic marks.
+     */
+    private int ticTopX = 0;
+    private int ticTopY = 1;
+    private int ticBottomX = 1;
+    private int ticBottomY = 0;
+    /**
+     *
+     */
+    private int labelHeight = 2;
+    private int halfLabelHeight = 1;
+    /**
+     *
+     */
+    private String xLabels[];
+    private String yLabels[];
+    private int yLabelWidths[];
+    /**
+     *
+     */
+    private String superscript = "";               //$NON-NLS-1$
+    /**
+     *
+     */
+    private int preferredWidth = 500;
+    private int preferredHeight = 300;
+    /**
+     *
+     */
+    private boolean sizeHasBeenSet = false;
+    /**
+     *
+     */
+    private boolean aspectRatioApplied = false;
+    /**
+     *
+     */
+    private double aspectRatio = 0.0d;
+    /**
+     *
+     */
+    private double xStep = 1.0d;
+    private double yStep = 1.0d;
+    /**
+     *
+     */
+    private double xStart = 1.0d;
+    private double yStart = 1.0d;
+    /**
+     *
+     */
+    private double xTicMin = 0.0d;
+    private double xTicMax = 0.0d;
+    private double yTicMin = 0.0d;
+    private double yTicMax = 0.0d;
+    /**
+     *
+     */
+    private boolean xExpAligned = false;
+    private boolean yExpAligned = false;
+    /**
+     *
+     */
+    private double yTicScale = 0.0d;
+    private double xTicScale = 0.0d;
+    /**
+     *
+     */
+    private Font labelFont;
+    private Font superscriptFont;
+    private Font ticFont;
+    private Font unitsFont;
+    /**
+     *
+     */
+    private FontMetrics labelFontMetrics;
+    private FontMetrics superscriptFontMetrics;
+    private FontMetrics ticFontMetrics;
+    private FontMetrics unitsFontMetrics;
     // Cache the size of the widest label.
-    private int              widestTicLabel            = 0;
-
+    private int widestTicLabel = 0;
     // Used for log axes. Index into vector of axis labels.
-    private int              gridCurJuke               = 0;
-
+    private int gridCurJuke = 0;
     // Used for log axes. Base of the grid.
-    private double           gridBase                  = 0.0d;
-
-    /** @serial The title and label strings. */
-    private String           xLabel;
-    protected String         xUnits;
-    private String           xUnitsSublabel;
-    private String           yLabel;
-    protected String         yUnits;
-    private String           yUnitsSublabel;
-
-    /** @serial If XTics or YTics are given/ */
+    private double gridBase = 0.0d;
+    /**
+     *
+     */
+    private String xLabel;
+    private String xUnitsSublabel;
+    private String yLabel;
+    private String yUnitsSublabel;
+    /**
+     *
+     */
     private List< Double > xTics;
     private List< String > xTicLabels;
     private List< Double > yTics;
     private List< String > yTicLabels;
-
-    /** @serial The number of x-axis and y-axis tic marks. */
-    private int              numberOfXTics             = 1;
-    private int              numberOfYTics             = 1;
-    private int              xTicIndex                 = 0;
-    private int              yTicIndex                 = 0;
-
+    /**
+     *
+     */
+    private int numberOfXTics = 1;
+    private int numberOfYTics = 1;
+    private int xTicIndex = 0;
+    private int yTicIndex = 0;
     // Indicator of whether X and Y range has been first specified.
-    private boolean          originalXRangeGiven       = false;
-    private boolean          originalYRangeGiven       = false;
-
+    private boolean originalXRangeGiven = false;
+    private boolean originalYRangeGiven = false;
     // First values specified to setXRange() and setYRange().
-    private double           originalXLow              = 0.0d;
-    private double           originalXHigh             = 0.0d;
-    private double           originalYLow              = 0.0d;
-    private double           originalYHigh             = 0.0d;
-
+    private double originalXLow = 0.0d;
+    private double originalXHigh = 0.0d;
+    private double originalYLow = 0.0d;
+    private double originalYHigh = 0.0d;
     // Indicator of whether to override the computed maximum fraction digits.
-    private boolean          maxFractionDigitsOverride = false;
-
+    private boolean maxFractionDigitsOverride = false;
     // The maximum fraction digits for displaying labels (if overridden)
-    private int              maxFractionDigits         = 1;
-
+    private int maxFractionDigits = 1;
     // Indicator of whether to override the computed minimum fraction digits.
-    private boolean          minFractionDigitsOverride = false;
-
+    private boolean minFractionDigitsOverride = false;
     // The minimum fraction digits for displaying labels (if overridden)
-    private int              minFractionDigits         = 0;
-
-    // Stroke for non-highlighted objects.
-    protected BasicStroke    defaultStroke;
-
-    // Stroke for drag boxes and highlighted objects.
-    protected BasicStroke    dashStroke;
-
-    // Use an image icon to load the watermark.
-    protected ImageIcon      watermarkIcon;
-
-    // Declare a flag for whether to use the watermark or not.
-    protected boolean        useWatermark;
-
-    // Declare a variable to hold the watermark opacity value.
-    protected final float    watermarkOpacity;
-
-    // Number format cache used for locale-specific number formatting.
-    public NumberFormat      numberFormat;
+    private int minFractionDigits = 0;
 
     /*
      * Constructs a Cartesian plot box with a default configuration.
      */
-    protected CartesianChartCanvas(final boolean watermarkInUse,
-                                   final String jarRelativeWatermarkIconFilename ) {
+    protected CartesianChartCanvas( final boolean watermarkInUse,
+                                    final String jarRelativeWatermarkIconFilename ) {
         // Always call the superclass constructor first!
         super();
 
@@ -373,18 +355,70 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         }
     }
 
+    private final void initPanel( final String jarRelativeWatermarkIconFilename ) {
+        // Load all JAR-resident resources associated with this class.
+        loadResources( jarRelativeWatermarkIconFilename );
+
+        // Initialize the Number Formatters, now that we know Locale.
+        initNumberFormatters();
+
+        // Create regular stroke patterns.
+        defaultStroke = new BasicStroke();
+        dashStroke = new HighlightStroke( defaultStroke );
+    }
+
+    protected final void initNumberFormatters() {
+        // Cache the number formats so that we don't have to get information
+        // about locale from the OS each time we format a number.
+        numberFormat = NumberFormat.getNumberInstance( Locale.getDefault() );
+
+        // Set the precision for floating-point text formatting.
+        numberFormat.setMinimumFractionDigits( 0 );
+        numberFormat.setMaximumFractionDigits( 2 );
+    }
+
+    // Load all the common JAR-resident resources for the plot.
+    protected void loadResources( final String jarRelativeWatermarkIconFilename ) {
+        // Demand-load the watermark icon into a thread-safe image icon that is
+        // immediately available.
+        if ( ( jarRelativeWatermarkIconFilename == null )
+             || jarRelativeWatermarkIconFilename.isEmpty() ) {
+            return;
+        }
+        final URL watermarkUrl = CartesianChartCanvas.class.getResource(
+                jarRelativeWatermarkIconFilename );
+        if ( watermarkUrl != null ) {
+            watermarkIcon = new ImageIcon( watermarkUrl );
+        }
+    }
+
+    // Utility method to round position up to the nearest value in the grid.
+    public static double gridRoundUp( final List< Double > grid,
+                                      final double position ) {
+        final double x = position - Math.floor( position );
+        int i;
+        final int numberOfGridSteps = grid.size();
+        for ( i = 0;
+              ( i < numberOfGridSteps ) && ( x >= grid.get( i ) );
+              i++ ) {
+        }
+
+        return ( i >= numberOfGridSteps )
+               ? position
+               : Math.floor( position ) + grid.get( i );
+    }
+
     /**
      * Specify a tic mark for the X axis. The label given is placed on the axis
      * at the position given by <i>position</i>. If this is called once or more,
      * automatic generation of tic marks is disabled. The tic mark will appear
      * only if it is within the X range.
      *
-     * @param label
-     *            The label for the tic mark.
-     * @param position
-     *            The position on the X axis.
+     * @param label    The label for the tic mark.
+     * @param position The position on the X axis.
      */
-    protected void addXTic( final String label, final double position ) {
+    protected void addXTic( final String label,
+                            final double position ) {
         if ( xTics == null ) {
             xTics = new ArrayList<>();
             xTicLabels = new ArrayList<>();
@@ -399,12 +433,11 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
      * automatic generation of tic marks is disabled. The tic mark will appear
      * only if it is within the Y range.
      *
-     * @param label
-     *            The label for the tic mark.
-     * @param position
-     *            The position on the Y axis.
+     * @param label    The label for the tic mark.
+     * @param position The position on the Y axis.
      */
-    protected void addYTic( final String label, final double position ) {
+    protected void addYTic( final String label,
+                            final double position ) {
         if ( yTics == null ) {
             yTics = new ArrayList<>();
             yTicLabels = new ArrayList<>();
@@ -428,7 +461,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         int bottomInset = chartInsets.bottom;
         if ( ( xExp != 0 ) && ( xTics == null ) ) {
             // NOTE: 5 pixel padding on the bottom
-            bottomInset = ( int ) FastMath.round( 0.5d * ( 3.0d * labelHeight ) ) + 5;
+            bottomInset =
+                    ( int ) FastMath.round( 0.5d * ( 3.0d * labelHeight ) ) + 5;
         }
 
         // NOTE: 5 pixel padding on the bottom.
@@ -437,18 +471,23 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         }
 
         // Update the chart insets for the revised bottom inset.
-        chartInsets.set( chartInsets.top, chartInsets.left, bottomInset, chartInsets.right );
+        chartInsets.set( chartInsets.top,
+                         chartInsets.left,
+                         bottomInset,
+                         chartInsets.right );
 
         // Vertical space for title, if appropriate.
         //
         // Modified to at least include the top padding from original code.
         //
         // We assume a one-line title.
-        final boolean chartTitleValid = ( chartTitle != null ) && !chartTitle.trim().isEmpty();
+        final boolean chartTitleValid = ( chartTitle != null )
+                                        && !chartTitle.trim().isEmpty();
         final int stringHeight = titleFontMetrics.getHeight();
         uly = ( chartTitleValid && ( yExp == 0 ) )
-            ? ( int ) FastMath.round( 0.5 * stringHeight ) + 2 + chartInsets.top
-            : chartInsets.top;
+              ? ( int ) FastMath.round( 0.5 * stringHeight ) + 2
+                + chartInsets.top
+              : chartInsets.top;
 
         // Compute the space needed around the chart, starting with vertical.
         //
@@ -496,21 +535,24 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         // a way to hold off since we need the tic width metrics here.
         if ( aspectRatioApplied ) {
             if ( aspectRatio == 1.0d ) {
-                final int dimension = FastMath.min( chartSize.width, chartSize.height );
+                final int dimension = FastMath.min( chartSize.width,
+                                                    chartSize.height );
                 chartSize.width = dimension;
                 chartSize.height = dimension;
             }
             else if ( aspectRatio < 1.0d ) {
-                final double minWidth = FastMath.min( chartSize.height * aspectRatio,
-                                                        chartSize.width );
+                final double minWidth = FastMath.min(
+                        chartSize.height * aspectRatio, chartSize.width );
                 chartSize.width = ( int ) FastMath.round( minWidth );
-                chartSize.height = ( int ) FastMath.round( chartSize.width / aspectRatio );
+                chartSize.height = ( int ) FastMath.round(
+                        chartSize.width / aspectRatio );
             }
             else {
-                final double minHeight = FastMath.min( chartSize.width / aspectRatio,
-                                                         chartSize.height );
+                final double minHeight = FastMath.min(
+                        chartSize.width / aspectRatio, chartSize.height );
                 chartSize.height = ( int ) FastMath.round( minHeight );
-                chartSize.width = ( int ) FastMath.round( chartSize.height * aspectRatio );
+                chartSize.width = ( int ) FastMath.round(
+                        chartSize.height * aspectRatio );
             }
 
             // Readjust the lower right corner.
@@ -527,10 +569,12 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         }
 
         // NOTE: 3 pixel spacing between axes and labels (if aligned).
-        xSPos = ( xExpAligned ) ? lrx - 3 : drawRect.width - chartInsets.right;
+        xSPos = ( xExpAligned )
+                ? lrx - 3
+                : drawRect.width - chartInsets.right;
         ySPos = ( xExpAligned )
-            ? lry + labelHeight + labelFontMetrics.getHeight()
-            : drawRect.height - 5;
+                ? lry + labelHeight + labelFontMetrics.getHeight()
+                : drawRect.height - 5;
 
         // TODO: Verify and combine all of this logic with the above.
         if ( aspectRatioApplied ) {
@@ -568,52 +612,64 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
 
     private void autoXTics() {
         // Figure out how many digits after the decimal point will be used.
-        final int numberOfFractionalDigits = MathUtilities.getNumberOfFractionalDigits( xStep );
+        final int numberOfFractionalDigits
+                = MathUtilities.getNumberOfFractionalDigits( xStep );
 
         // NOTE: The following disables first tic. Not a good idea?
         // if (xStart == xMin) { xStart += xStep };
 
-        final List< Double > xGrid = xLog ? gridInit( xStart, xStep, true, null ) : null;
-        final double xTmpStart = xLog ? gridRoundUp( xGrid, xStart ) : xStart;
+        final List< Double > xGrid = xLog
+                                     ? gridInit( xStart, xStep, true, null )
+                                     : null;
+        final double xTmpStart = xLog
+                                 ? gridRoundUp( xGrid, xStart )
+                                 : xStart;
 
-        for ( double xPos = xTmpStart; xPos <= xTicMax; xPos = getNextGridStep( xGrid,
-                                                                                xPos,
-                                                                                xStep,
-                                                                                xLog ) ) {
+        for ( double xPos = xTmpStart;
+              xPos <= xTicMax;
+              xPos = getNextGridStep( xGrid, xPos, xStep, xLog ) ) {
             // Prevent out of bounds exceptions
             if ( xTicIndex >= numberOfXTics ) {
                 break;
             }
 
             final String xTicLabel = xLog
-                ? getFormattedLoggedNumber( xPos, numberOfFractionalDigits )
-                : getFormattedNumber( xPos, numberOfFractionalDigits );
+                                     ? getFormattedLoggedNumber( xPos,
+                                                                 numberOfFractionalDigits )
+                                     : getFormattedNumber( xPos,
+                                                           numberOfFractionalDigits );
             xLabels[ xTicIndex++ ] = xTicLabel;
         }
     }
 
     private void autoYTics() {
         // Figure out how many digits after the decimal point will be used.
-        final int numberOfFractionalDigits = MathUtilities.getNumberOfFractionalDigits( yStep );
+        final int numberOfFractionalDigits
+                = MathUtilities.getNumberOfFractionalDigits( yStep );
 
         // NOTE: The following disables first tic. Not a good idea?
         // if (yStart == yMin) { yStart += yStep };
 
-        final List< Double > yGrid = yLog ? gridInit( yStart, yStep, true, null ) : null;
-        final double yTmpStart = yLog ? getNextGridStep( yGrid, yStart, yStep, yLog ) : yStart;
+        final List< Double > yGrid = yLog
+                                     ? gridInit( yStart, yStep, true, null )
+                                     : null;
+        final double yTmpStart = yLog
+                                 ? getNextGridStep( yGrid, yStart, yStep, yLog )
+                                 : yStart;
 
-        for ( double yPos = yTmpStart; yPos <= yTicMax; yPos = getNextGridStep( yGrid,
-                                                                                yPos,
-                                                                                yStep,
-                                                                                yLog ) ) {
+        for ( double yPos = yTmpStart;
+              yPos <= yTicMax;
+              yPos = getNextGridStep( yGrid, yPos, yStep, yLog ) ) {
             // Prevent out of bounds exceptions
             if ( yTicIndex >= numberOfYTics ) {
                 break;
             }
 
             final String yTicLabel = yLog
-                ? getFormattedLoggedNumber( yPos, numberOfFractionalDigits )
-                : getFormattedNumber( yPos, numberOfFractionalDigits );
+                                     ? getFormattedLoggedNumber( yPos,
+                                                                 numberOfFractionalDigits )
+                                     : getFormattedNumber( yPos,
+                                                           numberOfFractionalDigits );
             yLabels[ yTicIndex ] = yTicLabel;
 
             final int labelWidth = ticFontMetrics.stringWidth( yTicLabel );
@@ -657,8 +713,7 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
      * paintComponent(). To cause it to be called you would normally call
      * repaint(), which eventually causes paintComponent() to be called.
      *
-     * @param graphicsContext
-     *            The graphics context.
+     * @param graphicsContext The graphics context.
      */
     @Override
     public void drawChart( final Graphics2D graphicsContext ) {
@@ -697,7 +752,7 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         graphicsContext.setColor( color );
     }
 
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private final void drawScalingAnnotation( final Graphics2D graphicsContext ) {
         if ( ( xExp != 0 ) && ( xTics == null ) && ( !xLog ) ) {
             // Cache the current color and font to restore later.
@@ -708,8 +763,11 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
             graphicsContext.setColor( getForeground() );
             graphicsContext.setFont( superscriptFont );
 
-            int xSPosAdjusted = xSPos - superscriptFontMetrics.stringWidth( superscript );
-            graphicsContext.drawString( superscript, xSPosAdjusted, ySPos - halfLabelHeight );
+            int xSPosAdjusted = xSPos - superscriptFontMetrics.stringWidth(
+                    superscript );
+            graphicsContext.drawString( superscript,
+                                        xSPosAdjusted,
+                                        ySPos - halfLabelHeight );
 
             // Use the tic font for the scaling factor.
             graphicsContext.setFont( ticFont );
@@ -740,11 +798,13 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
 
             // Center the X-axis label over the plotting region, not over the
             // window.
-            final int labelx = ulx + ( int ) Math.round( 0.5d * ( chartSize.width - stringWidth ) );
+            final int labelx = ulx + ( int ) Math.round(
+                    0.5d * ( chartSize.width - stringWidth ) );
             g2.drawString( xLabel, labelx, ySPos );
             if ( xUnitsSublabel != null ) {
                 g2.setFont( unitsFont );
-                final int unitsx = labelx + labelFontMetrics.stringWidth( xLabel );
+                final int unitsx = labelx
+                                   + labelFontMetrics.stringWidth( xLabel );
                 g2.drawString( xUnitsSublabel, unitsx, ySPos );
             }
 
@@ -754,7 +814,7 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         }
     }
 
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private final void drawXAxisTics( final Graphics2D g2 ) {
         // Cache the current color and font to restore later.
         final Color color = g2.getColor();
@@ -781,10 +841,9 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
 
             // Label the x axis. The labels are quantized so that they don't
             // have excess resolution.
-            for ( double xPos = xTmpStart; xPos <= xTicMax; xPos = getNextGridStep( xGrid,
-                                                                                    xPos,
-                                                                                    xStep,
-                                                                                    xLog ) ) {
+            for ( double xPos = xTmpStart;
+                  xPos <= xTicMax;
+                  xPos = getNextGridStep( xGrid, xPos, xStep, xLog ) ) {
                 // Prevent out of bounds exceptions
                 if ( xTicIndex >= numberOfXTics ) {
                     break;
@@ -794,7 +853,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                 // NOTE: We avoid painting tic marks at the plot box boundary.
                 // NOTE: Paint order is decoupled, by starting the grid lines
                 // at the end points of the tic marks.
-                final int ticX = ulx + ( int ) ( ( xPos - xTicMin ) * xTicScale );
+                final int ticX = ulx + ( int ) ( ( xPos - xTicMin )
+                                                 * xTicScale );
                 g2.drawLine( ticX, uly, ticX, ticTopY );
                 g2.drawLine( ticX, lry, ticX, ticBottomY );
                 if ( gridOn && ( ticX != ulx ) && ( ticX != lrx ) ) {
@@ -806,15 +866,16 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                 // Check to see if any of the labels printed contain the
                 // exponent. If we don't see an exponent, then print it.
                 final String xTicLabel = xLabels[ xTicIndex++ ];
-                if ( xLog && ( xTicLabel != null ) && ( xTicLabel.indexOf( 'e' ) != -1 ) ) {
+                if ( xLog && ( xTicLabel != null ) && ( xTicLabel.indexOf( 'e' )
+                                                        != -1 ) ) {
                     needExponent = false;
                 }
 
                 // Draw the tic label.
                 // NOTE: 3 pixel spacing between axis and labels.
                 if ( xTicLabel != null ) {
-                    final int labelXPos = ticX
-                            - ( int ) Math.ceil( 0.5d * ticFontMetrics.stringWidth( xTicLabel ) );
+                    final int labelXPos = ticX - ( int ) Math.ceil(
+                            0.5d * ticFontMetrics.stringWidth( xTicLabel ) );
                     final int labelYPos = lry + 3 + labelHeight;
                     g2.drawString( xTicLabel, labelXPos, labelYPos );
                 }
@@ -825,24 +886,31 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
 
                 // If the step is greater than 1, clamp it to 1 so that we draw
                 // the unlabeled grid lines for each integer interval.
-                final double tmpStep = ( xStep > 1.0d ) ? 1.0d : xStep;
+                final double tmpStep = ( xStep > 1.0d )
+                                       ? 1.0d
+                                       : xStep;
 
                 // Recalculate the start using the new step.
                 xTmpStart = tmpStep * Math.ceil( xTicMin / tmpStep );
 
-                final List< Double > unlabeledGrid = gridInit( xTmpStart, tmpStep, false, xGrid );
+                final List< Double > unlabeledGrid = gridInit( xTmpStart,
+                                                               tmpStep,
+                                                               false,
+                                                               xGrid );
                 if ( unlabeledGrid.size() > 0 ) {
-                    for ( double xPos =
-                                      getNextGridStep( unlabeledGrid,
-                                                       xTmpStart,
-                                                       tmpStep,
-                                                       xLog ); xPos <= xTicMax; xPos =
-                                                                                     getNextGridStep( unlabeledGrid,
-                                                                                                      xPos,
-                                                                                                      tmpStep,
-                                                                                                      xLog ) ) {
-                        ticTopX = ulx + ( int ) ( ( xPos - xTicMin ) * xTicScale );
-                        if ( gridOn && ( ticTopX != ulx ) && ( ticTopX != lrx ) ) {
+                    for ( double xPos = getNextGridStep( unlabeledGrid,
+                                                         xTmpStart,
+                                                         tmpStep,
+                                                         xLog );
+                          xPos <= xTicMax;
+                          xPos = getNextGridStep( unlabeledGrid,
+                                                  xPos,
+                                                  tmpStep,
+                                                  xLog ) ) {
+                        ticTopX = ulx + ( int ) ( ( xPos - xTicMin )
+                                                  * xTicScale );
+                        if ( gridOn && ( ticTopX != ulx ) && ( ticTopX
+                                                               != lrx ) ) {
                             g2.setColor( gridColor );
                             g2.drawLine( ticTopX, uly + 1, ticTopX, lry - 1 );
                             g2.setColor( foregroundColor );
@@ -853,7 +921,9 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                 if ( needExponent ) {
                     xExp = ( int ) Math.floor( xTmpStart );
                     g2.setFont( superscriptFont );
-                    g2.drawString( Integer.toString( xExp ), xSPos, ySPos - halfLabelHeight );
+                    g2.drawString( Integer.toString( xExp ),
+                                   xSPos,
+                                   ySPos - halfLabelHeight );
                     xSPos -= ticFontMetrics.stringWidth( "x10" );
                     g2.setFont( ticFont );
                     g2.drawString( "x10", xSPos, ySPos );
@@ -880,8 +950,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
 
                 // Find the start position of x label.
                 // NOTE: 3 pixel spacing between axis and labels.
-                final int labelXCenterToEdge = ( int ) Math
-                        .ceil( 0.5d * ticFontMetrics.stringWidth( label ) );
+                final int labelXCenterToEdge = ( int ) Math.ceil(
+                        0.5d * ticFontMetrics.stringWidth( label ) );
                 final int labelXPos = ticX - labelXCenterToEdge;
                 final int labelYPos = lry + 3 + labelHeight;
 
@@ -927,12 +997,15 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
             // NOTE: We must account for the full string not just the main
             // label sans units.
             final String yLabelWithUnits = ( yUnitsSublabel != null )
-                ? yLabel + yUnitsSublabel
-                : yLabel;
-            final int stringWidth = labelFontMetrics.stringWidth( yLabelWithUnits );
-            final int labelX = ( int ) Math
-                    .round( 0.5d * ( labelFontMetrics.getHeight() + chartInsets.left ) );
-            final int labelY = uly + ( int ) Math.round( 0.5d * ( ( lry - uly ) + stringWidth ) );
+                                           ? yLabel + yUnitsSublabel
+                                           : yLabel;
+            final int stringWidth = labelFontMetrics.stringWidth(
+                    yLabelWithUnits );
+            final int labelX = ( int ) Math.round(
+                    0.5d * ( labelFontMetrics.getHeight()
+                             + chartInsets.left ) );
+            final int labelY = uly + ( int ) Math.round(
+                    0.5d * ( ( lry - uly ) + stringWidth ) );
             g2.translate( labelX, labelY );
             g2.rotate( -MathConstants.HALF_PI );
             // int labelOffsetX = (int)Math.round(-0.5d * stringWidth);
@@ -943,9 +1016,11 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
             g2.rotate( MathConstants.HALF_PI );
             g2.translate( -labelX, -labelY );
             if ( yUnitsSublabel != null ) {
-                final int unitsX = ( int ) Math
-                        .round( 0.5d * ( unitsFontMetrics.getHeight() + chartInsets.left ) );
-                final int unitsY = labelY - labelFontMetrics.stringWidth( yLabel );
+                final int unitsX = ( int ) Math.round(
+                        0.5d * ( unitsFontMetrics.getHeight()
+                                 + chartInsets.left ) );
+                final int unitsY = labelY
+                                   - labelFontMetrics.stringWidth( yLabel );
                 g2.translate( unitsX, unitsY );
                 g2.rotate( -MathConstants.HALF_PI );
                 // int unitsXOffset = labelFontMetrics.stringWidth(yLabel);
@@ -964,7 +1039,7 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         }
     }
 
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private final void drawYAxisTics( final Graphics2D g2 ) {
         // Cache the current color and font to restore later.
         final Color color = g2.getColor();
@@ -991,10 +1066,9 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
 
             // Label the y axis. The labels are quantized so that they don't
             // have excess resolution.
-            for ( double yPos = yTmpStart; yPos <= yTicMax; yPos = getNextGridStep( yGrid,
-                                                                                    yPos,
-                                                                                    yStep,
-                                                                                    yLog ) ) {
+            for ( double yPos = yTmpStart;
+                  yPos <= yTicMax;
+                  yPos = getNextGridStep( yGrid, yPos, yStep, yLog ) ) {
                 // Prevent out of bounds exceptions
                 if ( yTicIndex >= numberOfYTics ) {
                     break;
@@ -1004,7 +1078,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                 // NOTE: We avoid painting tic marks at the plot box boundary.
                 // NOTE: Paint order is decoupled, by starting the grid lines
                 // at the end points of the tic marks.
-                final int ticY = lry - ( int ) ( ( yPos - yTicMin ) * yTicScale );
+                final int ticY = lry - ( int ) ( ( yPos - yTicMin )
+                                                 * yTicScale );
                 g2.drawLine( ulx, ticY, ticTopX, ticY );
                 g2.drawLine( lrx, ticY, ticBottomX, ticY );
                 if ( gridOn && ( ticY != uly ) && ( ticY != lry ) ) {
@@ -1016,7 +1091,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                 // Check to see if any of the labels printed contain the
                 // exponent. If we don't see an exponent, then print it.
                 final String yTicLabel = yLabels[ yTicIndex ];
-                if ( yLog && ( yTicLabel != null ) && ( yTicLabel.indexOf( 'e' ) != -1 ) ) {
+                if ( yLog && ( yTicLabel != null ) && ( yTicLabel.indexOf( 'e' )
+                                                        != -1 ) ) {
                     needExponent = false;
                 }
 
@@ -1024,30 +1100,38 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                 // NOTE: 4 pixel spacing between axis and labels.
                 if ( yTicLabel != null ) {
                     final int labelXPos = ulx - yLabelWidths[ yTicIndex++ ] - 4;
-                    final int labelYPos = ticY + ( int ) Math.ceil( 0.3333d * labelHeight );
+                    final int labelYPos = ticY + ( int ) Math.ceil(
+                            0.3333d * labelHeight );
                     g2.drawString( yTicLabel, labelXPos, labelYPos );
                 }
             }
 
             if ( yLog ) {
                 // Draw in grid lines that don't have labels.
-                final List< Double > unlabeledGrid = gridInit( yStart, yStep, false, yGrid );
+                final List< Double > unlabeledGrid = gridInit( yStart,
+                                                               yStep,
+                                                               false,
+                                                               yGrid );
                 if ( unlabeledGrid.size() > 0 ) {
                     // If the step is greater than 1, clamp it to 1 so that we
                     // draw the unlabeled grid lines for each integer interval.
-                    final double tmpStep = ( yStep > 1.0d ) ? 1.0d : yStep;
+                    final double tmpStep = ( yStep > 1.0d )
+                                           ? 1.0d
+                                           : yStep;
 
-                    for ( double yPos =
-                                      getNextGridStep( unlabeledGrid,
-                                                       yStart,
-                                                       tmpStep,
-                                                       yLog ); yPos <= yTicMax; yPos =
-                                                                                     getNextGridStep( unlabeledGrid,
-                                                                                                      yPos,
-                                                                                                      tmpStep,
-                                                                                                      yLog ) ) {
-                        final int yCoord1 = lry - ( int ) ( ( yPos - yTicMin ) * yTicScale );
-                        if ( gridOn && ( yCoord1 != uly ) && ( yCoord1 != lry ) ) {
+                    for ( double yPos = getNextGridStep( unlabeledGrid,
+                                                         yStart,
+                                                         tmpStep,
+                                                         yLog );
+                          yPos <= yTicMax;
+                          yPos = getNextGridStep( unlabeledGrid,
+                                                  yPos,
+                                                  tmpStep,
+                                                  yLog ) ) {
+                        final int yCoord1 = lry - ( int ) ( ( yPos - yTicMin )
+                                                            * yTicScale );
+                        if ( gridOn && ( yCoord1 != uly ) && ( yCoord1
+                                                               != lry ) ) {
                             g2.setColor( gridColor );
                             g2.drawLine( ulx + 1, yCoord1, lrx - 1, yCoord1 );
                             g2.setColor( foregroundColor );
@@ -1056,7 +1140,9 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                 }
 
                 // If we zoomed in, we need the exponent
-                yExp = needExponent ? ( int ) Math.floor( yTmpStart ) : 0;
+                yExp = needExponent
+                       ? ( int ) Math.floor( yTmpStart )
+                       : 0;
             }
 
             // Draw scaling annotation for y axis.
@@ -1066,7 +1152,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                 g2.drawString( "x10", chartInsets.left, chartInsets.top );
                 g2.setFont( superscriptFont );
                 g2.drawString( Integer.toString( yExp ),
-                               ticFontMetrics.stringWidth( "x10" ) + chartInsets.left,
+                               ticFontMetrics.stringWidth( "x10" )
+                               + chartInsets.left,
                                chartInsets.top - halfLabelHeight );
                 g2.setFont( ticFont );
             }
@@ -1086,8 +1173,11 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
 
                 // Find the start position of y label.
                 // NOTE: 3 pixel spacing between axis and labels.
-                final int offset = ( yPos < ( lry - labelHeight ) ) ? halfLabelHeight : 0;
-                final int labelXPos = ulx - ticFontMetrics.stringWidth( label ) - 3;
+                final int offset = ( yPos < ( lry - labelHeight ) )
+                                   ? halfLabelHeight
+                                   : 0;
+                final int labelXPos = ulx - ticFontMetrics.stringWidth( label )
+                                      - 3;
                 final int labelYPos = ticY + offset;
 
                 // Draw the label.
@@ -1116,7 +1206,7 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         generateYTics();
     }
 
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     private void generateXTics() {
         // Number of x tic marks.
         // Need to start with a guess and converge on a solution here.
@@ -1126,33 +1216,41 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         final int charWidth = ticFontMetrics.stringWidth( "8" );
         if ( xLog ) {
             // X axis log labels will be at most 6 chars: -1E-02
-            numberOfXTics = 2 + ( chartSize.width / ( ( charWidth * 6 ) + 10 ) );
+            numberOfXTics = 2 + ( chartSize.width / ( ( charWidth * 6 )
+                                                      + 10 ) );
         }
         else {
             // Limit to 10 iterations
             int count = 0;
             while ( count++ <= 10 ) {
-                xStep = MathUtilities.roundUp( ( xTicMax - xTicMin ) / numberOfXTics );
+                xStep = MathUtilities.roundUp(
+                        ( xTicMax - xTicMin ) / numberOfXTics );
 
                 // Compute the width of a label for this xStep
-                numberOfFractionalDigits = MathUtilities.getNumberOfFractionalDigits( xStep );
+                numberOfFractionalDigits
+                        = MathUtilities.getNumberOfFractionalDigits( xStep );
 
                 // Number of integer digits is the maximum of two end points
-                int intdigits = MathUtilities.getNumberOfIntegerDigits( xTicMax );
-                final int inttemp = MathUtilities.getNumberOfIntegerDigits( xTicMin );
+                int intdigits
+                        = MathUtilities.getNumberOfIntegerDigits( xTicMax );
+                final int inttemp = MathUtilities.getNumberOfIntegerDigits(
+                        xTicMin );
                 if ( intdigits < inttemp ) {
                     intdigits = inttemp;
                 }
 
                 // Allow two extra digits (decimal point and sign).
-                final int maxLabelWidth = charWidth * ( numberOfFractionalDigits + 2 + intdigits );
+                final int maxLabelWidth = charWidth * ( numberOfFractionalDigits
+                                                        + 2 + intdigits );
 
                 // Compute new estimate of number of tics.
                 // NOTE: 10 additional pixels between labels.
                 // NOTE: Try to ensure at least two tic marks.
                 final int savenx = numberOfXTics;
-                numberOfXTics = 2 + ( chartSize.width / ( maxLabelWidth + 10 ) );
-                if ( ( ( numberOfXTics - savenx ) <= 1 ) || ( ( savenx - numberOfXTics ) <= 1 ) ) {
+                numberOfXTics = 2 + ( chartSize.width / ( maxLabelWidth
+                                                          + 10 ) );
+                if ( ( ( numberOfXTics - savenx ) <= 1 ) || (
+                        ( savenx - numberOfXTics ) <= 1 ) ) {
                     break;
                 }
             }
@@ -1228,13 +1326,22 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         return aspectRatio;
     }
 
+    /**
+     * Set the user specified aspect ratio.
+     *
+     * @param newAspectRatio The new user specified aspect ratio.
+     */
+    protected final void setAspectRatio( final double newAspectRatio ) {
+        aspectRatio = newAspectRatio;
+    }
+
     /*
      * Return the number as a String for use as a label on a logarithmic axis.
      * If this is a log plot, number passed in will not have too many digits to
      * cause problems. If the number is an integer, then we print 1e<num>. If
      * the number is not an integer, then print only the fractional components.
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     protected final String getFormattedLoggedNumber( final double number,
                                                      final int numberOfFractionalDigits ) {
         String results;
@@ -1260,7 +1367,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                 results = "1e" + results;
             }
             else {
-                results = getFormattedNumber( FastMath.pow( 10.0d, fractionalPart ),
+                results = getFormattedNumber( FastMath.pow( 10.0d,
+                                                            fractionalPart ),
                                               numberOfFractionalDigits );
             }
         }
@@ -1269,7 +1377,9 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                 results = "1e" + results;
             }
             else {
-                results = getFormattedNumber( FastMath.pow( 10.0d, ( fractionalPart * 10 ) ),
+                results = getFormattedNumber( FastMath.pow( 10.0d,
+                                                            ( fractionalPart
+                                                              * 10 ) ),
                                               numberOfFractionalDigits );
             }
         }
@@ -1284,11 +1394,13 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     protected final String getFormattedNumber( final double number,
                                                final int numberOfFractionalDigits ) {
         final int minFracDigits = ( !minFractionDigitsOverride )
-            ? numberOfFractionalDigits
-            : FastMath.min( minFractionDigits, numberOfFractionalDigits );
+                                  ? numberOfFractionalDigits
+                                  : FastMath.min( minFractionDigits,
+                                                  numberOfFractionalDigits );
         final int maxFracDigits = ( !maxFractionDigitsOverride )
-            ? numberOfFractionalDigits
-            : FastMath.min( maxFractionDigits, numberOfFractionalDigits );
+                                  ? numberOfFractionalDigits
+                                  : FastMath.min( maxFractionDigits,
+                                                  numberOfFractionalDigits );
         numberFormat.setMinimumFractionDigits( minFracDigits );
         numberFormat.setMaximumFractionDigits( maxFracDigits );
         return numberFormat.format( number );
@@ -1313,6 +1425,18 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
+     * Set the grid scale.
+     *
+     * @param newGridScale The new grid scale.
+     */
+    protected final void setGridScale( final double newGridScale ) {
+        gridScale = newGridScale;
+
+        // Any grid state change requires regenerating the off-screen buffer.
+        regenerateOffScreenImage = true;
+    }
+
+    /**
      * Return the maximum number of fraction digits for label strings.
      *
      * @return The maximum number of fraction digits.
@@ -1322,18 +1446,13 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
-     * If the size of the plot has been set by setSize(), then return that size.
-     * Otherwise, return what the superclass returns (which is undocumented, but
-     * apparently imposes no maximum size). Currently (JDK 1.3), only BoxLayout
-     * pays any attention to this.
+     * Set the maximum number of fraction digits for label strings.
      *
-     * @return The maximum desired size.
+     * @param newMaxFractionDigits The maximum number of fraction digits.
      */
-    @Override
-    public Dimension getMaximumSize() {
-        return sizeHasBeenSet
-            ? new Dimension( preferredWidth, preferredHeight )
-            : super.getMaximumSize();
+    protected final void setMaximumFractionDigits( final int newMaxFractionDigits ) {
+        maxFractionDigitsOverride = true;
+        maxFractionDigits = newMaxFractionDigits;
     }
 
     /**
@@ -1346,17 +1465,13 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
-     * Get the minimum size of this component. This is simply the dimensions
-     * specified by setSize(), if this has been called. Otherwise, return
-     * whatever the base class returns, which is undocumented.
+     * Set the minimum number of fraction digits for label strings.
      *
-     * @return The minimum size.
+     * @param newMinFractionDigits The minimum number of fraction digits.
      */
-    @Override
-    public Dimension getMinimumSize() {
-        return sizeHasBeenSet
-            ? new Dimension( preferredWidth, preferredHeight )
-            : super.getMinimumSize();
+    protected final void setMinimumFractionDigits( final int newMinFractionDigits ) {
+        minFractionDigitsOverride = true;
+        minFractionDigits = newMinFractionDigits;
     }
 
     /*
@@ -1398,6 +1513,35 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
+     * If the size of the plot has been set by setSize(), then return that size.
+     * Otherwise, return what the superclass returns (which is undocumented, but
+     * apparently imposes no maximum size). Currently (JDK 1.3), only BoxLayout
+     * pays any attention to this.
+     *
+     * @return The maximum desired size.
+     */
+    @Override
+    public Dimension getMaximumSize() {
+        return sizeHasBeenSet
+               ? new Dimension( preferredWidth, preferredHeight )
+               : super.getMaximumSize();
+    }
+
+    /**
+     * Get the minimum size of this component. This is simply the dimensions
+     * specified by setSize(), if this has been called. Otherwise, return
+     * whatever the base class returns, which is undocumented.
+     *
+     * @return The minimum size.
+     */
+    @Override
+    public Dimension getMinimumSize() {
+        return sizeHasBeenSet
+               ? new Dimension( preferredWidth, preferredHeight )
+               : super.getMinimumSize();
+    }
+
+    /**
      * Get the label for the X (horizontal) axis, or null if none has been set.
      *
      * @return The X label.
@@ -1407,12 +1551,30 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
+     * Set the label for the X (horizontal) axis.
+     *
+     * @param label The label.
+     */
+    public final void setXLabel( final String label ) {
+        xLabel = label;
+    }
+
+    /**
      * Return whether the X axis is drawn with a logarithmic scale.
      *
      * @return True if the X axis is logarithmic.
      */
     public final boolean getXLog() {
         return xLog;
+    }
+
+    /**
+     * Specify whether the X axis is drawn with a logarithmic scale.
+     *
+     * @param newXLog If {@code true}, logarithmic axis is used.
+     */
+    public final void setXLog( final boolean newXLog ) {
+        xLog = newXLog;
     }
 
     /*
@@ -1453,12 +1615,26 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
-     * Get the label for the X (horizontal) units, or null if none has been set.
+     * Get the label for the X (horizontal) units, or null if none has been
+     * set.
      *
      * @return The X units.
      */
     public final String getXUnits() {
         return xUnits;
+    }
+
+    /**
+     * Set the units for the X (horizontal) axis.
+     *
+     * @param units The units.
+     */
+    @SuppressWarnings( "nls" )
+    public final void setXUnits( final String units ) {
+        xUnits = units;
+        xUnitsSublabel = ( xUnits == null )
+                         ? ""
+                         : " (" + xUnits + ")";
     }
 
     /**
@@ -1471,12 +1647,30 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
+     * Set the label for the Y (vertical) axis.
+     *
+     * @param label The label.
+     */
+    public final void setYLabel( final String label ) {
+        yLabel = label;
+    }
+
+    /**
      * Return whether the Y axis is drawn with a logarithmic scale.
      *
      * @return True if the Y axis is logarithmic.
      */
     public final boolean getYLog() {
         return yLog;
+    }
+
+    /**
+     * Specify whether the Y axis is drawn with a logarithmic scale.
+     *
+     * @param newYLog If {@code true}, logarithmic axis is used.
+     */
+    public final void setYLog( final boolean newYLog ) {
+        yLog = newYLog;
     }
 
     /*
@@ -1525,11 +1719,24 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         return yUnits;
     }
 
+    /**
+     * Set the units for the Y (vertical) axis.
+     *
+     * @param units The units.
+     */
+    @SuppressWarnings( "nls" )
+    public final void setYUnits( final String units ) {
+        yUnits = units;
+        yUnitsSublabel = ( yUnits == null )
+                         ? ""
+                         : " (" + yUnits + ")";
+    }
+
     // Determine what values to use for log axes.
     private final List< Double > gridInit( final double low,
-                                             final double step,
-                                             final boolean labeled,
-                                             final List< Double > oldgrid ) {
+                                           final double step,
+                                           final boolean labeled,
+                                           final List< Double > oldgrid ) {
         // How log axes work:
         // gridInit() creates a vector with the values to use for the log axes.
         // For example, the vector might contain {0.0 0.301 0.698}, which could
@@ -1603,15 +1810,16 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
                     // Cycle through the oldgrid until we find an element that
                     // is equal to or greater than the element we are trying to
                     // add.
-                    while ( ( oldgridi < numberOfOldGridSteps )
-                            && ( oldgrid.get( oldgridi ) < logval ) ) {
+                    while ( ( oldgridi < numberOfOldGridSteps ) && (
+                            oldgrid.get( oldgridi ) < logval ) ) {
                         oldgridi++;
                     }
 
                     if ( oldgridi < numberOfOldGridSteps ) {
                         // Using == on doubles is bad if the numbers are close,
                         // but not exactly equal.
-                        if ( Math.abs( oldgrid.get( oldgridi ) - logval ) > 0.00001d ) {
+                        if ( Math.abs( oldgrid.get( oldgridi ) - logval )
+                             > 0.00001d ) {
                             grid.add( logval );
                         }
                     }
@@ -1627,38 +1835,21 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
 
         // gridCurJuke and gridBase are used in _gridStep();
         gridCurJuke = 0;
-        final double lowAdjusted = ( low == -0d ) ? 0.0d : low;
+        final double lowAdjusted = ( low == -0d )
+                                   ? 0.0d
+                                   : low;
         gridBase = Math.floor( lowAdjusted );
         final double x = lowAdjusted - gridBase;
 
         // Set gridCurJuke so that the value in grid is greater than
         // or equal to x. This sets us up to process the first point.
         final int numberOfGridSteps = grid.size();
-        for ( gridCurJuke = -1; ( ( gridCurJuke + 1 ) < numberOfGridSteps )
-                && ( x >= grid.get( gridCurJuke + 1 ) ); gridCurJuke++ ) {}
+        for ( gridCurJuke = -1;
+              ( ( gridCurJuke + 1 ) < numberOfGridSteps ) && ( x >= grid.get(
+                      gridCurJuke + 1 ) );
+              gridCurJuke++ ) {
+        }
         return grid;
-    }
-
-    private final void initPanel( final String jarRelativeWatermarkIconFilename ) {
-        // Load all JAR-resident resources associated with this class.
-        loadResources( jarRelativeWatermarkIconFilename );
-
-        // Initialize the Number Formatters, now that we know Locale.
-        initNumberFormatters();
-
-        // Create regular stroke patterns.
-        defaultStroke = new BasicStroke();
-        dashStroke = new HighlightStroke( defaultStroke );
-    }
-
-    protected final void initNumberFormatters() {
-        // Cache the number formats so that we don't have to get information
-        // about locale from the OS each time we format a number.
-        numberFormat = NumberFormat.getNumberInstance( Locale.getDefault() );
-
-        // Set the precision for floating-point text formatting.
-        numberFormat.setMinimumFractionDigits( 0 );
-        numberFormat.setMaximumFractionDigits( 2 );
     }
 
     /**
@@ -1668,6 +1859,18 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
      */
     public final boolean isAspectRatioApplied() {
         return aspectRatioApplied;
+    }
+
+    /**
+     * If the argument is true, apply the user specified aspect ratio.
+     * Otherwise, use the aspect ratio that maximizes this component (the
+     * default).
+     *
+     * @param newAspectRatioApplied {@code true} to apply the user specified
+     *                              aspect ratio.
+     */
+    protected final void setAspectRatioApplied( final boolean newAspectRatioApplied ) {
+        aspectRatioApplied = newAspectRatioApplied;
     }
 
     /**
@@ -1682,6 +1885,17 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
+     * Specify whether the X (horizontal) axis exponent is aligned with the
+     * lower right corner.
+     *
+     * @param newXExpAligned If {@code true}, the X (horizontal) axis exponent
+     *                       is aligned with the lower right corner.
+     */
+    public final void setXExpAligned( final boolean newXExpAligned ) {
+        xExpAligned = newXExpAligned;
+    }
+
+    /**
      * Return whether the Y (vertical) axis exponent is aligned with the upper
      * left corner.
      *
@@ -1692,25 +1906,21 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         return yExpAligned;
     }
 
-    // Load all the common JAR-resident resources for the plot.
-    protected void loadResources( final String jarRelativeWatermarkIconFilename ) {
-        // Demand-load the watermark icon into a thread-safe image icon that is
-        // immediately available.
-        if ( ( jarRelativeWatermarkIconFilename == null )
-                || jarRelativeWatermarkIconFilename.isEmpty() ) {
-            return;
-        }
-        final URL watermarkUrl =
-                               CartesianChartCanvas.class.getResource( jarRelativeWatermarkIconFilename );
-        if ( watermarkUrl != null ) {
-            watermarkIcon = new ImageIcon( watermarkUrl );
-        }
+    /**
+     * Specify whether the Y (vertical) axis exponent is aligned with the upper
+     * left corner.
+     *
+     * @param newYExpAligned If {@code true}, the Y (vertical) axis exponent is
+     *                       aligned with the upper left corner.
+     */
+    public final void setYExpAligned( final boolean newYExpAligned ) {
+        yExpAligned = newYExpAligned;
     }
 
     /**
      * Measure the various fonts. You only want to call this once.
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings( "nls" )
     @Override
     protected final void measureFonts() {
         // Always call the superclass first!
@@ -1739,24 +1949,6 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
-     * This method is for dealing with the details of off-screen z-buffering.
-     * <p>
-     * This method is provided for subclasses to implement, as it is too
-     * tricky to change the repaint order to accommodate the unique needs of
-     * subclasses otherwise.
-     * <p>
-     * The details of background image caching and regeneration are
-     * context-dependent and not applicable towards all panels, so this base
-     * class implementation treats this as a no-op.
-     *
-     * @param graphics2D
-     *            The Graphics Context to use for off-screen z-buffering
-     *
-     * @since 1.0
-     */
-    public void paintBackgroundImage( final Graphics2D graphics2D ) {}
-
-    /**
      * This is the preferred repaint method to override and invoke in Swing.
      * <p>
      * The reason for overriding it here, is so can take into account whether
@@ -1764,10 +1956,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
      * <p>
      * If this is done at initialization time, we have a null Graphics Context.
      *
-     * @param graphicsContext
-     *            The Graphics Context to use as the canvas for rendering this
-     *            component
-     *
+     * @param graphicsContext The Graphics Context to use as the canvas for
+     *                        rendering this component
      * @since 1.0
      */
     @Override
@@ -1779,8 +1969,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         // Create an off-screen graphics buffer, or use an existing Graphics
         // Context instance as the paint target (if vectorization is active).
         final Graphics2D graphics2D = isVectorizationActive()
-            ? ( Graphics2D ) graphicsContext
-            : createGraphics( graphicsContext );
+                                      ? ( Graphics2D ) graphicsContext
+                                      : createGraphics( graphicsContext );
         if ( graphics2D != null ) {
             // Redraw the background image before displaying it if anything has
             // changed; otherwise, just re-display it.
@@ -1831,12 +2021,28 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
-     * This is a wrapper method for drawing decorations onto a supplied
-     * Graphics Context. It is provided to help with decoupling of dependencies.
+     * This method is for dealing with the details of off-screen z-buffering.
+     * <p>
+     * This method is provided for subclasses to implement, as it is too tricky
+     * to change the repaint order to accommodate the unique needs of subclasses
+     * otherwise.
+     * <p>
+     * The details of background image caching and regeneration are
+     * context-dependent and not applicable towards all panels, so this base
+     * class implementation treats this as a no-op.
      *
-     * @param graphics2D
-     *            The Graphics Context to use for drawing the decorations
+     * @param graphics2D The Graphics Context to use for off-screen z-buffering
+     * @since 1.0
+     */
+    public void paintBackgroundImage( final Graphics2D graphics2D ) {
+    }
+
+    /**
+     * This is a wrapper method for drawing decorations onto a supplied Graphics
+     * Context. It is provided to help with decoupling of dependencies.
      *
+     * @param graphics2D The Graphics Context to use for drawing the
+     *                   decorations
      * @since 1.0
      */
     public void drawDecorations( final Graphics2D graphics2D ) {
@@ -1850,11 +2056,11 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
 
     /**
      * This is a wrapper method for drawing relevant elements onto a supplied
-     * Graphics Context. It is provided to help with decoupling of dependencies.
+     * Graphics Context. It is provided to help with decoupling of
+     * dependencies.
      *
-     * @param graphicsContext
-     *            The Graphics Context to use for drawing the elements
-     *
+     * @param graphicsContext The Graphics Context to use for drawing the
+     *                        elements
      * @since 1.0
      */
     public void drawElements( final Graphics2D graphicsContext ) {
@@ -1890,154 +2096,16 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
-     * Set the user specified aspect ratio.
-     *
-     * @param newAspectRatio
-     *            The new user specified aspect ratio.
-     */
-    protected final void setAspectRatio( final double newAspectRatio ) {
-        aspectRatio = newAspectRatio;
-    }
-
-    /**
-     * If the argument is true, apply the user specified aspect ratio.
-     * Otherwise, use the aspect ratio that maximizes this component (the
-     * default).
-     *
-     * @param newAspectRatioApplied
-     *            {@code true} to apply the user specified aspect ratio.
-     */
-    protected final void setAspectRatioApplied( final boolean newAspectRatioApplied ) {
-        aspectRatioApplied = newAspectRatioApplied;
-    }
-
-    /**
-     * Control whether the grid is drawn.
-     *
-     * @param gridIsOn
-     *            If {@code true}, a grid is drawn.
-     */
-    protected final void setGrid( final boolean gridIsOn ) {
-        gridOn = gridIsOn;
-
-        // Any grid state change requires regenerating the off-screen buffer.
-        regenerateOffScreenImage = true;
-    }
-
-    /**
-     * Set the grid scale.
-     *
-     * @param newGridScale
-     *            The new grid scale.
-     */
-    protected final void setGridScale( final double newGridScale ) {
-        gridScale = newGridScale;
-
-        // Any grid state change requires regenerating the off-screen buffer.
-        regenerateOffScreenImage = true;
-    }
-
-    /**
-     * Set the maximum number of fraction digits for label strings.
-     *
-     * @param newMaxFractionDigits
-     *            The maximum number of fraction digits.
-     */
-    protected final void setMaximumFractionDigits( final int newMaxFractionDigits ) {
-        maxFractionDigitsOverride = true;
-        maxFractionDigits = newMaxFractionDigits;
-    }
-
-    /**
-     * Set the minimum number of fraction digits for label strings.
-     *
-     * @param newMinFractionDigits
-     *            The minimum number of fraction digits.
-     */
-    protected final void setMinimumFractionDigits( final int newMinFractionDigits ) {
-        minFractionDigitsOverride = true;
-        minFractionDigits = newMinFractionDigits;
-    }
-
-    /**
-     * Set the padding multiple. The plot rectangle can be "padded" in each
-     * direction -x, +x, -y, and +y. If the padding is set to 0.05 (and the
-     * padding is used), then there is 10% more length on each axis than set by
-     * the setXRange() and setYRange() methods, 5% in each direction.
-     *
-     * @param newPadding
-     *            The new padding multiple.
-     */
-    protected final void setPadding( final double newPadding ) {
-        padding = newPadding;
-    }
-
-    /**
-     * Set the size of the chart. This overrides the base class to make it work.
-     * In particular, it records the specified size so that getMinimumSize() and
-     * getPreferredSize() return the specified value. However, it only works if
-     * the plot is placed in its own JPanel. This is because the JPanel asks the
-     * contained component for its preferred size before determining the size of
-     * the panel. If the plot is placed directly in the content pane of a
-     * JApplet, then, mysteriously, this method has no effect.
-     *
-     * @param width
-     *            The width, in pixels.
-     * @param height
-     *            The height, in pixels.
-     */
-    @Override
-    public void setSize( final int width, final int height ) {
-        preferredWidth = width;
-        preferredHeight = height;
-        sizeHasBeenSet = true;
-        super.setSize( width, height );
-    }
-
-    /**
-     * Specify whether the X (horizontal) axis exponent is aligned with the
-     * lower right corner.
-     *
-     * @param newXExpAligned
-     *            If {@code true}, the X (horizontal) axis exponent is aligned
-     *            with the lower right corner.
-     */
-    public final void setXExpAligned( final boolean newXExpAligned ) {
-        xExpAligned = newXExpAligned;
-    }
-
-    /**
-     * Set the label for the X (horizontal) axis.
-     *
-     * @param label
-     *            The label.
-     */
-    public final void setXLabel( final String label ) {
-        xLabel = label;
-    }
-
-    /**
-     * Specify whether the X axis is drawn with a logarithmic scale.
-     *
-     * @param newXLog
-     *            If {@code true}, logarithmic axis is used.
-     */
-    public final void setXLog( final boolean newXLog ) {
-        xLog = newXLog;
-    }
-
-    /**
      * Set the X (horizontal) range of the plot. If this is not done explicitly,
      * then the range is computed automatically from data available when the
      * plot is drawn. If min and max are identical, then the range is
      * arbitrarily spread by 1.
      *
-     * @param min
-     *            The left extent of the range.
-     * @param max
-     *            The right extent of the range.
+     * @param min The left extent of the range.
+     * @param max The right extent of the range.
      */
-    public final void setXRange( final double min, final double max ) {
+    public final void setXRange( final double min,
+                                 final double max ) {
         xRangeGiven = true;
         xLowGiven = min;
         xHighGiven = max;
@@ -2058,7 +2126,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
      * Internal implementation of setXRange, so that it can be called when
      * auto-ranging.
      */
-    public final void setXRangeWithAutorange( final double min, final double max ) {
+    public final void setXRangeWithAutorange( final double min,
+                                              final double max ) {
         // If values are invalid, try for something reasonable.
         double minAdjusted = min;
         double maxAdjusted = max;
@@ -2083,7 +2152,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         }
 
         // Find the exponent for the largest magnitude x value.
-        final double largest = FastMath.max( FastMath.abs( xMin ), FastMath.abs( xMax ) );
+        final double largest = FastMath.max( FastMath.abs( xMin ),
+                                             FastMath.abs( xMax ) );
         xExp = ( int ) FastMath.floor( FastMath.log10( largest ) );
 
         // Use the exponent only if it's larger than 3.
@@ -2119,61 +2189,16 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
-     * Set the units for the X (horizontal) axis.
-     *
-     * @param units
-     *            The units.
-     */
-    @SuppressWarnings("nls")
-    public final void setXUnits( final String units ) {
-        xUnits = units;
-        xUnitsSublabel = ( xUnits == null ) ? "" : " (" + xUnits + ")";
-    }
-
-    /**
-     * Specify whether the Y (vertical) axis exponent is aligned with the upper
-     * left corner.
-     *
-     * @param newYExpAligned
-     *            If {@code true}, the Y (vertical) axis exponent is aligned
-     *            with the upper left corner.
-     */
-    public final void setYExpAligned( final boolean newYExpAligned ) {
-        yExpAligned = newYExpAligned;
-    }
-
-    /**
-     * Set the label for the Y (vertical) axis.
-     *
-     * @param label
-     *            The label.
-     */
-    public final void setYLabel( final String label ) {
-        yLabel = label;
-    }
-
-    /**
-     * Specify whether the Y axis is drawn with a logarithmic scale.
-     *
-     * @param newYLog
-     *            If {@code true}, logarithmic axis is used.
-     */
-    public final void setYLog( final boolean newYLog ) {
-        yLog = newYLog;
-    }
-
-    /**
      * Set the Y (vertical) range of the plot. If this is not done explicitly,
      * then the range is computed automatically from data available when the
      * plot is drawn. If min and max are identical, then the range is
      * arbitrarily spread by 0.1.
      *
-     * @param min
-     *            The bottom extent of the range.
-     * @param max
-     *            The top extent of the range.
+     * @param min The bottom extent of the range.
+     * @param max The top extent of the range.
      */
-    public final void setYRange( final double min, final double max ) {
+    public final void setYRange( final double min,
+                                 final double max ) {
         yRangeGiven = true;
         yLowGiven = min;
         yHighGiven = max;
@@ -2193,7 +2218,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
      * Internal implementation of setYRange, so that it can be called when
      * auto-ranging.
      */
-    public final void setYRangeWithAutorange( final double min, final double max ) {
+    public final void setYRangeWithAutorange( final double min,
+                                              final double max ) {
         // If values are invalid, try for something reasonable.
         double minAdjusted = min;
         double maxAdjusted = max;
@@ -2218,7 +2244,8 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
         }
 
         // Find the exponent for the largest magnitude y value.
-        final double largest = FastMath.max( Math.abs( yMin ), FastMath.abs( yMax ) );
+        final double largest = FastMath.max( Math.abs( yMin ),
+                                             FastMath.abs( yMax ) );
         yExp = ( int ) FastMath.floor( FastMath.log10( largest ) );
 
         // Use the exponent only if it's larger than 3.
@@ -2254,15 +2281,48 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     }
 
     /**
-     * Set the units for the Y (vertical) axis.
+     * Control whether the grid is drawn.
      *
-     * @param units
-     *            The units.
+     * @param gridIsOn If {@code true}, a grid is drawn.
      */
-    @SuppressWarnings("nls")
-    public final void setYUnits( final String units ) {
-        yUnits = units;
-        yUnitsSublabel = ( yUnits == null ) ? "" : " (" + yUnits + ")";
+    protected final void setGrid( final boolean gridIsOn ) {
+        gridOn = gridIsOn;
+
+        // Any grid state change requires regenerating the off-screen buffer.
+        regenerateOffScreenImage = true;
+    }
+
+    /**
+     * Set the padding multiple. The plot rectangle can be "padded" in each
+     * direction -x, +x, -y, and +y. If the padding is set to 0.05 (and the
+     * padding is used), then there is 10% more length on each axis than set by
+     * the setXRange() and setYRange() methods, 5% in each direction.
+     *
+     * @param newPadding The new padding multiple.
+     */
+    protected final void setPadding( final double newPadding ) {
+        padding = newPadding;
+    }
+
+    /**
+     * Set the size of the chart. This overrides the base class to make it work.
+     * In particular, it records the specified size so that getMinimumSize() and
+     * getPreferredSize() return the specified value. However, it only works if
+     * the plot is placed in its own JPanel. This is because the JPanel asks the
+     * contained component for its preferred size before determining the size of
+     * the panel. If the plot is placed directly in the content pane of a
+     * JApplet, then, mysteriously, this method has no effect.
+     *
+     * @param width  The width, in pixels.
+     * @param height The height, in pixels.
+     */
+    @Override
+    public void setSize( final int width,
+                         final int height ) {
+        preferredWidth = width;
+        preferredHeight = height;
+        sizeHasBeenSet = true;
+        super.setSize( width, height );
     }
 
     private final void validateRanges() {
@@ -2290,14 +2350,10 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
     /**
      * Zoom in or out to the specified rectangle. This method calls repaint().
      *
-     * @param lowx
-     *            The low end of the new X range.
-     * @param lowy
-     *            The low end of the new Y range.
-     * @param highx
-     *            The high end of the new X range.
-     * @param highy
-     *            The high end of the new Y range.
+     * @param lowx  The low end of the new X range.
+     * @param lowy  The low end of the new Y range.
+     * @param highx The high end of the new X range.
+     * @param highy The high end of the new Y range.
      */
     protected void zoom( final double lowx,
                          final double lowy,
@@ -2311,5 +2367,4 @@ public abstract class CartesianChartCanvas extends ChartCanvas {
 
         repaint();
     }
-
 }

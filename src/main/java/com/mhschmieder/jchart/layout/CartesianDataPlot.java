@@ -61,30 +61,26 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
     /**
      *
      */
-    private static final long   serialVersionUID = 5689333438972608460L;
+    private static final long serialVersionUID = 5689333438972608460L;
 
     // Need separate lists of plotting colors for dark vs. light background.
     private final List< Color > _legendColorsForDarkBackground;
     private final List< Color > _legendColorsForLightBackground;
-    private List< Color >       _legendColors;
-
+    // Cache the total number of data sets in use for this plot.
+    private final int _numberOfDataSets;
     // For performance reasons, use standard arrays for x and y coordinates vs.
     // a collection of point objects.
-    protected double[][]        _xData;
-    protected double[][]        _yData;
+    protected double[][] _xData;
+    protected double[][] _yData;
 
     // Keep track of which data set is active for this plot.
-    protected int               _activeDataSet;
-
+    protected int _activeDataSet;
+    // Cache the type of this plot.
+    protected ChartType _plotType;
+    private List< Color > _legendColors;
     // Keep track of whether to display data for all data sets or just the
     // active data set (default).
-    private boolean             _displayDataForAllDataSets;
-
-    // Cache the type of this plot.
-    protected ChartType         _plotType;
-
-    // Cache the total number of data sets in use for this plot.
-    private final int           _numberOfDataSets;
+    private boolean _displayDataForAllDataSets;
 
     // NOTE: The main point of this constructor is to ensure that the color
     // arrays are non-null.
@@ -119,52 +115,17 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
     }
 
     /**
-     * Check the argument to ensure that it is a valid data set index.
-     *
-     * @param dataSetIndex
-     *            The data set index.
-     * @return True if within range; False if below zero or beyond the maximum
-     *         number of data sets for this plot
-     */
-    protected final boolean checkDataSetIndex( final int dataSetIndex ) {
-        return ( dataSetIndex >= 0 ) && ( dataSetIndex < _numberOfDataSets );
-    }
-
-    // Clear the plot of data points in the specified data set index. This calls
-    // repaint() to request an update of the display.
-    protected void clear( final int dataSetIndex ) {
-        if ( !checkDataSetIndex( dataSetIndex ) ) {
-            return;
-        }
-
-        // Any change to the data or scaling requires regenerating the
-        // off-screen buffer (if applicable).
-        regenerateOffScreenImage = true;
-
-        _xData[ dataSetIndex ] = new double[ 0 ];
-        _yData[ dataSetIndex ] = new double[ 0 ];
-
-        repaint();
-    }
-
-    /**
      * Draws bar lines from mid-way between the start and end points towards
      * each point at its respective y position. The current color is used. If
      * the <i>clip</i> argument is true, then draw only those portions of the
      * bar lines that lie within the plotting rectangle.
      *
-     * @param g2
-     *            The graphics context.
-     * @param startX
-     *            The starting x position.
-     * @param startY
-     *            The starting y position.
-     * @param endX
-     *            The ending x position.
-     * @param endY
-     *            The ending y position.
-     * @param clip
-     *            If true, then do not draw outside the range.
+     * @param g2     The graphics context.
+     * @param startX The starting x position.
+     * @param startY The starting y position.
+     * @param endX   The ending x position.
+     * @param endY   The ending y position.
+     * @param clip   If true, then do not draw outside the range.
      * @return the delta between the start and end positions, for the x-axis
      */
     protected final long drawBarLine( final Graphics2D g2,
@@ -204,8 +165,10 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
         for ( int i = 0; i < numberOfCoordinates; i++ ) {
             // Use long here because these numbers can be quite large (when we
             // are zoomed out a lot).
-            final long xPos = ulx + Math.round( ( xCoordinates[ i ] - xMin ) * xScale );
-            final long yPos = lry - Math.round( ( yCoordinates[ i ] - yMin ) * yScale );
+            final long xPos = ulx + Math.round(
+                    ( xCoordinates[ i ] - xMin ) * xScale );
+            final long yPos = lry - Math.round(
+                    ( yCoordinates[ i ] - yMin ) * yScale );
 
             // NOTE: The first point can't draw to a previous point.
             if ( !firstPoint ) {
@@ -226,8 +189,10 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
         // NOTE: Must account for empty data sets to avoid throwing exceptions.
         if ( numberOfCoordinates > 0 ) {
             // Get the first point in the data set.
-            long xPos = ulx + ( long ) ( ( xCoordinates[ 0 ] - xMin ) * xScale );
-            long yPos = lry - ( long ) ( ( yCoordinates[ 0 ] - yMin ) * yScale );
+            long xPos = ulx + ( long ) ( ( xCoordinates[ 0 ] - xMin )
+                                         * xScale );
+            long yPos = lry - ( long ) ( ( yCoordinates[ 0 ] - yMin )
+                                         * yScale );
 
             // Calculate the mid-point extrapolated from the first point.
             long midX = xPos - Math.round( 0.5d * deltaX );
@@ -237,8 +202,12 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
             drawLine( g2, xPos, yPos, midX, yPos, true );
 
             // Get the last point in the data set.
-            xPos = ulx + ( long ) ( ( xCoordinates[ numberOfCoordinates - 1 ] - xMin ) * xScale );
-            yPos = lry - ( long ) ( ( yCoordinates[ numberOfCoordinates - 1 ] - yMin ) * yScale );
+            xPos = ulx + ( long ) (
+                    ( xCoordinates[ numberOfCoordinates - 1 ] - xMin )
+                    * xScale );
+            yPos = lry - ( long ) (
+                    ( yCoordinates[ numberOfCoordinates - 1 ] - yMin )
+                    * yScale );
 
             // Calculate the mid-point extrapolated from the last point.
             midX = xPos + Math.round( 0.5d * deltaX );
@@ -254,43 +223,45 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
      * established chart bounds, after mapping from model/domain space to screen
      * space and potentially applying data reduction techniques.
      *
-     * @param graphicsContext
-     *            The {@link Graphics2D} Graphics Context to use for drawing the
-     *            resulting lines between the data points
-     * @param xCoordinates
-     *            The original x-coordinates in domain/model space
-     * @param yCoordinates
-     *            The original y-coordinates in domain/model space
-     * @param numberOfCoordinates
-     *            The number of original coordinates
+     * @param graphicsContext     The {@link Graphics2D} Graphics Context to use
+     *                            for drawing the resulting lines between the
+     *                            data points
+     * @param xCoordinates        The original x-coordinates in domain/model
+     *                            space
+     * @param yCoordinates        The original y-coordinates in domain/model
+     *                            space
+     * @param numberOfCoordinates The number of original coordinates
      */
     protected final void drawDataVector( final Graphics2D graphicsContext,
                                          final double[] xCoordinates,
                                          final double[] yCoordinates,
                                          final int numberOfCoordinates ) {
         // Make copies of the coordinate arrays, for transformed values.
-        final double[] xCoordinatesTransformed = new double[ numberOfCoordinates ];
-        final double[] yCoordinatesTransformed = new double[ numberOfCoordinates ];
+        final double[] xCoordinatesTransformed
+                = new double[ numberOfCoordinates ];
+        final double[] yCoordinatesTransformed
+                = new double[ numberOfCoordinates ];
 
         // Transform the data points to screen space, using data reduction with
         // a data variance factor that accounts for AWT pixel values being
         // effectively integer-based.
-        final int numberOfCoordinatesTransformed = ChartUtilities
-                .transformDataVectorToScreenCoordinates( xCoordinates,
-                                                         yCoordinates,
-                                                         numberOfCoordinates,
-                                                         xMin,
-                                                         yMin,
-                                                         xMax,
-                                                         yMax,
-                                                         xScale,
-                                                         yScale,
-                                                         ulx,
-                                                         lry,
-                                                         true,
-                                                         0.001d,
-                                                         xCoordinatesTransformed,
-                                                         yCoordinatesTransformed );
+        final int numberOfCoordinatesTransformed
+                = ChartUtilities.transformDataVectorToScreenCoordinates(
+                xCoordinates,
+                yCoordinates,
+                numberOfCoordinates,
+                xMin,
+                yMin,
+                xMax,
+                yMax,
+                xScale,
+                yScale,
+                ulx,
+                lry,
+                true,
+                0.001d,
+                xCoordinatesTransformed,
+                yCoordinatesTransformed );
 
         // Fortunately, we can be efficient by combining the entire trace into a
         // single open polyline, having stripped any redundant data points. This
@@ -301,24 +272,28 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
             // reduces the number of PostScript moveto's and newpath's (and
             // their equivalents) in the format-specific overrides of the draw()
             // method from each format's specialized version of Graphics2D.
-            final GeneralPath path =
-                                   ShapeUtilities.makePolyline( xCoordinatesTransformed,
-                                                                   yCoordinatesTransformed,
-                                                                   numberOfCoordinatesTransformed );
+            final GeneralPath path = ShapeUtilities.makePolyline(
+                    xCoordinatesTransformed,
+                    yCoordinatesTransformed,
+                    numberOfCoordinatesTransformed );
             graphicsContext.draw( path );
         }
         else {
             // For AWT, we have to first round all coordinates to integers.
-            final int[] xCoordinatesRounded = new int[ numberOfCoordinatesTransformed ];
-            final int[] yCoordinatesRounded = new int[ numberOfCoordinatesTransformed ];
+            final int[] xCoordinatesRounded
+                    = new int[ numberOfCoordinatesTransformed ];
+            final int[] yCoordinatesRounded
+                    = new int[ numberOfCoordinatesTransformed ];
             for ( int i = 0; i < numberOfCoordinatesTransformed; i++ ) {
-                xCoordinatesRounded[ i ] = ( int ) Math.round( xCoordinatesTransformed[ i ] );
-                yCoordinatesRounded[ i ] = ( int ) Math.round( yCoordinatesTransformed[ i ] );
+                xCoordinatesRounded[ i ] = ( int ) Math.round(
+                        xCoordinatesTransformed[ i ] );
+                yCoordinatesRounded[ i ] = ( int ) Math.round(
+                        yCoordinatesTransformed[ i ] );
             }
-            final GeneralPath path =
-                                   ShapeUtilities.makePolyline( xCoordinatesRounded,
-                                                                   yCoordinatesRounded,
-                                                                   numberOfCoordinatesTransformed );
+            final GeneralPath path = ShapeUtilities.makePolyline(
+                    xCoordinatesRounded,
+                    yCoordinatesRounded,
+                    numberOfCoordinatesTransformed );
             graphicsContext.draw( path );
         }
     }
@@ -329,18 +304,12 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
      * then draw only that portion of the line that lies within the plotting
      * rectangle.
      *
-     * @param g2
-     *            The graphics context.
-     * @param startX
-     *            The starting x position.
-     * @param startY
-     *            The starting y position.
-     * @param endX
-     *            The ending x position.
-     * @param endY
-     *            The ending y position.
-     * @param clip
-     *            If true, then do not draw outside the range.
+     * @param g2     The graphics context.
+     * @param startX The starting x position.
+     * @param startY The starting y position.
+     * @param endX   The ending x position.
+     * @param endY   The ending y position.
+     * @param clip   If true, then do not draw outside the range.
      */
     protected final void drawLine( final Graphics2D g2,
                                    final long startX,
@@ -354,24 +323,27 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
         long endYAdjusted = endY;
         if ( clip ) {
             // Rule out impossible cases.
-            if ( ( ( ( endXAdjusted > ulx ) || ( startXAdjusted > ulx ) )
-                    && ( ( endXAdjusted < lrx ) || ( startXAdjusted < lrx ) )
-                    && ( ( endYAdjusted > uly ) || ( startYAdjusted > uly ) )
-                    && ( ( endYAdjusted < lry ) || ( startYAdjusted < lry ) ) ) ) {
+            if ( ( ( ( endXAdjusted > ulx ) || ( startXAdjusted > ulx ) ) && (
+                    ( endXAdjusted < lrx ) || ( startXAdjusted < lrx ) ) && (
+                           ( endYAdjusted > uly ) || ( startYAdjusted > uly ) )
+                   && ( ( endYAdjusted < lry ) || ( startYAdjusted
+                                                    < lry ) ) ) ) {
                 // If the end point is out of x range, adjust end point to
                 // boundary. The integer arithmetic has to be done with longs
                 // so as to not lose precision on extremely close zooms.
                 if ( startXAdjusted != endXAdjusted ) {
                     if ( endXAdjusted < ulx ) {
-                        endYAdjusted = ( int ) ( endYAdjusted
-                                + ( ( ( startYAdjusted - endYAdjusted ) * ( ulx - endXAdjusted ) )
-                                        / ( startXAdjusted - endXAdjusted ) ) );
+                        endYAdjusted = ( int ) ( endYAdjusted + (
+                                ( ( startYAdjusted - endYAdjusted ) * ( ulx
+                                                                        - endXAdjusted ) )
+                                / ( startXAdjusted - endXAdjusted ) ) );
                         endXAdjusted = ulx;
                     }
                     else if ( endXAdjusted > lrx ) {
-                        endYAdjusted = ( int ) ( endYAdjusted
-                                + ( ( ( startYAdjusted - endYAdjusted ) * ( lrx - endXAdjusted ) )
-                                        / ( startXAdjusted - endXAdjusted ) ) );
+                        endYAdjusted = ( int ) ( endYAdjusted + (
+                                ( ( startYAdjusted - endYAdjusted ) * ( lrx
+                                                                        - endXAdjusted ) )
+                                / ( startXAdjusted - endXAdjusted ) ) );
                         endXAdjusted = lrx;
                     }
                 }
@@ -380,15 +352,17 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
                 // y increases downward.
                 if ( startYAdjusted != endYAdjusted ) {
                     if ( endYAdjusted < uly ) {
-                        endXAdjusted = ( int ) ( endXAdjusted
-                                + ( ( ( startXAdjusted - endXAdjusted ) * ( uly - endYAdjusted ) )
-                                        / ( startYAdjusted - endYAdjusted ) ) );
+                        endXAdjusted = ( int ) ( endXAdjusted + (
+                                ( ( startXAdjusted - endXAdjusted ) * ( uly
+                                                                        - endYAdjusted ) )
+                                / ( startYAdjusted - endYAdjusted ) ) );
                         endYAdjusted = uly;
                     }
                     else if ( endYAdjusted > lry ) {
-                        endXAdjusted = ( int ) ( endXAdjusted
-                                + ( ( ( startXAdjusted - endXAdjusted ) * ( lry - endYAdjusted ) )
-                                        / ( startYAdjusted - endYAdjusted ) ) );
+                        endXAdjusted = ( int ) ( endXAdjusted + (
+                                ( ( startXAdjusted - endXAdjusted ) * ( lry
+                                                                        - endYAdjusted ) )
+                                / ( startYAdjusted - endYAdjusted ) ) );
                         endYAdjusted = lry;
                     }
                 }
@@ -396,39 +370,43 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
                 // Adjust current point to lie on the boundary.
                 if ( startXAdjusted != endXAdjusted ) {
                     if ( startXAdjusted < ulx ) {
-                        startYAdjusted = ( int ) ( startYAdjusted
-                                + ( ( ( endYAdjusted - startYAdjusted ) * ( ulx - startXAdjusted ) )
-                                        / ( endXAdjusted - startXAdjusted ) ) );
+                        startYAdjusted = ( int ) ( startYAdjusted + (
+                                ( ( endYAdjusted - startYAdjusted ) * ( ulx
+                                                                        - startXAdjusted ) )
+                                / ( endXAdjusted - startXAdjusted ) ) );
                         startXAdjusted = ulx;
                     }
                     else if ( startXAdjusted > lrx ) {
-                        startYAdjusted = ( int ) ( startYAdjusted
-                                + ( ( ( endYAdjusted - startYAdjusted ) * ( lrx - startXAdjusted ) )
-                                        / ( endXAdjusted - startXAdjusted ) ) );
+                        startYAdjusted = ( int ) ( startYAdjusted + (
+                                ( ( endYAdjusted - startYAdjusted ) * ( lrx
+                                                                        - startXAdjusted ) )
+                                / ( endXAdjusted - startXAdjusted ) ) );
                         startXAdjusted = lrx;
                     }
                 }
                 if ( startYAdjusted != endYAdjusted ) {
                     if ( startYAdjusted < uly ) {
-                        startXAdjusted = ( int ) ( startXAdjusted
-                                + ( ( ( endXAdjusted - startXAdjusted ) * ( uly - startYAdjusted ) )
-                                        / ( endYAdjusted - startYAdjusted ) ) );
+                        startXAdjusted = ( int ) ( startXAdjusted + (
+                                ( ( endXAdjusted - startXAdjusted ) * ( uly
+                                                                        - startYAdjusted ) )
+                                / ( endYAdjusted - startYAdjusted ) ) );
                         startYAdjusted = uly;
                     }
                     else if ( startYAdjusted > lry ) {
-                        startXAdjusted = ( int ) ( startXAdjusted
-                                + ( ( ( endXAdjusted - startXAdjusted ) * ( lry - startYAdjusted ) )
-                                        / ( endYAdjusted - startYAdjusted ) ) );
+                        startXAdjusted = ( int ) ( startXAdjusted + (
+                                ( ( endXAdjusted - startXAdjusted ) * ( lry
+                                                                        - startYAdjusted ) )
+                                / ( endYAdjusted - startYAdjusted ) ) );
                         startYAdjusted = lry;
                     }
                 }
             }
 
             // Are the new points in range?
-            if ( ( endXAdjusted >= ulx ) && ( endXAdjusted <= lrx ) && ( endYAdjusted >= uly )
-                    && ( endYAdjusted <= lry ) && ( startXAdjusted >= ulx )
-                    && ( startXAdjusted <= lrx ) && ( startYAdjusted >= uly )
-                    && ( startYAdjusted <= lry ) ) {
+            if ( ( endXAdjusted >= ulx ) && ( endXAdjusted <= lrx ) && (
+                    endYAdjusted >= uly ) && ( endYAdjusted <= lry ) && (
+                         startXAdjusted >= ulx ) && ( startXAdjusted <= lrx )
+                 && ( startYAdjusted >= uly ) && ( startYAdjusted <= lry ) ) {
                 g2.drawLine( ( int ) startXAdjusted,
                              ( int ) startYAdjusted,
                              ( int ) endXAdjusted,
@@ -449,8 +427,7 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
      * paintComponent(). To cause it to be called you would normally call
      * repaint(), which eventually causes paintComponent() to be called.
      *
-     * @param graphicsContext
-     *            The graphics context.
+     * @param graphicsContext The graphics context.
      */
     @Override
     public void drawChart( final Graphics2D graphicsContext ) {
@@ -475,143 +452,14 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
 
         // Plot the data sets in reverse order so that the first colors appear
         // on top.
-        for ( int dataSetIndex = _numberOfDataSets - 1; dataSetIndex >= 0; dataSetIndex-- ) {
+        for ( int dataSetIndex = _numberOfDataSets - 1;
+              dataSetIndex >= 0;
+              dataSetIndex-- ) {
             drawPlotPoints( graphicsContext, dataSetIndex );
         }
 
         // Restore the clipping to what it was before we painted the traces.
         graphicsContext.setClip( clip );
-    }
-
-    /*
-     * Draws the specified data set and associated lines, if any. Note that
-     * paintComponent() should be called before calling this method so that it
-     * calls drawPlot(), which sets xScale and yScale. Note that this does
-     * not check the data set index. It is up to the caller to do that.
-     */
-    protected final void drawPlotPoints( final Graphics2D g2,
-                                         final int dataSetIndex ) {
-        // Pre-load the data set-specific objects and data, and declare all
-        // reused variables outside the tight loop, for efficiency.
-        final double[] xCoordinates = getXCoordinates( dataSetIndex );
-        final double[] yCoordinates = getYCoordinates( dataSetIndex );
-
-        final int numberOfCoordinates = xCoordinates.length;
-        if ( numberOfCoordinates <= 0 ) {
-            return;
-        }
-
-        // Cache the color to restore after custom graphics.
-        final Color previousColor = g2.getColor();
-
-        // Set the color.
-        final Color currentColor = getColor( dataSetIndex );
-        g2.setColor( currentColor );
-
-        switch ( _plotType ) {
-        case DATA_VECTOR:
-            drawDataVector( g2, xCoordinates, yCoordinates, numberOfCoordinates );
-            break;
-        case CENTER_BAND:
-            drawCenterBands( g2, xCoordinates, yCoordinates );
-            break;
-        default:
-            break;
-        }
-
-        // Restore the color, in case the plot gets redrawn.
-        g2.setColor( previousColor );
-    }
-
-    /**
-     * Returns the color for a data set, or throw an exception if there is none.
-     * The color would have been set by setColor().
-     *
-     * @param dataSetIndex
-     *            The data set index.
-     * @return The color, or throw an exception if there is none.
-     */
-    protected final Color getColor( final int dataSetIndex ) {
-        if ( !checkDataSetIndex( dataSetIndex ) ) {
-            return Color.GRAY;
-        }
-
-        return _legendColors.get( dataSetIndex );
-    }
-
-    /**
-     * Returns the default legend colors list.
-     *
-     * @param backColor
-     *            The graphics background color.
-     * @return the default legend colors list
-     */
-    protected final List< Color > getLegendColorsDefault( final Color backColor ) {
-        // Set the legend colors to use based on dark vs. light background.
-        return ( Color.BLACK.equals( backColor ) || Color.DARK_GRAY.equals( backColor ) )
-            ? _legendColorsForDarkBackground
-            : _legendColorsForLightBackground;
-    }
-
-    /**
-     * Returns the x coordinates for a data set (set by setDataset()).
-     *
-     * @param dataSetIndex
-     *            The data set index.
-     * @return The x coordinates, or throw an exception if there are none.
-     */
-    protected final double[] getXCoordinates( final int dataSetIndex ) {
-        if ( !isDataSetValid( dataSetIndex ) ) {
-            return new double[ 0 ];
-        }
-
-        return _xData[ dataSetIndex ];
-    }
-
-    /**
-     * Returns the y coordinates for a data set (set by setDataset()).
-     *
-     * @param dataSetIndex
-     *            The data set index.
-     * @return The y coordinates, or throw an exception if there are none.
-     */
-    protected final double[] getYCoordinates( final int dataSetIndex ) {
-        if ( !isDataSetValid( dataSetIndex ) ) {
-            return new double[ 0 ];
-        }
-
-        return _yData[ dataSetIndex ];
-    }
-
-    // Query whether this component is valid or not; that is, whether it
-    // contains a valid data vector or not.
-    public final boolean isDataSetValid() {
-        return isDataSetValid( _activeDataSet );
-    }
-
-    /**
-     * Return whether the specified data set is valid or not. Check the argument
-     * to ensure that it is a valid data set index. If so, verify non-empty
-     * data at the specified index.
-     *
-     * @param dataSetIndex
-     *            The data set index.
-     * @return True if the specified data set is valid; false if not.
-     */
-    public boolean isDataSetValid( final int dataSetIndex ) {
-        if ( !checkDataSetIndex( dataSetIndex ) ) {
-            return false;
-        }
-
-        final double[] xCoordinates = _xData[ dataSetIndex ];
-        final double[] yCoordinates = _yData[ dataSetIndex ];
-
-        return ( ( ( xCoordinates != null ) && ( xCoordinates.length > 0 ) )
-                && ( ( yCoordinates != null ) && ( yCoordinates.length > 0 ) ) );
-    }
-
-    public final boolean isDisplayDataForAllDataSets() {
-        return _displayDataForAllDataSets;
     }
 
     @Override
@@ -645,11 +493,11 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
             // NOTE: Virtual rows consist of a pair of left-justified and
             // left-offset rows; each one followed by a blanking row.
             final int numRows = ( int ) FastMath.ceil(
-                    ( plotHeight + blankingHeight )
-                    / ( 2.0d * ( watermarkHeight + blankingHeight ) ) );
+                    ( plotHeight + blankingHeight ) / ( 2.0d * ( watermarkHeight
+                                                                 + blankingHeight ) ) );
             final int numCols = ( int ) FastMath.ceil(
-                    ( double ) (plotWidth + blankingWidth)
-                            / ( watermarkWidth + blankingWidth ) );
+                    ( double ) ( plotWidth + blankingWidth ) / ( watermarkWidth
+                                                                 + blankingWidth ) );
 
             // Composite the transparent watermark with the background image.
             // This maintains the integrity of the background image while also
@@ -668,8 +516,8 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
             //  sometimes not enough columns, since the blanking width is
             //  different from the watermark width and throws off the algorithm
             //  in terms of how many of each to paint.
-            g2.setComposite( AlphaComposite.getInstance(
-                    AlphaComposite.SRC_OVER, 0.5f ) );
+            g2.setComposite( AlphaComposite.getInstance( AlphaComposite.SRC_OVER,
+                                                         0.5f ) );
 
             // TODO: Do bounds-checking on the edge of the plot.
             // TODO: Review proper direction of y-axis here and elsewhere,
@@ -679,7 +527,9 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
             int x = getUlx();
             int y = getUly();
             for ( int i = 0; i < numRows; i++ ) {
-                x = ( ( i % 2 ) == 0 ) ? getUlx() : getUlx() + blankingWidth;
+                x = ( ( i % 2 ) == 0 )
+                    ? getUlx()
+                    : getUlx() + blankingWidth;
                 for ( int j = 0; j < numCols; j++ ) {
                     g2.drawImage( watermarkImage, x, y, null );
                     x += watermarkWidth + blankingWidth;
@@ -687,6 +537,138 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
                 y += watermarkHeight + blankingHeight;
             }
         }
+    }
+
+    /*
+     * Draws the specified data set and associated lines, if any. Note that
+     * paintComponent() should be called before calling this method so that it
+     * calls drawPlot(), which sets xScale and yScale. Note that this does
+     * not check the data set index. It is up to the caller to do that.
+     */
+    protected final void drawPlotPoints( final Graphics2D g2,
+                                         final int dataSetIndex ) {
+        // Pre-load the data set-specific objects and data, and declare all
+        // reused variables outside the tight loop, for efficiency.
+        final double[] xCoordinates = getXCoordinates( dataSetIndex );
+        final double[] yCoordinates = getYCoordinates( dataSetIndex );
+
+        final int numberOfCoordinates = xCoordinates.length;
+        if ( numberOfCoordinates <= 0 ) {
+            return;
+        }
+
+        // Cache the color to restore after custom graphics.
+        final Color previousColor = g2.getColor();
+
+        // Set the color.
+        final Color currentColor = getColor( dataSetIndex );
+        g2.setColor( currentColor );
+
+        switch ( _plotType ) {
+            case DATA_VECTOR:
+                drawDataVector( g2,
+                                xCoordinates,
+                                yCoordinates,
+                                numberOfCoordinates );
+                break;
+            case CENTER_BAND:
+                drawCenterBands( g2, xCoordinates, yCoordinates );
+                break;
+            default:
+                break;
+        }
+
+        // Restore the color, in case the plot gets redrawn.
+        g2.setColor( previousColor );
+    }
+
+    /**
+     * Returns the color for a data set, or throw an exception if there is none.
+     * The color would have been set by setColor().
+     *
+     * @param dataSetIndex The data set index.
+     * @return The color, or throw an exception if there is none.
+     */
+    protected final Color getColor( final int dataSetIndex ) {
+        if ( !checkDataSetIndex( dataSetIndex ) ) {
+            return Color.GRAY;
+        }
+
+        return _legendColors.get( dataSetIndex );
+    }
+
+    /**
+     * Returns the x coordinates for a data set (set by setDataset()).
+     *
+     * @param dataSetIndex The data set index.
+     * @return The x coordinates, or throw an exception if there are none.
+     */
+    protected final double[] getXCoordinates( final int dataSetIndex ) {
+        if ( !isDataSetValid( dataSetIndex ) ) {
+            return new double[ 0 ];
+        }
+
+        return _xData[ dataSetIndex ];
+    }
+
+    /**
+     * Returns the y coordinates for a data set (set by setDataset()).
+     *
+     * @param dataSetIndex The data set index.
+     * @return The y coordinates, or throw an exception if there are none.
+     */
+    protected final double[] getYCoordinates( final int dataSetIndex ) {
+        if ( !isDataSetValid( dataSetIndex ) ) {
+            return new double[ 0 ];
+        }
+
+        return _yData[ dataSetIndex ];
+    }
+
+    // Query whether this component is valid or not; that is, whether it
+    // contains a valid data vector or not.
+    public final boolean isDataSetValid() {
+        return isDataSetValid( _activeDataSet );
+    }
+
+    /**
+     * Return whether the specified data set is valid or not. Check the argument
+     * to ensure that it is a valid data set index. If so, verify non-empty data
+     * at the specified index.
+     *
+     * @param dataSetIndex The data set index.
+     * @return True if the specified data set is valid; false if not.
+     */
+    public boolean isDataSetValid( final int dataSetIndex ) {
+        if ( !checkDataSetIndex( dataSetIndex ) ) {
+            return false;
+        }
+
+        final double[] xCoordinates = _xData[ dataSetIndex ];
+        final double[] yCoordinates = _yData[ dataSetIndex ];
+
+        return ( ( ( xCoordinates != null ) && ( xCoordinates.length > 0 ) )
+                 && ( ( yCoordinates != null ) && ( yCoordinates.length
+                                                    > 0 ) ) );
+    }
+
+    /**
+     * Check the argument to ensure that it is a valid data set index.
+     *
+     * @param dataSetIndex The data set index.
+     * @return True if within range; False if below zero or beyond the maximum
+     *         number of data sets for this plot
+     */
+    protected final boolean checkDataSetIndex( final int dataSetIndex ) {
+        return ( dataSetIndex >= 0 ) && ( dataSetIndex < _numberOfDataSets );
+    }
+
+    public final boolean isDisplayDataForAllDataSets() {
+        return _displayDataForAllDataSets;
+    }
+
+    public final void setDisplayDataForAllDataSets( final boolean displayDataForAllDataSets ) {
+        _displayDataForAllDataSets = displayDataForAllDataSets;
     }
 
     public abstract void reset();
@@ -700,7 +682,8 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
      * <p>
      * NOTE: This is an optional method that should be overridden as needed.
      */
-    public void setChartColors() {}
+    public void setChartColors() {
+    }
 
     public final void setChartType( final ChartType plotType ) {
         _plotType = plotType;
@@ -716,8 +699,10 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
             return;
         }
 
-        _legendColorsForDarkBackground.set( dataSetIndex, colorForDarkBackground );
-        _legendColorsForLightBackground.set( dataSetIndex, colorForLightBackground );
+        _legendColorsForDarkBackground.set( dataSetIndex,
+                                            colorForDarkBackground );
+        _legendColorsForLightBackground.set( dataSetIndex,
+                                             colorForLightBackground );
     }
 
     /*
@@ -730,7 +715,8 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
             return;
         }
 
-        _legendColorsForDarkBackground.set( dataSetIndex, colorsForDarkBackground[ dataSetIndex ] );
+        _legendColorsForDarkBackground.set( dataSetIndex,
+                                            colorsForDarkBackground[ dataSetIndex ] );
         _legendColorsForLightBackground.set( dataSetIndex,
                                              colorsForLightBackground[ dataSetIndex ] );
     }
@@ -739,16 +725,11 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
      * Replaces the specified data set with the given points. This calls
      * repaint() to request an update of the display.
      *
-     * @param dataSetIndex
-     *            The data set index.
-     * @param xCoordinates
-     *            The X positions of the new points.
-     * @param yCoordinates
-     *            The Y positions of the new points.
-     * @param firstIndex
-     *            The first point in the data set to use
-     * @param lastIndex
-     *            The last point in the data set to use
+     * @param dataSetIndex The data set index.
+     * @param xCoordinates The X positions of the new points.
+     * @param yCoordinates The Y positions of the new points.
+     * @param firstIndex   The first point in the data set to use
+     * @param lastIndex    The last point in the data set to use
      */
     protected void setDataSet( final int dataSetIndex,
                                final double[] xCoordinates,
@@ -780,16 +761,28 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
         repaint();
     }
 
-    public final void setDisplayDataForAllDataSets( final boolean displayDataForAllDataSets ) {
-        _displayDataForAllDataSets = displayDataForAllDataSets;
+    // Clear the plot of data points in the specified data set index. This calls
+    // repaint() to request an update of the display.
+    protected void clear( final int dataSetIndex ) {
+        if ( !checkDataSetIndex( dataSetIndex ) ) {
+            return;
+        }
+
+        // Any change to the data or scaling requires regenerating the
+        // off-screen buffer (if applicable).
+        regenerateOffScreenImage = true;
+
+        _xData[ dataSetIndex ] = new double[ 0 ];
+        _yData[ dataSetIndex ] = new double[ 0 ];
+
+        repaint();
     }
 
     /**
      * Sets the graphics background color, and from this contextually set the
      * foreground color.
      *
-     * @param backColor
-     *            The graphics background color.
+     * @param backColor The graphics background color.
      */
     @Override
     public void setForegroundFromBackground( final Color backColor ) {
@@ -798,6 +791,20 @@ public abstract class CartesianDataPlot extends CartesianChartCanvas {
         final List< Color > legendColorsDefault = getLegendColorsDefault(
                 backColor );
         setLegendColors( legendColorsDefault );
+    }
+
+    /**
+     * Returns the default legend colors list.
+     *
+     * @param backColor The graphics background color.
+     * @return the default legend colors list
+     */
+    protected final List< Color > getLegendColorsDefault( final Color backColor ) {
+        // Set the legend colors to use based on dark vs. light background.
+        return ( Color.BLACK.equals( backColor ) || Color.DARK_GRAY.equals(
+                backColor ) )
+               ? _legendColorsForDarkBackground
+               : _legendColorsForLightBackground;
     }
 
     /*

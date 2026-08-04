@@ -29,11 +29,7 @@
  * Project: https://github.com/mhschmieder/jchart
  */
 /**
- * This package contains the jchart Library's chart utility classes that
- * operate on the highest-level concepts in the AWT class hierarchy.
- *
- * @version 1.0
- *
- * @author Mark Schmieder
+ * This package contains the jchart Library's chart utility classes that operate
+ * on the highest-level concepts in the AWT class hierarchy.
  */
 package com.mhschmieder.jchart.chart;
