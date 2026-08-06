@@ -80,6 +80,7 @@ import javax.swing.ImageIcon;
  *  JavaFX Drawing Limits and Region properties windows.
  */
 public class CartesianGraphicsCanvas extends CartesianChartCanvas {
+
     public static final double X_METERS_DEFAULT = 0.0d;
     public static final double Y_METERS_DEFAULT = 0.0d;
     public static final double WIDTH_METERS_DEFAULT = 40d;

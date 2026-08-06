@@ -58,6 +58,7 @@ import java.awt.Insets;
  * @version 1.0
  */
 public abstract class ChartCanvas extends JxVectorizationPanel {
+
     /**
      * This is the default Font Size for Titles; smaller is OK as the window
      * shrinks, but if the window grows then the font gets no larger than this.

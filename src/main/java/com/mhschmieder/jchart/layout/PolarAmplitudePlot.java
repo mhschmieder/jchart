@@ -38,6 +38,7 @@ import org.apache.commons.math3.util.FastMath;
 import java.awt.Dimension;
 
 public final class PolarAmplitudePlot extends SemiLogRPolarPlot {
+
     // Declare the default amplitude values.
     // NOTE: We set a range of -6.0dB (knowing we also gain +6dB headroom).
     public static final double DEFAULT_AMPLITUDE = -6d;

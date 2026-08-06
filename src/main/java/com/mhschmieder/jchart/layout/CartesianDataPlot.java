@@ -58,6 +58,7 @@ import java.util.List;
 //  unfortunately, in pixels. This means that as resolutions get better, this
 //  program may need to be adjusted.
 public abstract class CartesianDataPlot extends CartesianChartCanvas {
+
     /**
      *
      */

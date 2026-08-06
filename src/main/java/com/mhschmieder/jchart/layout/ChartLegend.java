@@ -65,6 +65,7 @@ import javax.swing.border.TitledBorder;
  * @version 0.1
  */
 public class ChartLegend extends JxVectorizationPanel {
+
     /**
      * Unique Serial Version ID for this class, to avoid class loader
      * conflicts.

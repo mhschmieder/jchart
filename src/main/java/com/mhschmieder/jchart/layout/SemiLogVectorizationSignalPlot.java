@@ -37,6 +37,7 @@ import java.text.NumberFormat;
 // TODO: remove the need for this semi-log-x subclass and find a way to better
 //  flag that behavior higher up.
 public class SemiLogVectorizationSignalPlot extends CartesianDataPlot {
+
     /**
      *
      */

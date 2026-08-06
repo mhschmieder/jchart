@@ -126,6 +126,7 @@ import javax.swing.ImageIcon;
  * </pre>
  */
 public abstract class CartesianChartCanvas extends ChartCanvas {
+
     /**
      *
      */

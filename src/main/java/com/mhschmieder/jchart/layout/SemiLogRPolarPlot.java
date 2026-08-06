@@ -84,6 +84,7 @@ import java.util.Locale;
  * negative values on that axis will produce a <tt>RuntimeException</tt>.
  */
 public class SemiLogRPolarPlot extends ChartCanvas {
+
     // Constants containing Line Style descriptors.
     public static final float LINESTYLE_SOLID[] = { 6f, 0f };
     public static final float LINESTYLE_DOT[] = { 3f, 6f };
