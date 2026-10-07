@@ -34,8 +34,8 @@ import com.mhschmieder.jchart.chart.GridResolution;
 import com.mhschmieder.jgraphics.color.ColorConstants;
 import com.mhschmieder.jgraphics.shape.AttributedShape;
 import com.mhschmieder.jgraphics.shape.AttributedShapeContainer;
+import com.mhschmieder.jphysics.measure.DistanceConversion;
 import com.mhschmieder.jphysics.measure.DistanceUnit;
-import com.mhschmieder.jphysics.measure.UnitConversion;
 import org.apache.commons.math3.util.FastMath;
 
 import java.awt.AlphaComposite;
@@ -882,18 +882,18 @@ public class CartesianGraphicsCanvas extends CartesianChartCanvas {
     private final void resetPlotRange() {
         // NOTE: Working in metric units and only setting the axis labels to
         // display units works ONLY because we do not plot data in SoundField.
-        final double x1 = UnitConversion.convertDistance( _zoomCurrent.getX(),
-                                                          DistanceUnit.METERS,
-                                                          _distanceUnit );
-        final double x2 = UnitConversion.convertDistance(
+        final double x1 = DistanceConversion.convertDistance( _zoomCurrent.getX(),
+                                                              DistanceUnit.METERS,
+                                                              _distanceUnit );
+        final double x2 = DistanceConversion.convertDistance(
                 _zoomCurrent.getX() + _zoomCurrent.getWidth(),
                 DistanceUnit.METERS,
                 _distanceUnit );
         setXRange( x1, x2 );
-        final double y1 = UnitConversion.convertDistance( _zoomCurrent.getY(),
-                                                          DistanceUnit.METERS,
-                                                          _distanceUnit );
-        final double y2 = UnitConversion.convertDistance(
+        final double y1 = DistanceConversion.convertDistance( _zoomCurrent.getY(),
+                                                              DistanceUnit.METERS,
+                                                              _distanceUnit );
+        final double y2 = DistanceConversion.convertDistance(
                 _zoomCurrent.getY() + _zoomCurrent.getHeight(),
                 DistanceUnit.METERS,
                 _distanceUnit );
